@@ -10,7 +10,7 @@ namespace OrderingSystemProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //Console.WriteLine($"pass: {Hasher.GetHashString("test")}");
+            Console.WriteLine($"pass: {Hasher.GetHashString("test")}");
 
             // Add databases
             DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase"));

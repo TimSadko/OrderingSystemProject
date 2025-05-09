@@ -19,7 +19,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT login, employee_type, email, first_name, last_name, password From Employees ORDER BY last_name";
+                string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email From Employees ORDER BY LastName";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -40,25 +40,17 @@ namespace OrderingSystemProject.Repositories
 
         private Employee ReadEmployee(SqlDataReader reader)
         {
-            return new Employee()
-            {
-                Login = (string)reader["login"],
-                EmployeeType = (EMPLOYEE_TYPE)reader["employee_type"],
-                Email = (string)reader["email"],
-                FirstName = (string)reader["first_name"],
-                LastName = (string)reader["last_name"],
-                Password = (string)reader["password"]
-            };
+            return new Employee((int)reader["EmployeeId"], (string)reader["Login"], (string)reader["Password"], (EMPLOYEE_TYPE)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
         }
 
         public Employee? GetByLogin(string login)
         {
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT login, employee_type, email, first_name, last_name, password From Employees WHERE login = @login";
+                string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email From Employees WHERE Login = @Login";
 
                 SqlCommand com = new SqlCommand(query, conn);
-                com.Parameters.AddWithValue("@login", login);
+                com.Parameters.AddWithValue("@Login", login);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
