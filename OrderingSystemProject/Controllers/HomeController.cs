@@ -9,6 +9,7 @@ namespace OrderingSystemProject.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly string logged_in_key = "logged_in_employee";
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -31,7 +32,7 @@ namespace OrderingSystemProject.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-			string? json = HttpContext.Session.GetString("logged_in_employee"); // Get logged in employee from sessions
+			string? json = HttpContext.Session.GetString(logged_in_key); // Get logged in employee from sessions
 
 			if (json != null) // if employee is saved in session (have logged in with in last 30 minutes), log him in automaticly 
             {
@@ -54,7 +55,7 @@ namespace OrderingSystemProject.Controllers
 
 				if (emp == null) throw new FailedToLoginException(); // If could not found employee in db throw exeption
 
-				HttpContext.Session.SetString("logged_in_employee", JsonSerializer.Serialize(emp)); // Add employee to sessions           
+				HttpContext.Session.SetString(logged_in_key, JsonSerializer.Serialize(emp)); // Add employee to sessions           
 
                 return GetRedirect(emp.EmployeeType); // Redirect based on user type waiter, manager, etc.
             }
@@ -79,6 +80,14 @@ namespace OrderingSystemProject.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult Logout() // Called when logout
+        {
+            HttpContext.Session.Remove(logged_in_key); // Remove current session 
+
+            return RedirectToAction("Index"); // Redirect to home
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
