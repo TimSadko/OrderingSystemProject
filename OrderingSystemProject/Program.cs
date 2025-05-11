@@ -9,18 +9,27 @@ namespace OrderingSystemProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            Console.WriteLine($"pass: {Hasher.GetHashString("test")}");
+         
+            Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}");
+            Console.WriteLine($"pass0: {Hasher.GetHashString("test")}");
 
             // Add databases
-            DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase"));
+            DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase")); // Create custom configuration and give it connection string
 
-            var _employee_rep = new EmployeeDB(def);
-            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep);
-            CommonController._employee_rep = _employee_rep;
+            var _employee_rep = new EmployeeDB(def); // Create DB
+            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep); // Add it to services
+            CommonController._employee_rep = _employee_rep; // Add it to common conrtroller
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddSession(options => // Configure sessions
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -39,7 +48,9 @@ namespace OrderingSystemProject
 
             app.UseAuthorization();
 
-            app.MapControllerRoute(
+            app.UseSession(); // Enable sessions
+
+			app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 

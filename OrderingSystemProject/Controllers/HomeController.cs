@@ -38,15 +38,15 @@ namespace OrderingSystemProject.Controllers
         {
             try
             {
-                Employee? emp = CommonController._employee_rep.TryLogin(model);
+                Employee? emp = CommonController._employee_rep.TryLogin(model); // Get employee by credentials
 
-                if (emp == null) throw new FailedToLoginException();
+                if (emp == null) throw new FailedToLoginException(); // If could not found employee in db throw exeption
 
-                return GetRedirect(emp.EmployeeType); // Redirect based on user type waiter, manager etc.
+                return GetRedirect(emp.EmployeeType); // Redirect based on user type waiter, manager, etc.
             }
             catch (FailedToLoginException ex)
             {
-                ViewData["Exception"] = ex;
+                ViewData["Exception"] = ex; // Pass exeption to view, that it can show it to user
                 return View(model);
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace OrderingSystemProject.Controllers
 
         private RedirectToActionResult GetRedirect(EMPLOYEE_TYPE type)
         {
-            switch (type)
+            switch (type) // Returns different page depending on employee type
             {
                 case EMPLOYEE_TYPE.WAITER:
                     return RedirectToAction("Privacy", "Home");
