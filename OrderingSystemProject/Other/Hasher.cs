@@ -13,7 +13,7 @@ namespace OrderingSystemProject.Other
         {
             byte[] salt = ASCIIEncoding.ASCII.GetBytes(_salt_string);
 
-			Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(input, salt, 5000, HashAlgorithmName.SHA256);
+			Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(input, salt, 50000, HashAlgorithmName.SHA256);
 			return pbkdf2.GetBytes(32);
 		}
 

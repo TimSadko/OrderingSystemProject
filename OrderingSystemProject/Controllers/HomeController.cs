@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Other;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace OrderingSystemProject.Controllers
 {
@@ -30,6 +31,15 @@ namespace OrderingSystemProject.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+			string? json = HttpContext.Session.GetString("logged_in_employee"); // Get logged in employee from sessions
+
+			if (json != null) // if employee is saved in session (have logged in with in last 30 minutes), log him in automaticly 
+            {
+                Employee? emp = JsonSerializer.Deserialize<Employee>(json); // Get logged in employe from session
+
+                if (emp != null) return GetRedirect(emp.EmployeeType); // if employee session is not null, log him in
+			}
+
             return View();
         }
 
@@ -38,9 +48,13 @@ namespace OrderingSystemProject.Controllers
         {
             try
             {
-                Employee? emp = CommonController._employee_rep.TryLogin(model); // Get employee by credentials
+                Employee? emp;
+				
+				emp = CommonController._employee_rep.TryLogin(model); // Get employee by credentials
 
-                if (emp == null) throw new FailedToLoginException(); // If could not found employee in db throw exeption
+				if (emp == null) throw new FailedToLoginException(); // If could not found employee in db throw exeption
+
+				HttpContext.Session.SetString("logged_in_employee", JsonSerializer.Serialize(emp)); // Add employee to sessions           
 
                 return GetRedirect(emp.EmployeeType); // Redirect based on user type waiter, manager, etc.
             }
