@@ -1,6 +1,7 @@
 using OrderingSystemProject.Controllers;
-using OrderingSystemProject.Other;
 using OrderingSystemProject.Repositories;
+using OrderingSystemProject.Services;
+
 
 namespace OrderingSystemProject
 {
@@ -11,15 +12,10 @@ namespace OrderingSystemProject
             var builder = WebApplication.CreateBuilder(args);
 
             //Console.WriteLine($"pass: {Hasher.GetHashString("test")}");
-
-            // Add databases
-            DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase"));
-
-            var _employee_rep = new EmployeeDB(def);
-            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep);
-            CommonController._employee_rep = _employee_rep;
-
+            
             // Add services to the container.
+            builder.Services.AddSingleton<IEmployeesRepository, DbEmployeesRepository>();
+            builder.Services.AddScoped<IEmployeesService, EmployeesService>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
