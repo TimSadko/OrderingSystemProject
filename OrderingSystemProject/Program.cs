@@ -11,8 +11,8 @@ namespace OrderingSystemProject
             var builder = WebApplication.CreateBuilder(args);
          
             Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
-            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}");
-            Console.WriteLine($"pass0: {Hasher.GetHashString("test")}");
+            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
+            //Console.WriteLine($"pass0: {Hasher.GetHashString("cook")}"); // Print hashed value to console
 
             // Add databases
             DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase")); // Create custom configuration and give it connection string

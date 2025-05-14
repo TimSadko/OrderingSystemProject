@@ -2,7 +2,7 @@
 {
     public enum EMPLOYEE_TYPE
     {
-        WAITER = 0, COOK = 1, MANAGER = 2, ADMIN = 3
+        WAITER = 0, COOK = 1, BARMAN = 2, MANAGER = 3, ADMIN = 4
     }
 
     public class Employee

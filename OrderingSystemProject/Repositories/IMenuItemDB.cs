@@ -1,0 +1,9 @@
+﻿using OrderingSystemProject.Models;
+
+namespace OrderingSystemProject.Repositories
+{
+    public interface IMenuItemDB
+    {
+        List<MenuItem> GetAll();
+    }
+}

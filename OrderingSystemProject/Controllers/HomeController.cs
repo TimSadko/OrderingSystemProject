@@ -77,6 +77,8 @@ namespace OrderingSystemProject.Controllers
             {
                 case EMPLOYEE_TYPE.WAITER:
                     return RedirectToAction("Privacy", "Home");
+                case EMPLOYEE_TYPE.COOK:
+                    return RedirectToAction("Index", "Kitchen");
             }
 
             return RedirectToAction("Index");
