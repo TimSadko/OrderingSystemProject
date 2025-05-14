@@ -2,7 +2,7 @@
 
 namespace OrderingSystemProject.Controllers
 {
-    public class KitchenController1 : Controller
+    public class KitchenController : Controller
     {
         [HttpGet]
         public IActionResult Index()
