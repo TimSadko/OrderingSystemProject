@@ -23,14 +23,13 @@ namespace OrderingSystemProject.Repositories
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
-
-                MenuItem itm;
-
+                
                 while (reader.Read())
                 {
-                    itm = ReadItem(reader);
-                    items.Add(itm);
+                    MenuItem item = ReadItem(reader);
+                    items.Add(item);
                 }
+
                 reader.Close();
             }
 
@@ -39,7 +38,14 @@ namespace OrderingSystemProject.Repositories
 
         private MenuItem ReadItem(SqlDataReader reader)
         {
-            return new MenuItem((int)reader["ItemId"], (string)reader["Name"], (decimal)reader["Price"], (ITEM_CARD)(int)reader["Card"], (ITEM_CATEGORY)reader["Category"], (int)reader["Stock"]);
+            return new MenuItem(
+                (int)reader["ItemId"],
+                (string)reader["Name"],
+                (decimal)reader["Price"],
+                (ITEM_CARD)(int)reader["Card"],
+                (ITEM_CATEGORY)reader["Category"],
+                (int)reader["Stock"]
+            );
         }
     }
 }
