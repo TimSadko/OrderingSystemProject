@@ -1,8 +1,8 @@
-
 using OrderingSystemProject.Controllers;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
+using OrderingSystemProject.Services;
 
 namespace OrderingSystemProject
 {
@@ -26,9 +26,9 @@ namespace OrderingSystemProject
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
 
-            var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
-            builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
-            CommonRepository._menu_item_rep = _menu_item_rep;
+            var menuItemRepository = new MenuItemDB(def);
+            builder.Services.AddSingleton<IMenuItemDB>(menuItemRepository);
+            builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
@@ -44,6 +44,9 @@ namespace OrderingSystemProject
 			builder.Services.AddSingleton<ITablesServices, TablesServices>();
 
 			builder.Services.AddSingleton<IKitchenServices, KitchenService>();
+            var _employee_rep = new EmployeeDB(def); // Create DB
+            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep); // Add it to services
+            CommonController._employee_rep = _employee_rep; // Add it to common controller
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();

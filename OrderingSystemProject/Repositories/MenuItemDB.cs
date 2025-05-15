@@ -18,12 +18,13 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT ItemId, Name, Price, Card, Category, Stock From MenuItems ORDER BY Name";
+                string query =
+                    "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
-                
+
                 while (reader.Read())
                 {
                     MenuItem item = ReadItem(reader);
@@ -36,15 +37,40 @@ namespace OrderingSystemProject.Repositories
             return items;
         }
 
+        public void Add(MenuItem menuItem)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = $"INSERT INTO MenuItems (Name, Price, Card, Category, Stock, IsActive) " +
+                               $"VALUES (@Name, @Price, @Card, @Category, @Stock, @IsActive) " +
+                               $"SELECT SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Name", menuItem.Name);
+                command.Parameters.AddWithValue("@Price", menuItem.Price);
+                command.Parameters.AddWithValue("@Card", menuItem.Card);
+                command.Parameters.AddWithValue("@Category", menuItem.Category);
+                command.Parameters.AddWithValue("@Stock", menuItem.Stock);
+                command.Parameters.AddWithValue("@IsActive", menuItem.IsActive);
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item creation failed!");
+                }
+            }
+        }
+
         private MenuItem ReadItem(SqlDataReader reader)
         {
             return new MenuItem(
                 (int)reader["ItemId"],
                 (string)reader["Name"],
                 (decimal)reader["Price"],
-                (ITEM_CARD)(int)reader["Card"],
-                (ITEM_CATEGORY)reader["Category"],
-                (int)reader["Stock"]
+                (ItemCard)(int)reader["Card"],
+                (ItemCategory)(int)reader["Category"],
+                (int)reader["Stock"],
+                (bool)reader["IsActive"]
             );
         }
     }
