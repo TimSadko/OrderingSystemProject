@@ -28,6 +28,11 @@ namespace OrderingSystemProject.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult Payment()
+        {
+            return View();
+        }
 
         [HttpGet]
         public IActionResult Login()
