@@ -1,6 +1,6 @@
 ﻿namespace OrderingSystemProject.Repositories
 {
-    public interface IOrderDB
+    public interface IOrdersRepository
     {
     }
 }
