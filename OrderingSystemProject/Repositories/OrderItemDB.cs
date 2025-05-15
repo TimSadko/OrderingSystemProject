@@ -7,9 +7,9 @@ namespace OrderingSystemProject.Repositories
     {
         private readonly string _connection_string;
 
-        public OrderItemDB(DefaultConfiguration config)
+        public OrderItemDB(IConfiguration config)
         {
-            _connection_string = config.GetConnectionString();
+            _connection_string = config.GetConnectionString("OrderingDatabase");
         }
 
         public List<OrderItem> GetAll()

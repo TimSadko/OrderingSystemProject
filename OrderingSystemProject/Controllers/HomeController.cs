@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Other;
+using OrderingSystemProject.Services;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -51,7 +52,7 @@ namespace OrderingSystemProject.Controllers
             {
                 Employee? emp;
 				
-				emp = CommonController._employee_rep.TryLogin(model); // Get employee by credentials
+				emp = CommonServices._employee_serv.TryLogin(model); // Get employee by credentials
 
 				if (emp == null) throw new FailedToLoginException(); // If could not found employee in db throw exeption
 

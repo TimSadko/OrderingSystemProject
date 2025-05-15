@@ -8,9 +8,9 @@ namespace OrderingSystemProject.Repositories
     {
         private readonly string _connection_string;
 
-        public EmployeeDB(DefaultConfiguration config) 
+        public EmployeeDB(IConfiguration config) 
         {
-            _connection_string = config.GetConnectionString();
+            _connection_string = config.GetConnectionString("OrderingDatabase");
         }
 
         public List<Employee> GetAll()
