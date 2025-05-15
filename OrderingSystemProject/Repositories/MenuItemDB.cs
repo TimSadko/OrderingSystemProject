@@ -18,7 +18,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT ItemId, Name, Price, Card, Category, Stock From MenuItems ORDER BY Name";
+                string query = "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -39,7 +39,7 @@ namespace OrderingSystemProject.Repositories
 
         private MenuItem ReadItem(SqlDataReader reader)
         {
-            return new MenuItem((int)reader["ItemId"], (string)reader["Name"], (decimal)reader["Price"], (ITEM_CARD)(int)reader["Card"], (ITEM_CATEGORY)reader["Category"], (int)reader["Stock"]);
+            return new MenuItem((int)reader["ItemId"], (string)reader["Name"], (decimal)reader["Price"], (ITEM_CARD)(int)reader["Card"], (ITEM_CATEGORY)reader["Category"], (int)reader["Stock"], (bool)reader["IsActive"]);
         }
     }
 }
