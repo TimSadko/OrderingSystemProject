@@ -2,7 +2,7 @@
 
 namespace OrderingSystemProject.Repositories
 {
-    public interface IOrderItemDB
+    public interface IOrderItemsRepository
     {
         List<OrderItem> GetAll();
     }

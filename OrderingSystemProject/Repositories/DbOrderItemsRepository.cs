@@ -3,28 +3,28 @@ using OrderingSystemProject.Models;
 
 namespace OrderingSystemProject.Repositories
 {
-    public class MenuItemDB : IMenuItemDB
+    public class DbOrderItemsRepository : IOrderItemsRepository
     {
         private readonly string _connection_string;
 
-        public MenuItemDB(DefaultConfiguration config)
+        public DbOrderItemsRepository(IConfiguration config)
         {
-            _connection_string = config.GetConnectionString();
+            _connection_string = config.GetConnectionString("OrderingDatabase");
         }
 
-        public List<MenuItem> GetAll()
+        public List<OrderItem> GetAll()
         {
-            List<MenuItem> items = new List<MenuItem>();
+            List<OrderItem> items = new List<OrderItem>();
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
+                string query = "SELECT Id, OrderId, ItemId, Amount, Comment From OrderItems ORDER BY OrderId";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
 
-                MenuItem itm;
+                OrderItem itm;
 
                 while (reader.Read())
                 {
@@ -37,9 +37,9 @@ namespace OrderingSystemProject.Repositories
             return items;
         }
 
-        private MenuItem ReadItem(SqlDataReader reader)
+        private OrderItem ReadItem(SqlDataReader reader)
         {
-            return new MenuItem((int)reader["ItemId"], (string)reader["Name"], (decimal)reader["Price"], (ITEM_CARD)(int)reader["Card"], (ITEM_CATEGORY)reader["Category"], (int)reader["Stock"], (bool)reader["IsActive"]);
+            return new OrderItem((int)reader["Id"], (int)reader["OrderId"], (int)reader["ItemId"], (int)reader["Amount"], (string)reader["Comment"]);
         }
     }
 }

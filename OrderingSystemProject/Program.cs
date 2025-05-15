@@ -1,6 +1,8 @@
+
 using OrderingSystemProject.Controllers;
 using OrderingSystemProject.Other;
 using OrderingSystemProject.Repositories;
+using OrderingSystemProject.Services;
 
 namespace OrderingSystemProject
 {
@@ -9,30 +11,39 @@ namespace OrderingSystemProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-         
+
             Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
             //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
-            //Console.WriteLine($"pass0: {Hasher.GetHashString("cook")}"); // Print hashed value to console
+            Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
-            // Add databases
-            DefaultConfiguration def = new DefaultConfiguration(builder.Configuration.GetConnectionString("OrderingDatabase")); // Create custom configuration and give it connection string
+            var _employee_rep = new DBEmployeesRepository(builder.Configuration);
+            builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);         
+            CommonRepository._employee_rep = _employee_rep;
 
-            var _employee_rep = new EmployeeDB(def); // Create DB
-            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep); // Add it to services
-            CommonController._employee_rep = _employee_rep; // Add it to common conrtroller
+            builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 
-            var _order_rep = new OrderDB(def); // Create DB
-            builder.Services.AddSingleton<IOrderDB>(_order_rep); // Add it to services
-            CommonController._order_rep = _order_rep; // Add it to common conrtroller
 
-            var _menu_item_rep = new MenuItemDB(def); // Create DB
-            builder.Services.AddSingleton<IMenuItemDB>(_menu_item_rep); // Add it to services
-            CommonController._menu_item_rep = _menu_item_rep; // Add it to common conrtroller
+            var _order_rep = new DbOrdersRepository(builder.Configuration);
+            builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
+            CommonRepository._order_rep = _order_rep;
 
-            var _order_item_rep = new OrderItemDB(def); // Create DB
-            builder.Services.AddSingleton<IOrderItemDB>(_order_item_rep); // Add it to services
-            CommonController._order_item_rep = _order_item_rep; // Add it to common conrtroller
+            builder.Services.AddScoped<IOrderServices, OrderServices>();
 
+
+            var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
+            CommonRepository._menu_item_rep = _menu_item_rep;
+
+            builder.Services.AddScoped<IMenuItemServices, MenuItemServices>();
+
+
+            var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
+            CommonRepository._order_item_rep = _order_item_rep;
+
+            builder.Services.AddScoped<IOrderItemServices, OrderItemServices>();
+
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -62,7 +73,7 @@ namespace OrderingSystemProject
 
             app.UseSession(); // Enable sessions
 
-			app.MapControllerRoute(
+            app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 

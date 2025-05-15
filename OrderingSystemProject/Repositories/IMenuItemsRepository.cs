@@ -2,7 +2,7 @@
 
 namespace OrderingSystemProject.Repositories
 {
-    public interface IMenuItemDB
+    public interface IMenuItemsRepository
     {
         List<MenuItem> GetAll();
     }
