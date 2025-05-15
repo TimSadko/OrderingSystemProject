@@ -21,6 +21,18 @@ namespace OrderingSystemProject
             builder.Services.AddSingleton<IEmployeeDB>(_employee_rep); // Add it to services
             CommonController._employee_rep = _employee_rep; // Add it to common conrtroller
 
+            var _order_rep = new OrderDB(def); // Create DB
+            builder.Services.AddSingleton<IOrderDB>(_order_rep); // Add it to services
+            CommonController._order_rep = _order_rep; // Add it to common conrtroller
+
+            var _menu_item_rep = new MenuItemDB(def); // Create DB
+            builder.Services.AddSingleton<IMenuItemDB>(_menu_item_rep); // Add it to services
+            CommonController._menu_item_rep = _menu_item_rep; // Add it to common conrtroller
+
+            var _order_item_rep = new OrderItemDB(def); // Create DB
+            builder.Services.AddSingleton<IOrderItemDB>(_order_item_rep); // Add it to services
+            CommonController._order_item_rep = _order_item_rep; // Add it to common conrtroller
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
