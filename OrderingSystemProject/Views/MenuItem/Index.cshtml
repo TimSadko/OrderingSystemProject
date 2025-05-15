@@ -1,0 +1,51 @@
+@model IEnumerable<OrderingSystemProject.Models.MenuItem>
+
+@{
+    ViewData["Title"] = "Manage Menu Items";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Menu Items</h1>
+    <a href="/MenuItem/Create">Create New</a>
+    <p>Number of menu items: @Model.Count()</p>
+    @{
+        if (TempData["MenuItemOperationConfirmMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
+        }
+    }
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Card</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @{
+            foreach (var menuItem in Model)
+            {
+                <tr>
+                    <td>@menuItem.ItemId</td>
+                    <td>@menuItem.Name</td>
+                    <td>@menuItem.Price</td>
+                    <td>@menuItem.Card</td>
+                    <td>@menuItem.Category</td>
+                    <td>@menuItem.Stock</td>
+                    <td>@menuItem.IsActive</td>
+                    <td>
+                        <a href="/MenuItem/Delete/@menuItem.ItemId">Delete</a>
+                        <a href="/MenuItem/Edit/@menuItem.ItemId">Edit</a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
