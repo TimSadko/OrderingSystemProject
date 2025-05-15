@@ -1,41 +1,52 @@
-﻿namespace OrderingSystemProject.Models
-{
-    public enum ITEM_CARD
-    {
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
+namespace OrderingSystemProject.Models
+{
+    public enum ItemCard
+    {
+        [Display(Name = "Drink")]
+        DRINK = 0,
+        [Display(Name = "Lunch")]
+        LUNCH = 1,
+        [Display(Name = "Dinner")]
+        DINNER = 2
     }
 
-    public enum ITEM_CATEGORY
+    public enum ItemCategory
     {
-        
+        [Display(Name = "All")]
+        ALL = 0,
+        [Display(Name = "Starter")]
+        STARTER = 1,
+        [Display(Name = "Main")]
+        MAIN = 2
     }
 
     public class MenuItem
     {
-        private int _item_id;
-        private string _name;
-        private decimal _price;
-        private ITEM_CARD _card;
-        private ITEM_CATEGORY _category;
-        private int _stock;
+        public int ItemId { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public ItemCard Card { get; set; }
+        public ItemCategory Category { get; set; }
+        public int Stock { get; set; }
 
-        public MenuItem() { }
+        public bool IsActive { get; set; }
 
-        public MenuItem(int item_id, string name, decimal price, ITEM_CARD card, ITEM_CATEGORY category, int stock)
+        public MenuItem()
         {
-            _item_id = item_id;
-            _name = name;
-            _price = price;
-            _card = card;
-            _category = category;
-            _stock = stock;
         }
 
-        public int ItemId { get => _item_id; set => _item_id = value; }
-        public string Name { get => _name; set => _name = value; }
-        public decimal Price { get => _price; set => _price = value; }
-        public ITEM_CARD Card { get => _card; set => _card = value; }
-        public ITEM_CATEGORY Category { get => _category; set => _category = value; }
-        public int Stock { get => _stock; set => _stock = value; }
+        public MenuItem(int itemId, string name, decimal price, ItemCard card, ItemCategory category, int stock, bool isActive)
+        {
+            ItemId = itemId;
+            Name = name;
+            Price = price;
+            Card = card;
+            Category = category;
+            Stock = stock;
+            IsActive = isActive;
+        }
     }
 }

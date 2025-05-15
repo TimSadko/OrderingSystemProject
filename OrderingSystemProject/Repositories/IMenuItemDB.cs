@@ -5,5 +5,6 @@ namespace OrderingSystemProject.Repositories
     public interface IMenuItemDB
     {
         List<MenuItem> GetAll();
+        void Add(MenuItem menuItem);
     }
 }
