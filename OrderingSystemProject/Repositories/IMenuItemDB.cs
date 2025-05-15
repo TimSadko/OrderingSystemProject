@@ -6,5 +6,7 @@ namespace OrderingSystemProject.Repositories
     {
         List<MenuItem> GetAll();
         void Add(MenuItem menuItem);
+
+        void Delete(MenuItem menuItem);
     }
 }

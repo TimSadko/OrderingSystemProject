@@ -60,6 +60,21 @@ namespace OrderingSystemProject.Repositories
                 }
             }
         }
+        public void Delete(MenuItem menuItem)
+        {
+            using (SqlConnection connection = new SqlConnection(_connection_string))
+            {
+                string query = "DELETE FROM MenuItems WHERE ItemId = @ItemId;";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@ItemId", menuItem.ItemId);
+                command.Connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                reader.Close();
+            }
+        }
 
         private MenuItem ReadItem(SqlDataReader reader)
         {

@@ -37,7 +37,22 @@
                     <td>@menuItem.Price</td>
                     <td>@menuItem.Card</td>
                     <td>@menuItem.Category</td>
-                    <td>@menuItem.Stock</td>
+                        <td>
+                            @{
+                                if (menuItem.Stock <= 0)
+                                {
+                                    <span class="text-danger font-weight-bold">Out of Stock</span>
+                                }
+                                else if (menuItem.Stock <= 10)
+                                {
+                                    <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
+                                }
+                                else
+                                {
+                                    @menuItem.Stock
+                                }
+                            }
+                        </td>
                     <td>@menuItem.IsActive</td>
                     <td>
                         <a href="/MenuItem/Delete/@menuItem.ItemId">Delete</a>
