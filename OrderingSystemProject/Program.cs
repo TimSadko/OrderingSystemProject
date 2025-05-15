@@ -43,7 +43,13 @@ namespace OrderingSystemProject
 
             builder.Services.AddScoped<IOrderItemServices, OrderItemServices>();
 
-            
+
+            var _payment_rep = new DbPaymentRepository(builder.Configuration);
+            builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
+            CommonRepository._payment_rep = _payment_rep;
+
+            //builder.Services.AddScoped<IOrderItemServices, OrderItemServices>(); // To do service!
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
