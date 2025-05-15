@@ -3,11 +3,11 @@ using OrderingSystemProject.Models;
 
 namespace OrderingSystemProject.Repositories
 {
-    public class OrderDB : IOrderDB
+    public class DbOrdersRepository : IOrdersRepository
     {
         private readonly string _connection_string;
 
-        public OrderDB(IConfiguration config)
+        public DbOrdersRepository(IConfiguration config)
         {
             _connection_string = config.GetConnectionString("OrderingDatabase");
         }
@@ -39,7 +39,7 @@ namespace OrderingSystemProject.Repositories
 
         private Order ReadOrder(SqlDataReader reader)
         {
-            return new Order((int)reader["OrderId"], (int)reader["TableNumber"], (ORDER_STATUS)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+            return new Order((int)reader["OrderId"], (int)reader["TableNumber"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
         }
     }
 }

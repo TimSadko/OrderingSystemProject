@@ -4,13 +4,11 @@ namespace OrderingSystemProject.Services
 {
     public class MenuItemServices : IMenuItemServices
     {
-        private IMenuItemDB _rep;
+        private IMenuItemsRepository _rep;
 
-        public MenuItemServices(IMenuItemDB rep)
+        public MenuItemServices(IMenuItemsRepository rep)
         {
             _rep = rep;
-
-            CommonServices._menu_item_serv = this;
         }
     }
 }

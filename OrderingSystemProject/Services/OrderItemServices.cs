@@ -4,13 +4,11 @@ namespace OrderingSystemProject.Services
 {
     public class OrderItemServices : IOrderItemServices
     {
-        private IOrderItemDB _rep;
+        private IOrderItemsRepository _rep;
 
-        public OrderItemServices(IOrderItemDB rep)
+        public OrderItemServices(IOrderItemsRepository rep)
         {
             _rep = rep;
-
-            CommonServices._order_item_serv = this;
         }
     }
 }

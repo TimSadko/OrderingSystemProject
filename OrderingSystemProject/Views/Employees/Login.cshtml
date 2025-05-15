@@ -1,0 +1,29 @@
+@model OrderingSystemProject.Models.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h4>Login</h4>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+
+<form action="/Employees/Login" method="post">
+    <div class="form-group py-2">
+        <label for="Login">Login:</label> 
+        <input type="text" id="Login" name="Login" class="form-control" required value="@Model?.Login"/>
+    </div>
+    
+    <div class="form-group py-2">
+        <label for="Password">Password:</label> 
+        <input type="password" id="Password" name="Password" class="form-control" required value="@Model?.Password"/>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
