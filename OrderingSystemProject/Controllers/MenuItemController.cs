@@ -41,4 +41,31 @@ public class MenuItemController: Controller
             return View(menuItem);
         }
     }
+
+    [HttpGet("MenuItem/Delete/{ItemId}")]
+    public ActionResult Delete(int? ItemId)
+    {
+        if (ItemId == null)
+        {
+            return NotFound();
+        }
+
+        MenuItem? menuItem = _menuItemService.GetById((int)ItemId);
+        return View(menuItem);
+    }
+
+    [HttpPost]
+    public ActionResult Delete(MenuItem menuItem)
+    {
+        try
+        {
+            _menuItemService.Delete(menuItem);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return View(menuItem);
+        }
+    }
 }
