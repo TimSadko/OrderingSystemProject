@@ -5,5 +5,5 @@ namespace OrderingSystemProject.Repositories;
 public interface IEmployeesRepository
 {
     List<Employee> GetAllEmployees();
-    Employee GetEmployeeByLogin(string login);
+    Employee GetEmployeeByLogin(string userName);
 }

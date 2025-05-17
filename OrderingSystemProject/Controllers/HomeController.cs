@@ -15,7 +15,7 @@ namespace OrderingSystemProject.Controllers
 
         public IActionResult Index()
         {
-            // Redirect to login page
+            // redirect to login page
             return RedirectToAction("Login", "Employees");
         }
 
@@ -29,6 +29,5 @@ namespace OrderingSystemProject.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
     }
 }

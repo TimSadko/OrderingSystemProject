@@ -1,6 +1,7 @@
 using OrderingSystemProject.Controllers;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 
 namespace OrderingSystemProject
@@ -15,8 +16,21 @@ namespace OrderingSystemProject
             
             // Add services to the container.
             builder.Services.AddSingleton<IEmployeesRepository, DbEmployeesRepository>();
-            builder.Services.AddScoped<IEmployeesService, EmployeesService>();
+            builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
+            builder.Services.AddSingleton<ITablesRepository, DbTablesRepository>();
+            builder.Services.AddSingleton<ITablesServices, TablesServices>();
             builder.Services.AddControllersWithViews();
+            
+            // hasher
+            Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value);
+            
+            // enable Sessions
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
@@ -33,12 +47,14 @@ namespace OrderingSystemProject
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // enable Sessions
+            app.UseSession();
 
+            app.UseAuthorization();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            
             app.Run();
         }
     }

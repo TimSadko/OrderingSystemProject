@@ -19,7 +19,7 @@ public class DbEmployeesRepository : IEmployeesRepository
 
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email FROM Employees";
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees";
             SqlCommand command = new SqlCommand(query, connection);
             
             command.Connection.Open();
@@ -36,14 +36,14 @@ public class DbEmployeesRepository : IEmployeesRepository
         return employees;
     }
 
-    public Employee GetEmployeeByLogin(string login)
+    public Employee GetEmployeeByLogin(string userName)
     {
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE Login = @login";
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE UserName = @userName";
             
             SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@login", login);
+            command.Parameters.AddWithValue("@userName", userName);
             
             command.Connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -55,9 +55,8 @@ public class DbEmployeesRepository : IEmployeesRepository
                 reader.Close();
                 return employee;
             }
-            
             reader.Close();
-            return null; // Return null if no employee found
+            return null; // return null if no employee found
         }
     }
     
@@ -65,7 +64,7 @@ public class DbEmployeesRepository : IEmployeesRepository
     {
         // retrieve data from fields
         int employeeId = (int)reader["EmployeeId"];
-        string login = (string)reader["Login"];
+        string userName = (string)reader["UserName"];
         string password = (string)reader["Password"];
         int employeeType = (int)reader["EmployeeType"];
         string firstName = (string)reader["FirstName"];
@@ -73,6 +72,6 @@ public class DbEmployeesRepository : IEmployeesRepository
         string email = (string)reader["Email"];
         
         // return new Employee object
-        return new Employee(employeeId, login, password, employeeType, firstName, lastName, email);
+        return new Employee(employeeId, userName, password, employeeType, firstName, lastName, email);
     }
 }

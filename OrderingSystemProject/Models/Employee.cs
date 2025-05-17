@@ -12,7 +12,7 @@ public enum EmployeeType
 public class Employee
 {
     public int EmployeeID { get; set; }
-    public string Login { get; set; }
+    public string UserName { get; set; }
     public string Password { get; set; }
     public int EmployeeType { get; set; }
     public string FirstName { get; set; }
@@ -24,16 +24,14 @@ public class Employee
         // default constructor...
     }
     
-    public Employee(int employeeID, string login, string password, int employeeType, string firstName, string lastName, string email)
+    public Employee(int employeeID, string userName, string password, int employeeType, string firstName, string lastName, string email)
     {
         EmployeeID = employeeID;
-        Login = login;
+        UserName = userName;
         Password = password;
         EmployeeType = employeeType;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
     }
-    
-    
 }
