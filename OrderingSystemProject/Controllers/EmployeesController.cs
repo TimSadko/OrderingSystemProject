@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
@@ -15,7 +16,6 @@ public class EmployeesController : Controller
         _employeesService = employeesService;
     }
 
-    [HttpGet]
     public IActionResult Index()
     {
         return View();
@@ -24,6 +24,19 @@ public class EmployeesController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        // get the employee data from session
+        string? employeeJson = HttpContext.Session.GetString("LoggedInEmployee");
+        if (employeeJson != null) 
+        {
+            // converting the JSON string into an Employee object
+            Employee? employee = JsonSerializer.Deserialize<Employee>(employeeJson);
+            if (employee != null) 
+            {
+                // if employee exists in session, redirect based on employee type
+                return RedirectEmployee((EmployeeType)employee.EmployeeType); 
+            }
+        } 
+        // if no session exists, show login form
         return View();
     }
 
@@ -32,7 +45,7 @@ public class EmployeesController : Controller
     {
         try
         {
-            Employee employee = _employeesService.GetEmployeeByLoginCredentials(loginModel.Login, loginModel.Password);
+            Employee employee = _employeesService.GetEmployeeByLoginCredentials(loginModel.UserName, loginModel.Password);
         
             // if credentials are incorrect
             if (employee == null)
@@ -40,14 +53,30 @@ public class EmployeesController : Controller
                 ViewData["ErrorMessage"] = "Invalid username or password";
                 return View(loginModel);
             }
-            return RedirectEmployee((EmployeeType)employee.EmployeeType);
+            else
+            {
+                // remember logged in employee
+                string userJson = JsonSerializer.Serialize(employee);
+                HttpContext.Session.SetString("LoggedInEmployee", userJson);
+                
+                // redirect Employee by Type
+                return RedirectEmployee((EmployeeType)employee.EmployeeType);
+            }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            ViewData["ErrorMessage"] = "An error occurred during login. Please try again.";
-            
+            ViewData["ErrorMessage"] = "An error occurred during login. Please try again." + ex.Message;
             return View(loginModel);
         }
+    }
+    
+    public IActionResult Logout()
+    {
+        // clear the session
+        HttpContext.Session.Clear();
+    
+        // redirect to login page
+        return RedirectToAction("Login", "Employees");
     }
 
     private RedirectToActionResult RedirectEmployee(EmployeeType employeeType)
@@ -55,9 +84,11 @@ public class EmployeesController : Controller
         switch (employeeType)
         {
             case EmployeeType.Waiter:
-                return RedirectToAction("Privacy", "Home");
+                return RedirectToAction("Overview", "Restaurant");
             case EmployeeType.Bartender:
-                return RedirectToAction("Index", "Bar");
+                return RedirectToAction("Privacy", "Home");
+            case EmployeeType.Cook:
+                return RedirectToAction("Index", "Kitchen");
         }
         return RedirectToAction("Index", "Home");
     }

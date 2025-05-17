@@ -1,6 +1,67 @@
-@model OrderingSystemProject.Models.Table
+@model List<OrderingSystemProject.Models.Table>
 
 @{
-    ViewData["Title"] = "Overview";
+    ViewData["Title"] = "Restaurant Overview";
 }
 
+<h4 class="text-center mb-4">Restaurant Overview</h4>
+
+<!-- Display error message -->
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<!-- Display success message -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Refresh overview -->
+<div class="mb-4">
+    <a asp-controller="Restaurant" asp-action="RefreshOverview" class="btn btn-primary">Refresh Tables</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (Table table in Model)
+    {
+        string cardColorClass;
+        string statusText;
+        
+        if (table.Status == (int)TableStatus.Available)
+        {
+            cardColorClass = "success";
+            statusText = "Available";
+        }
+        else if (table.Status == (int)TableStatus.Occupied)
+        {
+            cardColorClass = "danger";
+            statusText = "Occupied";
+        }
+        else if (table.Status == (int)TableStatus.Reserved)
+        {
+            cardColorClass = "warning";
+            statusText = "Reserved";
+        }
+        else
+        {
+            cardColorClass = "secondary";
+            statusText = "Unknown";
+        }
+
+        <div class="col px-1"> 
+            <div class="card m-1" style="width: 100%;">
+                <div class="card-header text-center">Table @table.TableId</div>
+                <div class="card-body bg-@cardColorClass text-white" style="height: 100px;">
+                    <p class="card-text text-center">@statusText</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

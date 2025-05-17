@@ -1,6 +1,6 @@
 ﻿namespace OrderingSystemProject.Services
 {
-    public interface IOrderServices
-    {
-    }
+	public interface IKitchenServices
+	{
+	}
 }

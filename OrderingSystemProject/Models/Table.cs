@@ -2,24 +2,21 @@ namespace OrderingSystemProject.Models;
 
 public enum TableStatus
 {
+    Available = 0,
     Occupied = 1,
-    Available = 2
+    Reserved = 2
 }
 public class Table
 {
-    public int Number { get; set; }
-    public TableStatus Status { get; set; }
-    public int EmployeeID { get; set; } // maybe useless
-
+    public int TableId { get; set; }
+    public int Status { get; set; }
     public Table()
     {
         // default constructor...
     }
-
-    public Table(int number, TableStatus status, int employeeID)
+    public Table(int tableId, int status)
     {
-        Number = number;
+        TableId = tableId;
         Status = status;
-        EmployeeID = employeeID;
     }
 }

@@ -1,8 +1,8 @@
 
 using OrderingSystemProject.Controllers;
-using OrderingSystemProject.Other;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject
 {
@@ -12,46 +12,41 @@ namespace OrderingSystemProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
-            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
-            Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
+			// hasher
+			Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+			//Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
+			//Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
-            var _employee_rep = new DBEmployeesRepository(builder.Configuration);
+            var _employee_rep = new DbEmployeesRepository(builder.Configuration);
             builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);         
             CommonRepository._employee_rep = _employee_rep;
+			builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
 
-            builder.Services.AddScoped<IEmployeesService, EmployeesService>();
-
-
-            var _order_rep = new DbOrdersRepository(builder.Configuration);
+			var _order_rep = new DbOrdersRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
-
-            builder.Services.AddScoped<IOrderServices, OrderServices>();
-
 
             var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
             CommonRepository._menu_item_rep = _menu_item_rep;
 
-            builder.Services.AddScoped<IMenuItemServices, MenuItemServices>();
-
-
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
             CommonRepository._order_item_rep = _order_item_rep;
-
-            builder.Services.AddScoped<IOrderItemServices, OrderItemServices>();
-
 
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
 
-            //builder.Services.AddScoped<IOrderItemServices, OrderItemServices>(); // To do service!
+            var _tables_rep = new DbTablesRepository(builder.Configuration);
+            builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
+            CommonRepository._tables_rep = _tables_rep;
+			builder.Services.AddSingleton<ITablesServices, TablesServices>();
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+			builder.Services.AddSingleton<IKitchenServices, KitchenService>();
+
+			// Add services to the container.
+			builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(options => // Configure sessions
             {
