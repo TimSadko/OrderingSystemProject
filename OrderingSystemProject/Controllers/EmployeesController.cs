@@ -65,7 +65,7 @@ public class EmployeesController : Controller
         }
         catch (Exception ex)
         {
-            ViewData["ErrorMessage"] = "An error occurred during login. Please try again.";
+            ViewData["ErrorMessage"] = "An error occurred during login. Please try again." + ex.Message;
             return View(loginModel);
         }
     }
@@ -84,12 +84,11 @@ public class EmployeesController : Controller
         switch (employeeType)
         {
             case EmployeeType.Waiter:
-                return RedirectToAction("Privacy", "Home");
+                return RedirectToAction("Overview", "Restaurant");
             case EmployeeType.Bar:
                 return RedirectToAction("Privacy", "Home");
             case EmployeeType.Kitchen:
                 return RedirectToAction("Privacy", "Home");
-            
         }
         return RedirectToAction("Index", "Home");
     }
