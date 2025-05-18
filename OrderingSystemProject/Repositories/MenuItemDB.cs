@@ -19,7 +19,7 @@ namespace OrderingSystemProject.Repositories
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
                 string query =
-                    "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -76,10 +76,60 @@ namespace OrderingSystemProject.Repositories
             }
         }
 
+        public MenuItem? GetById(int id)
+        {
+            MenuItem? item = null;
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE MenuItemId = @Id";
+                SqlCommand com = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@Id", id);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    item = ReadItem(reader);
+                }
+
+                reader.Close();
+            }
+
+            return item;
+        }
+
+        public void Update(MenuItem menuItem)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = $"UPDATE MenuItems SET Name = @Name, Price = @Price, " +
+                               $"Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive " +
+                               $"WHERE MenuItemId = @MenuItemId";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Name", menuItem.Name);
+                command.Parameters.AddWithValue("@Price", menuItem.Price);
+                command.Parameters.AddWithValue("@Card", menuItem.Card);
+                command.Parameters.AddWithValue("@Category", menuItem.Category);
+                command.Parameters.AddWithValue("@Stock", menuItem.Stock);
+                command.Parameters.AddWithValue("@IsActive", menuItem.IsActive);
+                command.Parameters.AddWithValue("@MenuItemId", menuItem.ItemId);
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item update failed!");
+                }
+            }
+        }
+
         private MenuItem ReadItem(SqlDataReader reader)
         {
             return new MenuItem(
-                (int)reader["ItemId"],
+                (int)reader["MenuItemId"],
                 (string)reader["Name"],
                 (decimal)reader["Price"],
                 (ItemCard)(int)reader["Card"],
