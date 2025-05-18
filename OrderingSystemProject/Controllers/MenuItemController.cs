@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.ViewModels;
 
 namespace OrderingSystemProject.Controllers;
 
-public class MenuItemController: Controller
+public class MenuItemController : Controller
 {
     private IMenuItemService _menuItemService;
 
@@ -17,7 +18,12 @@ public class MenuItemController: Controller
     public IActionResult Index()
     {
         List<MenuItem> menuItems = _menuItemService.GetAll();
-        return View(menuItems);
+        var menuManagementViewMode = new MenuManagementViewModel(
+            menuItems,
+            MenuManagementViewModel.CardFilterType.ALL,
+            MenuManagementViewModel.CategoryFilterType.ALL
+        );
+        return View(menuManagementViewMode);
     }
 
     [HttpGet]
@@ -68,7 +74,7 @@ public class MenuItemController: Controller
             return View(menuItem);
         }
     }
-    
+
     [HttpGet]
     public IActionResult Edit(int? id)
     {
@@ -97,6 +103,40 @@ public class MenuItemController: Controller
             ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
 
             return View(menuItem);
+        }
+    }
+
+    public IActionResult Filter(
+        MenuManagementViewModel.CardFilterType cardFilterType,
+        MenuManagementViewModel.CategoryFilterType categoryFilterType
+    )
+    {
+        try
+        {
+            List<MenuItem> menuItems = _menuItemService.Filter(categoryFilterType, cardFilterType);
+            var menuManagementViewMode = new MenuManagementViewModel(
+                menuItems,
+                cardFilterType,
+                categoryFilterType
+            );
+            //return View(nameof(Index), lecturers);
+            return View(nameof(Index), menuManagementViewMode);
+        }
+        catch (Exception e)
+        {
+            /*List<MenuItem> menuItems = _menuItemService.GetAll();
+            var menuManagementViewMode = new MenuManagementViewModel(
+                menuItems,
+                MenuManagementViewModel.CardFilterType.ALL,
+                MenuManagementViewModel.CategoryFilterType.ALL
+            );
+            return View(menuManagementViewMode);*/
+            
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            return Index();
+            /*List<Lecturer> lecturers = _lecturersRepository.GetAll();
+            return View(nameof(Index), lecturers);
+            return */
         }
     }
 }

@@ -1,11 +1,12 @@
+using System.Diagnostics;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
+using OrderingSystemProject.ViewModels;
 
 namespace OrderingSystemProject.Services;
 
-public class MenuItemService: IMenuItemService
+public class MenuItemService : IMenuItemService
 {
-    
     private IMenuItemsRepository _menuItemRepository;
 
     public MenuItemService(IMenuItemsRepository menuItemRepository)
@@ -46,5 +47,74 @@ public class MenuItemService: IMenuItemService
     public void Deactivate(MenuItem item)
     {
         throw new NotImplementedException();
+    }
+
+    public List<MenuItem> Filter(
+        MenuManagementViewModel.CategoryFilterType category,
+        MenuManagementViewModel.CardFilterType card
+    )
+    {
+        var itemCardType = GetCardType(card);
+        var itemCategoryType = GetCategoryType(category);
+
+        if (itemCardType == null && itemCategoryType == null)
+        {
+            return _menuItemRepository.GetAll();
+        }
+
+        if (itemCardType == null && itemCategoryType != null)
+        {
+            return _menuItemRepository.FilterByCategory(itemCategoryType);
+        }
+
+        if (itemCardType != null && itemCategoryType == null)
+        {
+            return _menuItemRepository.FilterByCard(itemCardType);
+        }
+
+        return _menuItemRepository.FilterByCategoryAndCard(itemCategoryType, itemCardType);
+    }
+
+
+    private ItemCard? GetCardType(MenuManagementViewModel.CardFilterType cardFilterType)
+    {
+        ItemCard? itemCard = null;
+        if (cardFilterType == MenuManagementViewModel.CardFilterType.DINNER)
+        {
+            itemCard = ItemCard.DINNER;
+        }
+        else if (cardFilterType == MenuManagementViewModel.CardFilterType.DRINKS)
+        {
+            itemCard = ItemCard.DRINKS;
+        }
+        else if (cardFilterType == MenuManagementViewModel.CardFilterType.LUNCH)
+        {
+            itemCard = ItemCard.LUNCH;
+        }
+
+        return itemCard;
+    }
+
+    private ItemCategory? GetCategoryType(MenuManagementViewModel.CategoryFilterType categoryFilterType)
+    {
+        ItemCategory? itemCategory = null;
+        if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.DESERTS)
+        {
+            itemCategory = ItemCategory.DESERTS;
+        }
+        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.ENTREMENTS)
+        {
+            itemCategory = ItemCategory.ENTREMENTS;
+        }
+        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.MAINS)
+        {
+            itemCategory = ItemCategory.MAINS;
+        }
+        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.STARTERS)
+        {
+            itemCategory = ItemCategory.STARTERS;
+        }
+
+        return itemCategory;
     }
 }
