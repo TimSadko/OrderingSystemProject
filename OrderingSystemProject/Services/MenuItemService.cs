@@ -6,9 +6,9 @@ namespace OrderingSystemProject.Services;
 public class MenuItemService: IMenuItemService
 {
     
-    private IMenuItemDB _menuItemRepository;
+    private IMenuItemsRepository _menuItemRepository;
 
-    public MenuItemService(IMenuItemDB menuItemRepository)
+    public MenuItemService(IMenuItemsRepository menuItemRepository)
     {
         _menuItemRepository = menuItemRepository;
     }
@@ -35,7 +35,7 @@ public class MenuItemService: IMenuItemService
 
     public void Delete(MenuItem item)
     {
-        throw new NotImplementedException();
+        _menuItemRepository.Delete(item);
     }
 
     public void Activate(MenuItem item)

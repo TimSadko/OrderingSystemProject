@@ -1,8 +1,6 @@
-using OrderingSystemProject.Controllers;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
-using OrderingSystemProject.Services;
 
 namespace OrderingSystemProject
 {
@@ -12,22 +10,23 @@ namespace OrderingSystemProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-			// hasher
-			Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
-			//Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
-			//Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
+            // hasher
+            Hasher.SetSalt(builder.Configuration.GetSection("Salt")
+                .Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
+            //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
             var _employee_rep = new DbEmployeesRepository(builder.Configuration);
-            builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);         
+            builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);
             CommonRepository._employee_rep = _employee_rep;
-			builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
+            builder.Services.AddSingleton<IEmployeesService, EmployeesService>();
 
-			var _order_rep = new DbOrdersRepository(builder.Configuration);
+            var _order_rep = new DbOrdersRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
 
-            var menuItemRepository = new MenuItemDB(def);
-            builder.Services.AddSingleton<IMenuItemDB>(menuItemRepository);
+            var menuItemRepository = new DbMenuItemsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IMenuItemsRepository>(menuItemRepository);
             builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
@@ -41,15 +40,11 @@ namespace OrderingSystemProject
             var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
             CommonRepository._tables_rep = _tables_rep;
-			builder.Services.AddSingleton<ITablesServices, TablesServices>();
+            builder.Services.AddSingleton<ITablesServices, TablesServices>();
 
-			builder.Services.AddSingleton<IKitchenServices, KitchenService>();
-            var _employee_rep = new EmployeeDB(def); // Create DB
-            builder.Services.AddSingleton<IEmployeeDB>(_employee_rep); // Add it to services
-            CommonController._employee_rep = _employee_rep; // Add it to common controller
-
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+            builder.Services.AddSingleton<IKitchenServices, KitchenService>();
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(options => // Configure sessions
             {

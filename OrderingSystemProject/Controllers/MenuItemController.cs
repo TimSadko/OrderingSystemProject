@@ -62,9 +62,9 @@ public class MenuItemController: Controller
             _menuItemService.Delete(menuItem);
             return RedirectToAction("Index");
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Console.WriteLine(ex.Message);
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
             return View(menuItem);
         }
     }
