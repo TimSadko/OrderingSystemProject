@@ -20,7 +20,7 @@ public class MenuItemService: IMenuItemService
 
     public MenuItem? GetById(int id)
     {
-        throw new NotImplementedException();
+        return _menuItemRepository.GetById(id);
     }
 
     public void Add(MenuItem item)
@@ -30,7 +30,7 @@ public class MenuItemService: IMenuItemService
 
     public void Update(MenuItem item)
     {
-        throw new NotImplementedException();
+        _menuItemRepository.Update(item);
     }
 
     public void Delete(MenuItem item)

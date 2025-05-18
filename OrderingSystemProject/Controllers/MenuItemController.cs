@@ -19,13 +19,13 @@ public class MenuItemController: Controller
         List<MenuItem> menuItems = _menuItemService.GetAll();
         return View(menuItems);
     }
-    
+
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
-    
+
     [HttpPost]
     public IActionResult Create(MenuItem menuItem)
     {
@@ -65,6 +65,37 @@ public class MenuItemController: Controller
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+            return View(menuItem);
+        }
+    }
+    
+    [HttpGet]
+    public IActionResult Edit(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var menuItem = _menuItemService.GetById((int)id);
+        return View(menuItem);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(MenuItem menuItem)
+    {
+        try
+        {
+            _menuItemService.Update(menuItem);
+
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been updated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+
             return View(menuItem);
         }
     }
