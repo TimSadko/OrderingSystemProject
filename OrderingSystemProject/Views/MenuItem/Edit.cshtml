@@ -1,0 +1,57 @@
+@model MenuItem
+@{
+    ViewData["Title"] = "Edit Menu Item";
+}
+
+<div>
+    <h4>Edit Menu Item</h4>
+    @{
+        if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
+        }
+    }
+    <form action="/MenuItem/Edit" method="post">
+        <input hidden type="number" name="ItemId" value="@Model?.ItemId"/>
+        <div class="form-group py-2">
+            <label for="Name">Name:</label>
+            <input type="text" id="Name" name="Name" class="form-control" required value="@Model?.Name"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="Price">Price:</label>
+            <input type="text" id="Price" name="Price" class="form-control" required
+                   value="@Model?.Price"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="Card">Card:</label>
+            <select class="form-control"
+                    asp-for="@Model.Card"
+                    asp-items="@Html.GetEnumSelectList<ItemCard>()">
+            </select>
+        </div>
+        <div class="form-group py-2">
+            <label for="Category">Category:</label>
+            <select class="form-control"
+                    asp-for="@Model.Category"
+                    asp-items="@Html.GetEnumSelectList<ItemCategory>()">
+            </select>
+        </div>
+        <div class="form-group py-2">
+            <label for="Stock">Stock:</label>
+            <input type="number" id="Stock" name="Stock" class="form-control" required
+                   value="@Model?.Stock"/>
+        </div>
+        <div class="form-group py-2">
+            <div class="form-group py-2">
+                <label for="IsActive">Is Active:</label>
+                @Html.RadioButtonFor(menuItem => menuItem.IsActive, true, new { id = "active-true" })
+                @Html.Label("active-true", "Yes")
+
+                @Html.RadioButtonFor(menuItem => menuItem.IsActive, false, new { id = "active-false" })
+                @Html.Label("active-false", "No")
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <a href="/MenuItem/Index">Back to List</a>
+</div>
