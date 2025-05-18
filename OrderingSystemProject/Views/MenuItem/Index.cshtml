@@ -1,4 +1,5 @@
-@model IEnumerable<OrderingSystemProject.Models.MenuItem>
+@using OrderingSystemProject.ViewModels
+@model OrderingSystemProject.ViewModels.MenuManagementViewModel
 
 @{
     ViewData["Title"] = "Manage Menu Items";
@@ -7,13 +8,43 @@
 <div class="text-center">
     <h1 class="display-4">Menu Items</h1>
     <a href="/MenuItem/Create">Create New</a>
-    <p>Number of menu items: @Model.Count()</p>
+    <p>Number of menu items: @Model.MenuItems.Count</p>
     @{
         if (TempData["MenuItemOperationConfirmMessage"] != null)
         {
             <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
         }
+
+        if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
+        }
     }
+    <form method="get" action="@Url.Action("Filter")">
+        <div class="form-group row">
+            <div class="form-group col-md-5 form-control-lg">
+                <label for="cardFilterType">Card:</label>
+                <select class="form-control"
+                        id="cardFilterType"
+                        name="cardFilterType"
+                        asp-for="@Model.CardFilter"
+                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CardFilterType>()">
+                </select>
+            </div>
+            <div class="form-group col-md-5 form-control-lg">
+                <label for="categoryFilterType">Category:</label>
+                <select class="form-control"
+                        id="categoryFilterType"
+                        name="categoryFilterType"
+                        asp-for="@Model.CategoryFilter"
+                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CategoryFilterType>()">
+                </select>
+            </div>
+            <div class="form-group col-md-2 form-control-lg mt-auto">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
     <table class="table">
         <thead>
         <tr>
@@ -29,7 +60,7 @@
         </thead>
         <tbody>
         @{
-            foreach (var menuItem in Model)
+            foreach (var menuItem in Model.MenuItems)
             {
                 <tr>
                     <td>@menuItem.ItemId</td>
@@ -37,22 +68,22 @@
                     <td>@menuItem.Price</td>
                     <td>@menuItem.Card</td>
                     <td>@menuItem.Category</td>
-                        <td>
-                            @{
-                                if (menuItem.Stock <= 0)
-                                {
-                                    <span class="text-danger font-weight-bold">Out of Stock</span>
-                                }
-                                else if (menuItem.Stock <= 10)
-                                {
-                                    <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
-                                }
-                                else
-                                {
-                                    @menuItem.Stock
-                                }
+                    <td>
+                        @{
+                            if (menuItem.Stock <= 0)
+                            {
+                                <span class="text-danger font-weight-bold">Out of Stock</span>
                             }
-                        </td>
+                            else if (menuItem.Stock <= 10)
+                            {
+                                <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
+                            }
+                            else
+                            {
+                                @menuItem.Stock
+                            }
+                        }
+                    </td>
                     <td>@menuItem.IsActive</td>
                     <td>
                         <a href="/MenuItem/Delete/@menuItem.ItemId">Delete</a>
