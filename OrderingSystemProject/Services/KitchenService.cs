@@ -2,5 +2,9 @@
 {
 	public class KitchenService : IKitchenServices
 	{
+		public KitchenService() 
+		{
+
+		}
 	}
 }

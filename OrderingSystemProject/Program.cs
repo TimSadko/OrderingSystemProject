@@ -11,8 +11,7 @@ namespace OrderingSystemProject
             var builder = WebApplication.CreateBuilder(args);
 
             // hasher
-            Hasher.SetSalt(builder.Configuration.GetSection("Salt")
-                .Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+            Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
             //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
             //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
