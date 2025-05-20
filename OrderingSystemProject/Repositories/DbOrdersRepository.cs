@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Kitchen;
 
 namespace OrderingSystemProject.Repositories
 {
@@ -18,7 +19,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connection_string))
             {
-                string query = "SELECT OrderId, TableNumber, OrderStatus, OrderTime From Orders ORDER BY TableNumber";
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders";
                 SqlCommand com = new SqlCommand(query, connection);
 
                 com.Connection.Open();
@@ -40,7 +41,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT OrderId, TableNumber, OrderStatus, OrderTime From Orders ORDER BY TableNumber";
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders ORDER BY TableId";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -61,7 +62,37 @@ namespace OrderingSystemProject.Repositories
 
         private Order ReadOrder(SqlDataReader reader)
         {
-            return new Order((int)reader["OrderId"], (int)reader["TableNumber"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+            return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
         }
-    }
+
+		public List<KOrder> GetOrdersKitchen() // Get list of non-completed orders. (for kitchen or bar)
+		{
+			List<KOrder> orders = new List<KOrder>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 ORDER BY TableId"; 
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				KOrder ord;
+
+				while (reader.Read())
+				{
+					ord = ReadKOrder(reader);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+			return orders;
+		}
+
+		private KOrder ReadKOrder(SqlDataReader reader)
+		{
+			return new KOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+		}
+	}
 }

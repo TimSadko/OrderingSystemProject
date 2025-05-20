@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.KitchenDivMain {
+    background-color: rgb(198, 198, 198);
+
+    border: 1px solid rgb(128, 128, 128);
+
+    margin-bottom: 4px;
+}
+
+.KitchenDiv {
+    background-color: rgb(198, 198, 198);
+    border-top: 1px solid rgb(128, 128, 128);
+}

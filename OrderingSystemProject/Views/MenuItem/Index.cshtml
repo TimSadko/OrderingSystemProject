@@ -32,7 +32,7 @@
             foreach (var menuItem in Model)
             {
                 <tr>
-                    <td>@menuItem.ItemId</td>
+                    <td>@menuItem.MenuItemId</td>
                     <td>@menuItem.Name</td>
                     <td>@menuItem.Price</td>
                     <td>@menuItem.Card</td>
@@ -55,8 +55,8 @@
                         </td>
                     <td>@menuItem.IsActive</td>
                     <td>
-                        <a href="/MenuItem/Delete/@menuItem.ItemId">Delete</a>
-                        <a href="/MenuItem/Edit/@menuItem.ItemId">Edit</a>
+                        <a href="/MenuItem/Delete/@menuItem.MenuItemId">Delete</a>
+                        <a href="/MenuItem/Edit/@menuItem.MenuItemId">Edit</a>
                     </td>
                 </tr>
             }
