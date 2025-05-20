@@ -25,7 +25,7 @@ namespace OrderingSystemProject.Models
 
     public class MenuItem
     {
-        public int ItemId { get; set; }
+        public int MenuItemId { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
         public ItemCard Card { get; set; }
@@ -40,7 +40,7 @@ namespace OrderingSystemProject.Models
 
         public MenuItem(int itemId, string name, decimal price, ItemCard card, ItemCategory category, int stock, bool isActive)
         {
-            ItemId = itemId;
+            MenuItemId = itemId;
             Name = name;
             Price = price;
             Card = card;

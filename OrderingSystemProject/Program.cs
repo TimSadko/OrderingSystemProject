@@ -11,8 +11,7 @@ namespace OrderingSystemProject
             var builder = WebApplication.CreateBuilder(args);
 
             // hasher
-            Hasher.SetSalt(builder.Configuration.GetSection("Salt")
-                .Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+            Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
             //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
             //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
@@ -25,9 +24,10 @@ namespace OrderingSystemProject
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
 
-            var menuItemRepository = new DbMenuItemsRepository(builder.Configuration);
-            builder.Services.AddSingleton<IMenuItemsRepository>(menuItemRepository);
-            builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
+            var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
+            CommonRepository._menu_item_rep = _menu_item_rep;
+			builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
@@ -42,7 +42,6 @@ namespace OrderingSystemProject
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesServices, TablesServices>();
 
-            builder.Services.AddSingleton<IKitchenServices, KitchenService>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
