@@ -1,8 +1,8 @@
 using OrderingSystemProject.Models;
 
-namespace OrderingSystemProject.Repositories;
+namespace OrderingSystemProject.Services;
 
-public interface ITablesRepository
+public interface ITablesServices
 {
     List<Table> GetAllTables();
     Table GetTableByNumber(int tableId);

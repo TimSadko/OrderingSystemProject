@@ -18,58 +18,125 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems ORDER BY Name";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
 
-                MenuItem itm;
-
                 while (reader.Read())
                 {
-                    itm = ReadMenuItem(reader);
-                    items.Add(itm);
+                    MenuItem item = ReadItem(reader);
+                    items.Add(item);
                 }
+
                 reader.Close();
             }
 
             return items;
         }
 
-        public MenuItem? GetMenuItem(int menuItemId)
+        public void Add(MenuItem menuItem)
         {
-            MenuItem? menuItem = null;
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = "INSERT INTO MenuItems (Name, Price, Card, Category, Stock, IsActive) VALUES (@Name, @Price, @Card, @Category, @Stock, @IsActive); SELECT SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Name", menuItem.Name);
+                command.Parameters.AddWithValue("@Price", menuItem.Price);
+                command.Parameters.AddWithValue("@Card", menuItem.Card);
+                command.Parameters.AddWithValue("@Category", menuItem.Category);
+                command.Parameters.AddWithValue("@Stock", menuItem.Stock);
+                command.Parameters.AddWithValue("@IsActive", menuItem.IsActive);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item creation failed!");
+                }
+            }
+        }
+
+        public void Delete(MenuItem menuItem)
+        {
+            using (SqlConnection connection = new SqlConnection(_connection_string))
+            {
+                string query = "DELETE FROM MenuItems WHERE MenuItemId = @ItemId;";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@ItemId", menuItem.MenuItemId);
+                command.Connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                reader.Close();
+            }
+        }
+
+        public MenuItem? GetById(int id)
+        {
+            MenuItem? item = null;
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT ItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE ItemId = @ItemId ORDER BY Name";
+                string query = "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE MenuItemId = @Id";
                 SqlCommand com = new SqlCommand(query, conn);
 
-                SqlCommand command = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@Id", id);
 
-                command.Parameters.AddWithValue("@ItemId", menuItemId);
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
 
-                if (!reader.HasRows)
+				if (reader.HasRows)
                 {
-                    return null;
-                }
+                    reader.Read();
 
-                if (reader.Read())
-                {
-                    menuItem = ReadMenuItem(reader);
-                }
+					item = ReadItem(reader);
+				}
+
                 reader.Close();
             }
 
-            return menuItem;
+            return item;
         }
 
-        private MenuItem ReadMenuItem(SqlDataReader reader)
+        public void Update(MenuItem menuItem)
         {
-            return new MenuItem((int)reader["ItemId"], (string)reader["Name"], (decimal)reader["Price"], (ItemCard)(int)reader["Card"], (ItemCategory)reader["Category"], (int)reader["Stock"], (bool)reader["IsActive"]);
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE MenuItems SET Name = @Name, Price = @Price, Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive WHERE MenuItemId = @MenuItemId";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Name", menuItem.Name);
+                command.Parameters.AddWithValue("@Price", menuItem.Price);
+                command.Parameters.AddWithValue("@Card", menuItem.Card);
+                command.Parameters.AddWithValue("@Category", menuItem.Category);
+                command.Parameters.AddWithValue("@Stock", menuItem.Stock);
+                command.Parameters.AddWithValue("@IsActive", menuItem.IsActive);
+                command.Parameters.AddWithValue("@MenuItemId", menuItem.MenuItemId);
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item update failed!");
+                }
+            }
+        }
+
+        private MenuItem ReadItem(SqlDataReader reader)
+        {
+            return new MenuItem(
+                (int)reader["MenuItemId"],
+                (string)reader["Name"],
+                (decimal)reader["Price"],
+                (ItemCard)(int)reader["Card"],
+                (ItemCategory)(int)reader["Category"],
+                (int)reader["Stock"],
+                (bool)reader["IsActive"]
+            );
         }
     }
 }

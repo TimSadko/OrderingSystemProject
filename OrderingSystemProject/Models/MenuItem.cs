@@ -1,44 +1,52 @@
-﻿namespace OrderingSystemProject.Models
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace OrderingSystemProject.Models
 {
     public enum ItemCard
     {
-
+        [Display(Name = "Drink")]
+        DRINK = 0,
+        [Display(Name = "Lunch")]
+        LUNCH = 1,
+        [Display(Name = "Dinner")]
+        DINNER = 2
     }
 
     public enum ItemCategory
     {
-        
+        [Display(Name = "All")]
+        ALL = 0,
+        [Display(Name = "Starter")]
+        STARTER = 1,
+        [Display(Name = "Main")]
+        MAIN = 2
     }
 
     public class MenuItem
     {
-        private int _item_id;
-        private string _name;
-        private decimal _price;
-        private ItemCard _card;
-        private ItemCategory _category;
-        private int _stock;
-        private bool _is_active;
+        public int MenuItemId { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public ItemCard Card { get; set; }
+        public ItemCategory Category { get; set; }
+        public int Stock { get; set; }
 
-        public MenuItem() { }
+        public bool IsActive { get; set; }
 
-        public MenuItem(int item_id, string name, decimal price, ItemCard card, ItemCategory category, int stock, bool is_active)
+        public MenuItem()
         {
-            _item_id = item_id;
-            _name = name;
-            _price = price;
-            _card = card;
-            _category = category;
-            _stock = stock;
-            _is_active = is_active;
         }
 
-        public int ItemId { get => _item_id; set => _item_id = value; }
-        public string Name { get => _name; set => _name = value; }
-        public decimal Price { get => _price; set => _price = value; }
-        public ItemCard Card { get => _card; set => _card = value; }
-        public ItemCategory Category { get => _category; set => _category = value; }
-        public int Stock { get => _stock; set => _stock = value; }
-        public bool IsActive { get => _is_active; set => _is_active = value; }
+        public MenuItem(int itemId, string name, decimal price, ItemCard card, ItemCategory category, int stock, bool isActive)
+        {
+            MenuItemId = itemId;
+            Name = name;
+            Price = price;
+            Card = card;
+            Category = category;
+            Stock = stock;
+            IsActive = isActive;
+        }
     }
 }

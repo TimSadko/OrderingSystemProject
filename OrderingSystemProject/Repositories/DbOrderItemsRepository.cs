@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Kitchen;
 
 namespace OrderingSystemProject.Repositories
 {
@@ -18,7 +19,8 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT Id, OrderId, ItemId, Amount, Comment, ItemStatus From OrderItems ORDER BY OrderId";
+                string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems ORDER BY OrderId";
+                
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -37,17 +39,17 @@ namespace OrderingSystemProject.Repositories
             return items;
         }
 
-        public List<OrderItem>? GetOrderItem(int orderId)
+		public List<OrderItem>? GetOrderItem(int orderId)
         {
             List<OrderItem> orderItems = new List<OrderItem>();
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT Id, OrderId, ItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @OrderId ORDER BY OrderId";
+                string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @OrderId ORDER BY OrderId";
+                
                 SqlCommand com = new SqlCommand(query, conn);
-                SqlCommand command = new SqlCommand(query, conn);
 
-                command.Parameters.AddWithValue("@OrderId", orderId);
+				com.Parameters.AddWithValue("@OrderId", orderId);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
@@ -71,7 +73,43 @@ namespace OrderingSystemProject.Repositories
 
         private OrderItem ReadItem(SqlDataReader reader)
         {
-            return new OrderItem((int)reader["Id"], (int)reader["OrderId"], (int)reader["ItemId"], (int)reader["Amount"], (string)reader["Comment"], (int)reader["ItemStatus"]);
+            return new OrderItem((int)reader["OrderItemId"], (int)reader["OrderId"], (int)reader["MenuItemId"], (int)reader["Amount"], (string)reader["Comment"], (OrderItemStatus)(int)reader["ItemStatus"]);
         }
-    }
+
+		public List<KOrderItem>? GetKOrdersKitchen(int order_id)
+		{
+			List<KOrderItem> orderItems = new List<KOrderItem>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id ORDER BY OrderId";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@order_id", order_id);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				KOrderItem itm;
+				if (!reader.HasRows)
+				{
+					return null;
+				}
+
+				while (reader.Read())
+				{
+					itm = ReadKItem(reader);
+					orderItems.Add(itm);
+				}
+				reader.Close();
+			}
+
+			return orderItems;
+		}
+
+		private KOrderItem ReadKItem(SqlDataReader reader)
+		{
+			return new KOrderItem((int)reader["OrderItemId"], (int)reader["OrderId"], (int)reader["MenuItemId"], (int)reader["Amount"], (string)reader["Comment"], (OrderItemStatus)(int)reader["ItemStatus"]);
+		}
+	}
 }

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Services;
 
@@ -19,12 +20,10 @@ public class EmployeesService : IEmployeesService
         return _employeesRepository.GetAllEmployees();
     }
 
-    public Employee GetEmployeeByLoginCredentials(string login, string password)
+    public Employee GetEmployeeByLoginCredentials(string userName, string password)
     {
-        try
-        {
             // get the employee by login
-            Employee employee =  _employeesRepository.GetEmployeeByLogin(login);
+            Employee employee =  _employeesRepository.GetEmployeeByLogin(userName);
         
             // if no employee found, return null
             if (employee == null)
@@ -32,39 +31,16 @@ public class EmployeesService : IEmployeesService
                 return null;
             }
             
-            if (employee.Password == password)
+            // hash the entered password
+            string hashedPassword = Hasher.GetHashString(password);
+            
+            // compare the stored hash with the hash of the entered password
+            if (employee.Password == hashedPassword)
             {
                 return employee;
             }
             
-            /*
-            // check if password matches hash
-            string hashedPassword = HashPassword(password);
-            if (employee.Password != hashedPassword)
-            {
-                return null;
-            }
-            */
+            // if passwords don't match
             return null;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error during authentication: {ex.Message}");
-            throw;
-        }
     }
-    
-    /*
-    // hash a password
-        private string HashPassword(string password)
-        {
-            
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
-        }
-        
-        */
 }

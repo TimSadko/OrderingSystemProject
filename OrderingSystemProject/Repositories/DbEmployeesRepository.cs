@@ -1,71 +1,68 @@
 using Microsoft.Data.SqlClient;
 using OrderingSystemProject.Models;
-using OrderingSystemProject.Other;
 
-namespace OrderingSystemProject.Repositories
+namespace OrderingSystemProject.Repositories;
+
+public class DbEmployeesRepository : IEmployeesRepository
 {
-    public class DBEmployeesRepository : IEmployeesRepository
+    private readonly string? _connectionString;
+
+    public DbEmployeesRepository(IConfiguration configuration)
     {
-        private readonly string _connection_string;
+        // get (database) connectionstring from appsettings
+        _connectionString = configuration.GetConnectionString("OrderingDatabase");
+    }
 
-        public DBEmployeesRepository(IConfiguration config)
+    public List<Employee> GetAllEmployees()
+    {
+        List<Employee> employees = new List<Employee>();
+
+        using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            _connection_string = config.GetConnectionString("OrderingDatabase");
-        }
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees";
+            SqlCommand command = new SqlCommand(query, connection);
+            
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
 
-        public List<Employee> GetAllEmployees()
-        {
-            List<Employee> employees = new List<Employee>();
-
-            using (SqlConnection conn = new SqlConnection(_connection_string))
+            while (reader.Read())
             {
-                string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email From Employees ORDER BY LastName";
-                SqlCommand com = new SqlCommand(query, conn);
-
-                com.Connection.Open();
-                SqlDataReader reader = com.ExecuteReader();
-
-                Employee emp;
-
-                while (reader.Read())
-                {
-                    emp = ReadEmployee(reader);
-                    employees.Add(emp);
-                }
-                reader.Close();
+                // ReadEmployee converts a record into an Employee object
+                Employee employee = ReadEmployee(reader);
+                employees.Add(employee);
             }
-
-            return employees;
+            reader.Close();
         }
+        return employees;
+    }
 
-        private Employee ReadEmployee(SqlDataReader reader)
-        {
-            return new Employee((int)reader["EmployeeId"], (string)reader["UserName"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
-        }
 
-        public Employee GetEmployeeByLogin(string userName)
+    public Employee GetEmployeeByLogin(string userName)
+    {
+        using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            using (SqlConnection connection = new SqlConnection(_connection_string))
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE UserName = @userName";
+            
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@userName", userName);
+            
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            
+            // check if employee exists
+            if (reader.Read())
             {
-                string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE UserName = @UserName";
-
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@UserName", userName);
-
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                // check if employee exists
-                if (reader.Read())
-                {
-                    Employee employee = ReadEmployee(reader);
-                    reader.Close();
-                    return employee;
-                }
-
+                Employee employee = ReadEmployee(reader);
                 reader.Close();
-                return null;
+                return employee;
             }
+            reader.Close();
+            return null; // return null if no employee found
         }
     }
+
+	private Employee ReadEmployee(SqlDataReader reader)
+	{
+		return new Employee((int)reader["EmployeeId"], (string)reader["UserName"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
+	}
 }
