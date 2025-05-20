@@ -14,12 +14,13 @@
 
         public Order() { }
 
+
         public Order(int order_id, int table_id, OrderStatus order_status, DateTime order_time)
         {
-            _order_id = order_id;
-			_table_id = table_id;
+            _order_id = order_id;    
             _order_status = order_status;
             _order_time = order_time;
+            _table_id = table_id;
         }
 
         public int OrderId { get => _order_id; set => _order_id = value; }

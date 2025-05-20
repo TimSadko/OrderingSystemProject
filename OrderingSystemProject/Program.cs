@@ -10,10 +10,11 @@ namespace OrderingSystemProject
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // hasher
+            
             Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
             //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
             //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
+       
 
             var _employee_rep = new DbEmployeesRepository(builder.Configuration);
             builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);
@@ -36,6 +37,12 @@ namespace OrderingSystemProject
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
+            
+            var _display_order_rep = new DbDisplayOrderRepository(builder.Configuration);
+            builder.Services.AddSingleton<IDisplayOrderRepository>(_display_order_rep);
+            CommonRepository._payment_rep = _payment_rep;
+            
+            builder.Services.AddScoped<IDisplayOrderRepository, DbDisplayOrderRepository>();
 
             var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);

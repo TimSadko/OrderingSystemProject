@@ -17,7 +17,7 @@ public class DbPaymentRepository : IPaymentRepository
 
         using (SqlConnection conn = new SqlConnection(_connection_string))
         {
-            string query = "SELECT OrderId, TableNumber, OrderStatus, OrderTime From Orders ORDER BY TableNumber";
+            string query = "SELECT OrderId, OrderStatus, OrderTime, TableId From Orders ORDER BY TableNumber";
             SqlCommand com = new SqlCommand(query, conn);
 
             com.Connection.Open();
@@ -38,7 +38,7 @@ public class DbPaymentRepository : IPaymentRepository
     
     private Order ReadOrder(SqlDataReader reader)
     {
-        return new Order((int)reader["OrderId"], (int)reader["TableNumber"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+        return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
     }
 
     public void Pay(int orderId, int amount)

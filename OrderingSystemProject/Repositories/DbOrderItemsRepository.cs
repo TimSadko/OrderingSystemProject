@@ -20,6 +20,7 @@ namespace OrderingSystemProject.Repositories
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
                 string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems ORDER BY OrderId";
+                
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -45,6 +46,7 @@ namespace OrderingSystemProject.Repositories
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
                 string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @OrderId ORDER BY OrderId";
+                
                 SqlCommand com = new SqlCommand(query, conn);
 
 				com.Parameters.AddWithValue("@OrderId", orderId);

@@ -16,15 +16,16 @@
 
 		public OrderItem() { }
 
-		public OrderItem(int id, int order_id, int item_id, int amount, string comment, OrderItemStatus item_status)
-		{
-			_id = id;
-			_order_id = order_id;
-			_menu_item_id = item_id;
+
+        public OrderItem(int id, int order_id, int menu_item_id, int amount, string comment, OrderItemStatus item_status)
+        {
+            _id = id;
+            _order_id = order_id;
+            _menu_item_id = menu_item_id;
 			_amount = amount;
-			_comment = comment;
-			_item_status = item_status;
-		}
+            _comment = comment;
+            _item_status = item_status;
+        }
 
 		public int Id { get =>  _id; set => _id = value; }
         public int OrderId { get => _order_id; set => _order_id = value; }

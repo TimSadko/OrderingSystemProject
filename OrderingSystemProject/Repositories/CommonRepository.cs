@@ -9,5 +9,6 @@
         public static IBillRepository _bill_rep;
         public static IPaymentRepository _payment_rep;
         public static ITablesRepository _tables_rep;
+        public static IDisplayOrderRepository _display_order_rep;
     }
 }
