@@ -1,6 +1,12 @@
 @model OrderingSystemProject.Models.DisplayOrderViewModel
 
 <h2>Order Bill</h2>
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
 
 @if (Model.Order != null)
 {
@@ -34,17 +40,17 @@ else
         {
             <tr>
                 <td>@item.ItemName</td>
-                <td>@item.Price.ToString("C")</td>
+                <td>@item.Price.ToString("C", euroCulture)</td>
                 <td>@item.Quantity</td>
                 <td>@item.Comment</td>
-                <td>@item.LineTotal.ToString("C")</td>
+                <td>@item.LineTotal.ToString("C", euroCulture)</td>
             </tr>
         }
         </tbody>
         <tfoot>
         <tr class="table-secondary">
             <td colspan="4" class="text-end fw-bold">Total:</td>
-            <td class="fw-bold">@Model.OrderTotal.ToString("C")</td>
+            <td class="fw-bold">@Model.OrderTotal.ToString("C",euroCulture)</td>
         </tr>
         </tfoot>
     </table>
