@@ -17,12 +17,12 @@
 		public OrderItem() { }
 
 
-        public OrderItem(int id, int order_id, int item_id, int amount, string comment, OrderItemStatus item_status)
+        public OrderItem(int id, int order_id, int menu_item_id, int amount, string comment, OrderItemStatus item_status)
         {
             _id = id;
             _order_id = order_id;
-            _item_id = item_id;
-            _amount = amount;
+            _menu_item_id = menu_item_id;
+			_amount = amount;
             _comment = comment;
             _item_status = item_status;
         }

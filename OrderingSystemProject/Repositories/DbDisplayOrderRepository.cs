@@ -66,7 +66,7 @@ public class DbDisplayOrderRepository : IDisplayOrderRepository
                        DateTime dateTime = (DateTime)reader["OrderTime"];
                        int tableId = (int)reader["TableId"];
        
-                       order = new Order(id, status, dateTime, tableId);
+                       order = new Order(id, tableId, status, dateTime);
                    }
                }
        

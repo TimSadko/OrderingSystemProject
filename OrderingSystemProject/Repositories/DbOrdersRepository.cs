@@ -20,7 +20,7 @@ namespace OrderingSystemProject.Repositories
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
                 string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders";
-                SqlCommand com = new SqlCommand(query, connection);
+                SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();

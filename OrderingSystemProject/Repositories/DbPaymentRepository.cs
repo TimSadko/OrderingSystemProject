@@ -38,7 +38,7 @@ public class DbPaymentRepository : IPaymentRepository
     
     private Order ReadOrder(SqlDataReader reader)
     {
-        return new Order((int)reader["OrderId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"], (int)reader["TableId"]);
+        return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
     }
 
     public void Pay(int orderId, int amount)
