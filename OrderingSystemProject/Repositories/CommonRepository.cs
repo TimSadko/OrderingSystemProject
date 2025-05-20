@@ -8,5 +8,6 @@
         public static IOrderItemsRepository _order_item_rep;
         public static IBillRepository _bill_rep;
         public static IPaymentRepository _payment_rep;
+        public static IDisplayOrderRepository _display_order_rep;
     }
 }

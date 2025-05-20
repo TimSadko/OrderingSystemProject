@@ -18,7 +18,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT Id, OrderId, ItemId, Amount, Comment From OrderItems ORDER BY OrderId";
+                string query = "SELECT Id, OrderId, ItemId, Amount, Comment, ItemStatus From OrderItems ORDER BY OrderId";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -43,7 +43,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT Id, OrderId, ItemId, Amount, Comment From OrderItems WHERE OrderId = @OrderId ORDER BY OrderId";
+                string query = "SELECT Id, OrderId, ItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @OrderId ORDER BY OrderId";
                 SqlCommand com = new SqlCommand(query, conn);
                 SqlCommand command = new SqlCommand(query, conn);
 
@@ -71,7 +71,7 @@ namespace OrderingSystemProject.Repositories
 
         private OrderItem ReadItem(SqlDataReader reader)
         {
-            return new OrderItem((int)reader["Id"], (int)reader["OrderId"], (int)reader["ItemId"], (int)reader["Amount"], (string)reader["Comment"]);
+            return new OrderItem((int)reader["Id"], (int)reader["OrderId"], (int)reader["ItemId"], (int)reader["Amount"], (string)reader["Comment"], (int)reader["ItemStatus"]);
         }
     }
 }

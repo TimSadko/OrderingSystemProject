@@ -19,7 +19,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email From Employees ORDER BY LastName";
+                string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email From Employees ORDER BY LastName";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -40,17 +40,17 @@ namespace OrderingSystemProject.Repositories
 
         private Employee ReadEmployee(SqlDataReader reader)
         {
-            return new Employee((int)reader["EmployeeId"], (string)reader["Login"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
+            return new Employee((int)reader["EmployeeId"], (string)reader["UserName"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
         }
 
-        public Employee GetEmployeeByLogin(string login)
+        public Employee GetEmployeeByLogin(string userName)
         {
             using (SqlConnection connection = new SqlConnection(_connection_string))
             {
-                string query = "SELECT EmployeeId, Login, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE Login = @login";
+                string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE UserName = @UserName";
 
                 SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@login", login);
+                command.Parameters.AddWithValue("@UserName", userName);
 
                 command.Connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
@@ -64,7 +64,7 @@ namespace OrderingSystemProject.Repositories
                 }
 
                 reader.Close();
-                return null; // Return null if no employee found
+                return null;
             }
         }
     }
