@@ -5,6 +5,7 @@ using OrderingSystemProject.Models;
 
 public class DbDisplayOrderRepository : IDisplayOrderRepository
 {
+    private const decimal VAT = 0.21m;
     private readonly string _connection_string;
 
     public DbDisplayOrderRepository(IConfiguration config)
@@ -34,7 +35,7 @@ public class DbDisplayOrderRepository : IDisplayOrderRepository
                        
                        mi.Name,
                        mi.Price
-       
+                   
                    FROM Orders o
                    JOIN OrderItems oi ON o.OrderId = oi.OrderId
                    JOIN MenuItems mi ON oi.MenuItemId = mi.MenuItemId
@@ -73,13 +74,62 @@ public class DbDisplayOrderRepository : IDisplayOrderRepository
                reader.Close();
            }
            
-           decimal orderTotal = orderLines.Sum(x => x.LineTotal);
+           decimal orderSubtotal = GetOrderSubtotal(orderLines);
+           decimal orderTotal = GetOrderTotal(orderLines);
+           decimal vat = GetVat(orderLines);
        
            return new DisplayOrderViewModel
            {
                Order = order,
                OrderLines = orderLines,
-               OrderTotal = orderTotal
+               OrderSubtotal = orderSubtotal,
+               OrderTotal = orderTotal,
+               Vat = vat
            };
        }
+
+    private decimal GetOrderSubtotal(List<OrderLineItemViewModel> orderLines)
+    {
+        try
+        {
+            decimal orderTotal = orderLines.Sum(orderLine => orderLine.Quantity * orderLine.Price);
+            return orderTotal;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
+    }
+
+    private decimal GetVat(List<OrderLineItemViewModel> orderLines)
+    {
+        try
+        {
+            decimal orderSubtotal = GetOrderSubtotal(orderLines);
+            decimal vat = orderSubtotal * VAT;
+            return vat;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
+    }
+
+    private decimal GetOrderTotal(List<OrderLineItemViewModel> orderLines)
+    {
+        try
+        {
+            decimal orderSubtotal = GetOrderSubtotal(orderLines);
+            decimal vat = GetVat(orderLines);
+            decimal orderTotal = orderSubtotal + vat;
+            return orderTotal;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw;
+        }
+    }
 }
