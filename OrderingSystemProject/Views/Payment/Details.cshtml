@@ -49,6 +49,14 @@ else
         </tbody>
         <tfoot>
         <tr class="table-secondary">
+            <td colspan="4" class="text-end fw-bold">Subtotal:</td>
+            <td class="fw-bold">@Model.OrderSubtotal.ToString("C",euroCulture)</td>
+        </tr>
+        <tr class="table-secondary">
+            <td colspan="4" class="text-end fw-bold">VAT:</td>
+            <td class="fw-bold">@Model.Vat.ToString("C",euroCulture)</td>
+        </tr>
+        <tr class="table-secondary">
             <td colspan="4" class="text-end fw-bold">Total:</td>
             <td class="fw-bold">@Model.OrderTotal.ToString("C",euroCulture)</td>
         </tr>
