@@ -71,7 +71,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 ORDER BY TableId"; 
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 ORDER BY OrderTime"; 
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
