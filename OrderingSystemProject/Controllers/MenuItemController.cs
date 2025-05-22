@@ -48,7 +48,7 @@ public class MenuItemController : Controller
         }
     }
 
-    [HttpGet("MenuItem/Delete/{ItemId}")]
+    [HttpGet]
     public ActionResult Delete(int? ItemId)
     {
         if (ItemId == null)
