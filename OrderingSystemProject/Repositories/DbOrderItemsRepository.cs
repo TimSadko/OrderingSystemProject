@@ -31,6 +31,8 @@ namespace OrderingSystemProject.Repositories
                 while (reader.Read())
                 {
                     itm = ReadItem(reader);
+                    FillInItem(itm);
+
                     items.Add(itm);
                 }
                 reader.Close();
@@ -63,6 +65,8 @@ namespace OrderingSystemProject.Repositories
                 while (reader.Read())
                 {
                     itm = ReadItem(reader);
+                    FillInItem(itm);
+
                     orderItems.Add(itm);
                 }
                 reader.Close();
@@ -75,10 +79,14 @@ namespace OrderingSystemProject.Repositories
         {
             return new OrderItem((int)reader["OrderItemId"], (int)reader["OrderId"], (int)reader["MenuItemId"], (int)reader["Amount"], (string)reader["Comment"], (OrderItemStatus)(int)reader["ItemStatus"]);
         }
+        private void FillInItem(OrderItem item)
+        {
+            item.MenuItem = CommonRepository._menu_item_rep.GetById(item.MenuItemId);       
+        }
 
-		public List<KOrderItem>? GetKOrdersKitchen(int order_id)
+        public List<OrderItem> GetOrderItems(int order_id)
 		{
-			List<KOrderItem> orderItems = new List<KOrderItem>();
+			List<OrderItem> orderItems = new List<OrderItem>();
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
@@ -90,26 +98,19 @@ namespace OrderingSystemProject.Repositories
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();
 
-				KOrderItem itm;
-				if (!reader.HasRows)
-				{
-					return null;
-				}
+				OrderItem itm;
 
 				while (reader.Read())
 				{
-					itm = ReadKItem(reader);
-					orderItems.Add(itm);
+					itm = ReadItem(reader);
+                    FillInItem(itm);
+
+                    orderItems.Add(itm);
 				}
 				reader.Close();
 			}
 
 			return orderItems;
-		}
-
-		private KOrderItem ReadKItem(SqlDataReader reader)
-		{
-			return new KOrderItem((int)reader["OrderItemId"], (int)reader["OrderId"], (int)reader["MenuItemId"], (int)reader["Amount"], (string)reader["Comment"], (OrderItemStatus)(int)reader["ItemStatus"]);
 		}
 	}
 }

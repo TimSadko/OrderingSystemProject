@@ -14,7 +14,9 @@
         private string _comment;
         private OrderItemStatus _item_status;
 
-		public OrderItem() { }
+        private MenuItem _menu_item;
+
+        public OrderItem() { }
 
 
         public OrderItem(int id, int order_id, int menu_item_id, int amount, string comment, OrderItemStatus item_status)
@@ -33,5 +35,7 @@
         public int Amount { get => _amount; set => _amount = value; }
         public string Comment { get => _comment; set => _comment = value; }
         public OrderItemStatus ItemStatus { get => _item_status; set => _item_status = value; }
+
+        public MenuItem MenuItem { get => _menu_item; set => _menu_item = value; }
     }
 }

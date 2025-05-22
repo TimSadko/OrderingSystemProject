@@ -1,4 +1,6 @@
-﻿namespace OrderingSystemProject.Models
+﻿using OrderingSystemProject.Models.Kitchen;
+
+namespace OrderingSystemProject.Models
 {
     public enum OrderStatus 
     { 
@@ -11,6 +13,8 @@
         private int _table_id;
         private OrderStatus _order_status;
         private DateTime _order_time;
+
+        private List<OrderItem> _items;
 
         public Order() { }
 
@@ -27,5 +31,7 @@
         public int TableId { get => _table_id; set => _table_id = value; }
         public OrderStatus OrderStatus { get => _order_status; set => _order_status = value; }
         public DateTime OrderTime { get => _order_time; set => _order_time = value; }
+
+        public List<OrderItem> Items { get => _items; set => _items = value; }
     }
 }

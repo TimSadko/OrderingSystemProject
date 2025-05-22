@@ -9,6 +9,6 @@ namespace OrderingSystemProject.Repositories
 
 		List<Order> GetAll();
 
-		List<KOrder> GetOrdersKitchen();
+		List<Order> GetOrdersKitchen();
     }
 }

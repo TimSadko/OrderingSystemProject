@@ -16,9 +16,11 @@ namespace OrderingSystemProject.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-			try
+            var list = _serv.GetCookOrders(); // Get list od all current orders
+
+            try
             {
-                var list = _serv.GetCookOrders(); // Get list od all current orders
+                
 
                 KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
 

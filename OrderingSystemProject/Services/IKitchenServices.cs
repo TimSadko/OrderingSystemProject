@@ -1,9 +1,9 @@
-﻿using OrderingSystemProject.Models.Kitchen;
+﻿using OrderingSystemProject.Models;
 
 namespace OrderingSystemProject.Services
 {
 	public interface IKitchenServices
 	{
-		List<KOrder> GetCookOrders();
+		List<Order> GetCookOrders();
 	}
 }

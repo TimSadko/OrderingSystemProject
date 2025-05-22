@@ -30,6 +30,7 @@ namespace OrderingSystemProject.Repositories
                 while (reader.Read())
                 {
                     ord = ReadOrder(reader);
+                    FillInOrder(ord);
                     orders.Add(ord);
                 }
                 reader.Close();
@@ -53,6 +54,7 @@ namespace OrderingSystemProject.Repositories
                 if (reader.Read())
                 {
                     order = ReadOrder(reader);
+                    FillInOrder(order);
                 }
                 reader.Close();
             }
@@ -65,34 +67,14 @@ namespace OrderingSystemProject.Repositories
             return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
         }
 
-		public List<KOrder> GetOrdersKitchen() // Get list of non-completed orders. (for kitchen or bar)
-		{
-			List<KOrder> orders = new List<KOrder>();
+        private void FillInOrder(Order order)
+        {
+            order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order         
+        }
 
-			using (SqlConnection conn = new SqlConnection(_connection_string))
-			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 ORDER BY OrderTime"; 
-				SqlCommand com = new SqlCommand(query, conn);
-
-				com.Connection.Open();
-				SqlDataReader reader = com.ExecuteReader();
-
-				KOrder ord;
-
-				while (reader.Read())
-				{
-					ord = ReadKOrder(reader);
-					orders.Add(ord);
-				}
-				reader.Close();
-			}
-
-			return orders;
-		}
-
-		private KOrder ReadKOrder(SqlDataReader reader)
-		{
-			return new KOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
-		}
-	}
+        public List<Order> GetOrdersKitchen()
+        {
+            return GetAll();
+        }
+    }
 }

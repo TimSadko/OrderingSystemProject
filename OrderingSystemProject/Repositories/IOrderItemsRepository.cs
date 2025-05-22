@@ -8,6 +8,6 @@ namespace OrderingSystemProject.Repositories
         List<OrderItem> GetAll();
         List<OrderItem>? GetOrderItem(int orderId);
 
-		List<KOrderItem>? GetKOrdersKitchen(int order_id);
+        List<OrderItem> GetOrderItems(int order_id);
     }
 }
