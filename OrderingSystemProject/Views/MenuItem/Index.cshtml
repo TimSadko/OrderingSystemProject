@@ -4,6 +4,12 @@
 @{
     ViewData["Title"] = "Manage Menu Items";
 }
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
 
 <div class="text-center">
     <h1 class="display-4">Menu Items</h1>
@@ -65,7 +71,7 @@
                 <tr>
                     <td>@menuItem.MenuItemId</td>
                     <td>@menuItem.Name</td>
-                    <td>@menuItem.Price</td>
+                    <td>@menuItem.Price.ToString("C",euroCulture)</td>
                     <td>@menuItem.Card</td>
                     <td>@menuItem.Category</td>
                     <td>

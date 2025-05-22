@@ -2,7 +2,12 @@
 @{
     ViewData["Title"] = "Create Menu Item";
 }
-
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
 <div>
     <h4>New Menu Item</h4>
     @{
