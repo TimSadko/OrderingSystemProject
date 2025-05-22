@@ -1,26 +1,25 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace OrderingSystemProject.Models
 {
     public enum ItemCard
     {
-        [Display(Name = "Drink")]
-        DRINK = 0,
-        [Display(Name = "Lunch")]
-        LUNCH = 1,
-        [Display(Name = "Dinner")]
-        DINNER = 2
+        [Display(Name = "Lunch")] LUNCH = 0,
+
+        [Display(Name = "Dinner")] DINNER = 1,
+
+        [Display(Name = "Drinks")] DRINKS = 2
     }
 
     public enum ItemCategory
     {
-        [Display(Name = "All")]
-        ALL = 0,
-        [Display(Name = "Starter")]
-        STARTER = 1,
-        [Display(Name = "Main")]
-        MAIN = 2
+        [Display(Name = "Starters")] STARTERS = 0,
+
+        [Display(Name = "Mains")] MAINS = 1,
+
+        [Display(Name = "Entremets")] ENTREMENTS = 2,
+
+        [Display(Name = "Deserts")] DESERTS = 3
     }
 
     public class MenuItem
@@ -31,14 +30,14 @@ namespace OrderingSystemProject.Models
         public ItemCard Card { get; set; }
         public ItemCategory Category { get; set; }
         public int Stock { get; set; }
-
         public bool IsActive { get; set; }
 
         public MenuItem()
         {
         }
 
-        public MenuItem(int itemId, string name, decimal price, ItemCard card, ItemCategory category, int stock, bool isActive)
+        public MenuItem(int itemId, string name, decimal price, ItemCard card, ItemCategory category, int stock,
+            bool isActive)
         {
             MenuItemId = itemId;
             Name = name;

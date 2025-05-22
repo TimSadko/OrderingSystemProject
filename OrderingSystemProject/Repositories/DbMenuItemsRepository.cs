@@ -126,6 +126,84 @@ namespace OrderingSystemProject.Repositories
             }
         }
 
+        public List<MenuItem> FilterByCategory(ItemCategory? category)
+        {
+            List<MenuItem> items = new List<MenuItem>();
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE Category = @Category";
+                SqlCommand com = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@Category", category);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    MenuItem item = ReadItem(reader);
+                    items.Add(item);
+                }
+
+                reader.Close();
+            }
+
+            return items;
+        }
+
+        public List<MenuItem> FilterByCard(ItemCard? card)
+        {
+            List<MenuItem> items = new List<MenuItem>();
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE Card = @Card";
+                SqlCommand com = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@Card", card);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    MenuItem item = ReadItem(reader);
+                    items.Add(item);
+                }
+
+                reader.Close();
+            }
+
+            return items;
+        }
+
+        public List<MenuItem> FilterByCategoryAndCard(ItemCategory? category, ItemCard? card)
+        {
+            List<MenuItem> items = new List<MenuItem>();
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE Card = @Card AND Category = @Category";
+                SqlCommand com = new SqlCommand(query, conn);
+                com.Parameters.AddWithValue("@Category", category);
+                com.Parameters.AddWithValue("@Card", card);
+
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    MenuItem item = ReadItem(reader);
+                    items.Add(item);
+                }
+
+                reader.Close();
+            }
+
+            return items;        }
+
         private MenuItem ReadItem(SqlDataReader reader)
         {
             return new MenuItem(

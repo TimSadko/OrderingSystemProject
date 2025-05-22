@@ -9,5 +9,8 @@ namespace OrderingSystemProject.Repositories
         void Delete(MenuItem menuItem);
         MenuItem? GetById(int id);
         void Update(MenuItem menuItem);
+        List<MenuItem> FilterByCategory(ItemCategory? category);
+        List<MenuItem> FilterByCard(ItemCard? card);
+        List<MenuItem> FilterByCategoryAndCard(ItemCategory? category, ItemCard? card);
     }
 }
