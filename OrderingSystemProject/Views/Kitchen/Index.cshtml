@@ -1,4 +1,4 @@
-﻿@model List<OrderingSystemProject.Models.Kitchen.KOrder>
+﻿@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
 
 @{
 	ViewData["Title"] = "Kitchen";
@@ -18,10 +18,15 @@
 	}
 }
 
+<div>
+	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
+</div>
+<div>Last Update: @Model.LastUpdate.ToString("hh:mm:ss")</div>
+
 @{
 	if(Model != null)
 	{
-		foreach(var order in Model)
+		foreach(var order in Model.Orders)
 		{
 			<div class="KitchenDivMain">
 				<div>tbl @order.TableId</div>

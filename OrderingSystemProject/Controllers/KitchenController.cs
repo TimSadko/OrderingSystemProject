@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderingSystemProject.Models.Kitchen;
 using OrderingSystemProject.Services;
 
 namespace OrderingSystemProject.Controllers
@@ -19,7 +20,9 @@ namespace OrderingSystemProject.Controllers
             {
                 var list = _serv.GetCookOrders(); // Get list od all current orders
 
-                return View(list); 
+                KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
+
+                return View(model); 
             }
             catch (Exception ex)
             {
