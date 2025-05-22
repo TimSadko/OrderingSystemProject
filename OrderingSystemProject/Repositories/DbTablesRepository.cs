@@ -18,7 +18,7 @@ public class DbTablesRepository : ITablesRepository
             List<Table> tables = new List<Table>();
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT TableId, Status FROM Tables";
+                string query = "SELECT TableId, TableNumber, Status FROM Tables";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Connection.Open();
@@ -39,7 +39,7 @@ public class DbTablesRepository : ITablesRepository
     {
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                string query = "SELECT TableId, Status FROM Tables WHERE TableId = @tableId";
+                string query = "SELECT TableId, TableNumber, Status FROM Tables WHERE TableId = @tableId";
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@tableId", tableId);
 
@@ -62,9 +62,10 @@ public class DbTablesRepository : ITablesRepository
     {
         // retrieve data from fields
         int tableId = (int)reader["TableId"];
+        int tableNumber = (int)reader["TableNumber"];
         int status = (int)reader["Status"];
         
         // return new Table object
-        return new Table(tableId, status);
+        return new Table(tableId, tableNumber, status);
     }
 }

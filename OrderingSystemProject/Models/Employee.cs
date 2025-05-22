@@ -2,7 +2,7 @@ namespace OrderingSystemProject.Models
 {
     public enum EmployeeType
     {
-        Waiter = 0, Cook = 1, Bartender = 2, Manager = 3, Admin = 4
+        Waiter = 0, Cook = 1, Bartender = 2, Manager = 3
     }
 
     public class Employee

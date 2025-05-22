@@ -46,9 +46,6 @@ public class RestaurantController : Controller
     {
         try
         {
-            // пet the latest data
-            List<Table> tables = _tablesServices.GetAllTables();
-        
             // set success message
             TempData["SuccessMessage"] = "Tables refreshed at " + DateTime.Now.ToString("HH:mm:ss");
         
