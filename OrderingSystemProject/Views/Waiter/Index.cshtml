@@ -1,0 +1,63 @@
+﻿@model OrderingSystemProject.ViewModels.MenuManagementViewModel
+
+@{
+    ViewData["Title"] = "Waiter";
+}
+
+<div class="text-center">
+    <p>Number of menu items: @Model.MenuItems.Count</p>
+    @{
+        if (TempData["MenuItemOperationConfirmMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
+        }
+
+        if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
+        }
+    }
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                @* <th>Card</th>
+                <th>Category</th> *@
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var menuItem in Model.MenuItems)
+                {
+                    <tr>
+                        <td>@menuItem.Name</td>
+                        <td>
+                            @{
+                                if (menuItem.Stock <= 0)
+                                {
+                                    <span class="text-danger font-weight-bold">Out of Stock</span>
+                                }
+                                else if (menuItem.Stock <= 10)
+                                {
+                                    <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
+                                }
+                                else
+                                {
+                                    @menuItem.Stock
+                                }
+                            }
+                        </td>
+                        <td>@menuItem.Price</td>
+                        <td>
+                            <a href="/Waiter/AddItem/@menuItem.MenuItemId">Add to Order</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
