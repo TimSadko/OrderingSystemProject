@@ -1,4 +1,4 @@
-@model OrderingSystemProject.Models.DisplayOrderViewModel
+@model OrderingSystemProject.Models.Bill
 
 <h2>Order Bill</h2>
 @{
@@ -8,9 +8,9 @@
     euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
 }
 
-@if (Model.Order != null)
+@if (Model != null)
 {
-    <p><strong>Order ID:</strong> @Model.Order.OrderId</p>
+    <p><strong>Order ID:</strong> @Model.OrderId</p>
     <p><strong>Table:</strong> @Model.Order.TableId</p>
     <p><strong>Order Time:</strong> @Model.Order.OrderTime</p>
 }
@@ -23,7 +23,7 @@ else
 
 <h3 class="mb-3">Order Items</h3>
 
-@if (Model.OrderLines != null && Model.OrderLines.Any())
+@if (Model.Order.Items != null && Model.Order.Items.Count > 0)
 {
     <table class="table table-bordered">
         <thead class="table-light">
@@ -36,12 +36,12 @@ else
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.OrderLines)
+        @foreach (var item in Model.Order.Items)
         {
             <tr>
-                <td>@item.ItemName</td>
-                <td>@item.Price.ToString("C", euroCulture)</td>
-                <td>@item.Quantity</td>
+                <td>@item.MenuItem.Name</td>
+                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
+                <td>@item.Amount</td>
                 <td>@item.Comment</td>
                 <td>@item.LineTotal.ToString("C", euroCulture)</td>
             </tr>

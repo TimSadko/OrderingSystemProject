@@ -4,7 +4,7 @@ namespace OrderingSystemProject.Models
 {
     public enum OrderStatus 
     { 
-        New = 0, Preparing = 1, ReadyForPickup = 2, Completed = 3
+        New = 0, Preparing = 1, ReadyForPickup = 2, Served = 3, Completed = 4
     }
 
     public class Order

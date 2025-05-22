@@ -37,12 +37,6 @@ namespace OrderingSystemProject
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
-            
-            var _display_order_rep = new DbDisplayOrderRepository(builder.Configuration);
-            builder.Services.AddSingleton<IDisplayOrderRepository>(_display_order_rep);
-            CommonRepository._payment_rep = _payment_rep;
-            
-            builder.Services.AddScoped<IDisplayOrderRepository, DbDisplayOrderRepository>();
 
             var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
