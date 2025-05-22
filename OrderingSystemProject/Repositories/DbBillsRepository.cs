@@ -10,39 +10,16 @@ public class DbBillsRepository : IBillRepository
     {
         _connection_string = config.GetConnectionString("OrderingDatabase");
     }
-    public List<Bill> GetAll()
-    {
-        List<Bill> bills = new List<Bill>();
-
-        using (SqlConnection conn = new SqlConnection(_connection_string))
-        {
-            string query = "SELECT OrderId, TableNumber, OrderStatus, OrderTime From Orders ORDER BY TableNumber";
-            SqlCommand com = new SqlCommand(query, conn);
-
-            com.Connection.Open();
-            SqlDataReader reader = com.ExecuteReader();
-
-            Bill bill;
-
-            while (reader.Read())
-            {
-                bill = ReadBill(reader);
-                bills.Add(bill);
-            }
-            reader.Close();
-        }
-        
-        return bills;
-    }
-    
-    public Bill? GetById(int orderId)
+    public Bill? GetById(int id)
     {
         Bill? bill = null;
 
-        using (SqlConnection connection = new SqlConnection(_connection_string))
+        using (SqlConnection conn = new SqlConnection(_connection_string))
         {
-            string query = "SELECT OrderId, TableNumber, OrderStatus, OrderTime From Orders ORDER BY TableNumber"; 
-            SqlCommand com = new SqlCommand(query, connection);
+            string query = "SELECT BillId, OrderId, TotalAmount, Vat From Bills WHERE BillId = @id"; 
+            SqlCommand com = new SqlCommand(query, conn);
+            
+            com.Parameters.AddWithValue("@id", id);
 
             com.Connection.Open();
             SqlDataReader reader = com.ExecuteReader();
@@ -50,15 +27,19 @@ public class DbBillsRepository : IBillRepository
             if (reader.Read())
             {
                 bill = ReadBill(reader);
+                FillInBill(bill);
             }
             reader.Close();
         }
 
         return bill;
     }
-    
     private Bill ReadBill(SqlDataReader reader)
     {
-        return new Bill();
+        return new Bill((int)reader["BillId"], (int)reader["OrderId"], (decimal)reader["TotalAmount"], (int)reader["Vat"]);
+    }
+    private void FillInBill(Bill bill)
+    {
+        bill.Order = CommonRepository._order_rep.GetById(bill.OrderId);
     }
 }

@@ -7,21 +7,23 @@ namespace OrderingSystemProject.Controllers;
 
 public class PaymentController : Controller
 {
-    private readonly IDisplayOrderRepository _orderRepository;
+    private readonly IOrdersRepository _ordersRepository;
 
-    public PaymentController(IDisplayOrderRepository orderRepository)
+    public PaymentController(IOrdersRepository ordersRepository)
     {
-        _orderRepository = orderRepository;
+        _ordersRepository = ordersRepository;
     }
     
     [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
-        var orderSummary = _orderRepository.GetFullOrderSummary(id);
-        if (orderSummary == null || orderSummary.Order == null)
+        Bill bill = new Bill();
+        var orderSummary = _ordersRepository.GetById(id);
+        if (orderSummary == null)
         {
             return NotFound();
         }
-        return View(orderSummary);
+        bill.Order = orderSummary;
+        return View(bill);
     }
 }

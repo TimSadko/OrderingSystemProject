@@ -45,9 +45,35 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders ORDER BY TableId";
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderId = @OrderId";
                 SqlCommand com = new SqlCommand(query, conn);
+                
+                com.Parameters.AddWithValue("@OrderId", id);
+                
+                com.Connection.Open();
+                SqlDataReader reader = com.ExecuteReader();
 
+                if (reader.Read())
+                {
+                    order = ReadOrder(reader);
+                    FillInOrder(order);
+                }
+                reader.Close();
+            }
+
+            return order;
+        }
+        public Order? GetOrderByTable(int tableId)
+        {
+            Order? order = null;
+
+            using (SqlConnection conn = new SqlConnection(_connection_string))
+            {
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE TableId = @TableId AND OrderStatus = 3";
+                SqlCommand com = new SqlCommand(query, conn);
+                
+                com.Parameters.AddWithValue("@TableId", tableId);
+                
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
 

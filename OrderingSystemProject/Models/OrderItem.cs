@@ -37,5 +37,6 @@
         public OrderItemStatus ItemStatus { get => _item_status; set => _item_status = value; }
 
         public MenuItem MenuItem { get => _menu_item; set => _menu_item = value; }
+        public decimal LineTotal => MenuItem.Price * Amount;
     }
 }
