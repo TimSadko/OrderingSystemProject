@@ -119,24 +119,12 @@ public class MenuItemController : Controller
                 cardFilterType,
                 categoryFilterType
             );
-            //return View(nameof(Index), lecturers);
             return View(nameof(Index), menuManagementViewMode);
         }
         catch (Exception e)
         {
-            /*List<MenuItem> menuItems = _menuItemService.GetAll();
-            var menuManagementViewMode = new MenuManagementViewModel(
-                menuItems,
-                MenuManagementViewModel.CardFilterType.ALL,
-                MenuManagementViewModel.CategoryFilterType.ALL
-            );
-            return View(menuManagementViewMode);*/
-            
             ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
             return Index();
-            /*List<Lecturer> lecturers = _lecturersRepository.GetAll();
-            return View(nameof(Index), lecturers);
-            return */
         }
     }
 }
