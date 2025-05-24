@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Microsoft.Data.SqlClient;
 using OrderingSystemProject.Models;
 
@@ -11,53 +12,36 @@ public class DbPaymentRepository : IPaymentRepository
     {
         _connection_string = config.GetConnectionString("OrderingDatabase");
     }
-    public List<Order> GetAll()
+    public Payment? GetById(int id)
     {
-        List<Order> orders = new List<Order>();
+        Payment? payment= null;
 
         using (SqlConnection conn = new SqlConnection(_connection_string))
         {
-            string query = "SELECT OrderId, OrderStatus, OrderTime, TableId From Orders ORDER BY TableNumber";
+            string query = "SELECT PaymentId, BillId, TipAmount, PaymentType, PaymentAmount, Feedback From Payments WHERE PaymentId = @PaymentId"; 
             SqlCommand com = new SqlCommand(query, conn);
+            
+            com.Parameters.AddWithValue("@PaymentId", id);
 
             com.Connection.Open();
             SqlDataReader reader = com.ExecuteReader();
 
-            Order ord;
-
-            while (reader.Read())
+            if (reader.Read())
             {
-                ord = ReadOrder(reader);
-                orders.Add(ord);
+                payment = ReadPayment(reader);
+                FillInPayment(payment);
             }
             reader.Close();
         }
 
-        return orders;
+        return payment;
     }
-    
-    private Order ReadOrder(SqlDataReader reader)
+    private Payment ReadPayment(SqlDataReader reader)
     {
-        return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+        return new Payment((int)reader["PaymentId"], (int)reader["BillId"], (decimal)reader["TipAmount"],(int)reader["PaymentType"], (decimal)reader["PaymentAmount"], (string)reader["Feedback"]);
     }
-
-    public void Pay(int orderId, int amount)
+    private void FillInPayment(Payment payment)
     {
-        throw new NotImplementedException();
-    }
-
-    public void Add(Payment payment)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsPaymentExist(Payment payment)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Split(Payment payment)
-    {
-        throw new NotImplementedException();
+        payment.Bill = CommonRepository._bill_rep.GetById(payment.BillId);
     }
 }
