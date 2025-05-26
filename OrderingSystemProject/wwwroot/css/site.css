@@ -22,14 +22,58 @@ body {
 }
 
 .KitchenDivMain {
-    background-color: rgb(198, 198, 198);
-
-    border: 1px solid rgb(128, 128, 128);
-
+    background-color: #D9D9D9;
+    border: 1px solid #585858;
     margin-bottom: 4px;
+
+    max-width: 30%;
 }
 
 .KitchenDiv {
-    background-color: rgb(198, 198, 198);
-    border-top: 1px solid rgb(128, 128, 128);
+    background-color: #D9D9D9;
+    border-top: 1px solid #585858;
+}
+
+.KitchenTopGreen {
+    background: #E0FFAF;
+}
+
+.KitchenTopYellow {
+    background: #FFEEAF;
+}
+
+.KitchenTopRed {
+    background: #FF9A9A;
+}
+
+.KitchenItemText {
+    margin-left: 3px;
+}
+
+.KitchenItemCommentText {
+    color: #434343;
+
+    margin-left: 13px;
+    margin-bottom: 3px;
+}
+
+.KitchenOrderTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.KitchenOrderTableNumber {
+    margin-left: 3px;
+}
+
+.KitchenOrderOrderTime {
+    text-align: end;
+    margin-right: 3px;
+}
+
+.KitchenOrderTimePassed {
+    display: flex;
+    justify-content: end;
+
+    margin-right: 3px;
 }

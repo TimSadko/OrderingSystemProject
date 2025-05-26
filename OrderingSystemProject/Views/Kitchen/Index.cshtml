@@ -29,15 +29,39 @@
 		foreach(var order in Model.Orders)
 		{
 			<div class="KitchenDivMain">
-				<div>tbl @order.TableId</div>
-				<div>@order.OrderTime.ToString("hh:mm:ss")</div>
-				<div>+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
+				@{
+					string order_color = "";
 
+					switch (order.OrderStatus)
+					{
+						case OrderStatus.New:
+							order_color = "class=KitchenTopGreen"; break;
+						case OrderStatus.Preparing:
+							order_color = (order.OrderTime - DateTime.Now).Minutes > 10 ? "class=KitchenTopRed" : "class=KitchenTopYellow"; break;
+					}
+				}
+
+				<div @order_color>
+					<div class="KitchenOrderTop">
+						<span class="KitchenOrderTableNumber">tbl @order.TableId</span>
+						<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("hh:mm:ss")</span>
+					</div>
+					<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
+				</div>
+				
 				@{	
 					foreach(var item in order.Items)
 					{
 						<div class="KitchenDiv">
-							<a>@item.MenuItem.Name</a>
+							<div class="KitchenItemText">@item.MenuItem.Name x@(item.Amount)</div>
+							@if(item.Comment == "")
+							{
+								<div class="KitchenItemCommentText">- reg</div>
+							}
+							else
+							{
+								<div class="KitchenItemCommentText">- @item.Comment</div>
+							}
 						</div>
 					}
 				}
