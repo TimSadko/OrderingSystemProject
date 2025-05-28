@@ -33,7 +33,7 @@ public class EmployeesController : Controller
             if (employee != null) 
             {
                 // if employee exists in session, redirect based on employee type
-                return RedirectEmployee((EmployeeType)employee.EmployeeType); 
+                return RedirectEmployee(employee.EmployeeType); 
             }
         } 
         // if no session exists, show login form
@@ -60,7 +60,7 @@ public class EmployeesController : Controller
                 HttpContext.Session.SetString("LoggedInEmployee", userJson);
                 
                 // redirect Employee by Type
-                return RedirectEmployee((EmployeeType)employee.EmployeeType);
+                return RedirectEmployee(employee.EmployeeType);
             }
         }
         catch (Exception ex)

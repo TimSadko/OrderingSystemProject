@@ -7,12 +7,7 @@
 <h4>Login</h4>
 
 <!-- Display error message -->
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-}
+<partial name="_ErrorMessage"/>
 
 <form action="/Employees/Login" method="post">
     <div class="form-group py-2">

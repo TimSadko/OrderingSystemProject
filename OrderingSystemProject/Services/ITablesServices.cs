@@ -6,4 +6,5 @@ public interface ITablesServices
 {
     List<Table> GetAllTables();
     Table GetTableByNumber(int tableId);
+    List<TableOrderInfo> GetOrderStatusByTableId();
 }

@@ -6,4 +6,5 @@ public interface ITablesRepository
 {
     List<Table> GetAllTables();
     Table GetTableByNumber(int tableId);
+    List<TableOrderInfo> GetOrderStatusByTableId();
 }

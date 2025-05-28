@@ -21,4 +21,8 @@ public class TablesServices : ITablesServices
     {
         return _tablesRepository.GetTableByNumber(tableId);
     }
+    public List<TableOrderInfo> GetOrderStatusByTableId()
+    {
+        return _tablesRepository.GetOrderStatusByTableId();
+    }
 }

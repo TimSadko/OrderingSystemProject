@@ -68,4 +68,39 @@ public class DbTablesRepository : ITablesRepository
         // return new Table object
         return new Table(tableId, tableNumber, status);
     }
+    
+    public List<TableOrderInfo> GetOrderStatusByTableId()
+    {
+        List<TableOrderInfo> tablesOrderInfo = new List<TableOrderInfo>();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT TableId, OrderStatus, Card FROM Orders " +
+                           "JOIN OrderItems ON Orders.OrderId = OrderItems.OrderId " +
+                           "JOIN MenuItems ON OrderItems.MenuItemId = MenuItems.MenuItemId ";
+            SqlCommand command = new SqlCommand(query, connection);
+            
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            
+            while (reader.Read())
+            {
+                // ReadTableInfo converts a record into a TableInfo object
+                TableOrderInfo tableInfo = ReadTableInfo(reader);
+                tablesOrderInfo.Add(tableInfo);
+            }
+            reader.Close();
+        }
+        return tablesOrderInfo;
+    }
+
+    private TableOrderInfo ReadTableInfo(SqlDataReader reader)
+    {
+        // retrieve data from fields
+        int tableId = (int)reader["TableId"];
+        OrderStatus orderStatus = (OrderStatus)(int)reader["OrderStatus"];
+        ItemCard card = (ItemCard)(int)reader["Card"];
+        
+        // return new TableInfo object
+       return new TableOrderInfo(tableId, orderStatus, card);
+    }
 }

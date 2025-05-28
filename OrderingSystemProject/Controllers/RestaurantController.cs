@@ -25,6 +25,10 @@ public class RestaurantController : Controller
             // get all tables from the Service
             List<Table> tables = _tablesServices.GetAllTables();
             
+            // get info about orders' statuses
+            List<TableOrderInfo> orderStatuses = _tablesServices.GetOrderStatusByTableId();
+            ViewData["OrderStatuses"] = orderStatuses;
+            
             return View(tables);
         }
         catch (Exception ex)

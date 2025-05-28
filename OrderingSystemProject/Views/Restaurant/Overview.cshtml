@@ -2,26 +2,16 @@
 
 @{
     ViewData["Title"] = "Restaurant Overview";
+    var orderStatuses = ViewData["OrderStatuses"] as List<OrderingSystemProject.Models.TableOrderInfo>;
 }
 
 <h4 class="text-center mb-4">Restaurant Overview</h4>
 
 <!-- Display error message -->
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-}
+<partial name="_ErrorMessage"/>
 
 <!-- Display success message -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+<partial name="_SuccessMessage"/>
 
 <!-- Refresh overview -->
 <div class="mb-4">
@@ -55,6 +45,23 @@
                 <div class="card-header text-center">Table @table.TableId</div>
                 <div class="card-body bg-@cardColorClass text-white" style="height: 100px;">
                     <p class="card-text text-center">@statusText</p>
+                    @if (orderStatuses != null)
+                    {
+                        foreach (var order in orderStatuses)
+                        {
+                            if (order.TableId == table.TableId)
+                            {
+                                if (order.Card == ItemCard.DRINKS)
+                                {
+                                    <div>Drinks: @order.OrderStatus</div>
+                                }
+                                else
+                                {
+                                    <div>Food: @order.OrderStatus</div>
+                                }
+                            }
+                        }
+                    }
                 </div>
             </div>
         </div>
