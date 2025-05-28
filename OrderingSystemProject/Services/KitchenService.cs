@@ -14,5 +14,10 @@ namespace OrderingSystemProject.Services
 		{
 			return CommonRepository._order_rep.GetOrdersKitchen();
 		}
+
+		public List<Order> GetDoneCookOrders()
+		{
+			return CommonRepository._order_rep.GetDoneOrdersKitchen();
+		}
 	}
 }

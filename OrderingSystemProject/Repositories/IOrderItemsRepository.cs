@@ -9,5 +9,6 @@ namespace OrderingSystemProject.Repositories
         List<OrderItem>? GetOrderItem(int orderId);
 
         List<OrderItem> GetOrderItems(int order_id);
-    }
+        List<OrderItem> GetOrderItemsNoDrinks(int order_id);
+	}
 }

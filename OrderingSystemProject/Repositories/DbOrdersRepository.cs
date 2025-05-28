@@ -99,9 +99,50 @@ namespace OrderingSystemProject.Repositories
             order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
         }
 
-        public List<Order> GetOrdersKitchen()
+		private void FillInOrderNoDrinks(Order order)
+		{
+			order.Items = CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId); // Get order items of current iteration order
+			order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
+		}
+
+		public List<Order> GetOrdersKitchen()
         {
-            return GetAll();
-        }
-    }
+			List<Order> orders = new List<Order>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				Order ord;
+
+				while (reader.Read())
+				{
+					ord = ReadOrder(reader);
+					FillInOrderNoDrinks(ord);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+            for (int i = 0; i < orders.Count; i++)
+            {
+                if (orders[i].Items.Count == 0) 
+                {
+                    orders.RemoveAt(i);
+                    i--;
+                }
+            }
+
+			return orders;
+		}
+
+		public List<Order> GetDoneOrdersKitchen()
+        {
+			return GetAll();
+		}
+	}
 }

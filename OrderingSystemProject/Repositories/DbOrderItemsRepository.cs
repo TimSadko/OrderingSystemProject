@@ -112,5 +112,34 @@ namespace OrderingSystemProject.Repositories
 
 			return orderItems;
 		}
+
+		public List<OrderItem> GetOrderItemsNoDrinks(int order_id)
+		{
+			List<OrderItem> orderItems = new List<OrderItem>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems as Ord WHERE OrderId = @order_id AND (SELECT Count(*) From MenuItems WHERE MenuItemId = Ord.MenuItemId AND [Card] = 2) = 0 ORDER BY OrderId";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@order_id", order_id);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				OrderItem itm;
+
+				while (reader.Read())
+				{
+					itm = ReadItem(reader);
+					FillInItem(itm);
+
+					orderItems.Add(itm);
+				}
+				reader.Close();
+			}
+
+			return orderItems;
+		}
 	}
 }

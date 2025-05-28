@@ -5,5 +5,7 @@ namespace OrderingSystemProject.Services
 	public interface IKitchenServices
 	{
 		List<Order> GetCookOrders();
+
+		List<Order> GetDoneCookOrders();
 	}
 }

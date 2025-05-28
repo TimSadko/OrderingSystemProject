@@ -39,6 +39,11 @@
 								order_color = "class=KitchenTopGreen"; break;
 							case OrderStatus.Preparing:
 								order_color = (order.OrderTime - DateTime.Now).Minutes > 10 ? "class=KitchenTopRed" : "class=KitchenTopYellow"; break;
+							case OrderStatus.ReadyForPickup:
+								order_color = "class=KitchenTopBlue"; break;
+							case OrderStatus.Served:
+							case OrderStatus.Completed:
+								order_color = "class=KitchenTopGrey"; break;
 						}
 					}
 
