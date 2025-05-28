@@ -34,17 +34,17 @@
         string cardColorClass;
         string statusText;
         
-        if (table.Status == (int)TableStatus.Available)
+        if (table.Status == TableStatus.Available)
         {
             cardColorClass = "success";
             statusText = "Available";
         }
-        else if (table.Status == (int)TableStatus.Occupied)
+        else if (table.Status == TableStatus.Occupied)
         {
             cardColorClass = "danger";
             statusText = "Occupied";
         }
-        else if (table.Status == (int)TableStatus.Reserved)
+        else if (table.Status == TableStatus.Reserved)
         {
             cardColorClass = "warning";
             statusText = "Reserved";
@@ -57,7 +57,7 @@
 
         <div class="col px-1"> 
             <div class="card m-1" style="width: 100%;">
-                <div class="card-header text-center">Table @table.TableId</div>
+                <div class="card-header text-center">Table @table.TableNumber</div>
                 <div class="card-body bg-@cardColorClass text-white" style="height: 100px;">
                     <p class="card-text text-center">@statusText</p>
                 </div>

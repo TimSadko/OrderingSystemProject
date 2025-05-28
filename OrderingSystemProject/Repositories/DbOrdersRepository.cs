@@ -95,7 +95,8 @@ namespace OrderingSystemProject.Repositories
 
         private void FillInOrder(Order order)
         {
-            order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order         
+            order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order
+            order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
         }
 
         public List<Order> GetOrdersKitchen()

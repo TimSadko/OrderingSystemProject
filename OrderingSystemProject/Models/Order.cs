@@ -15,6 +15,7 @@ namespace OrderingSystemProject.Models
         private DateTime _order_time;
 
         private List<OrderItem> _items;
+        private Table _table;
 
         public Order() { }
 
@@ -33,5 +34,6 @@ namespace OrderingSystemProject.Models
         public DateTime OrderTime { get => _order_time; set => _order_time = value; }
 
         public List<OrderItem> Items { get => _items; set => _items = value; }
+        public Table Table { get => _table; set => _table = value; }
     }
 }

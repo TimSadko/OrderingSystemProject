@@ -21,17 +21,23 @@ body {
   margin-bottom: 60px;
 }
 
-.KitchenDivMain {
-    background-color: #D9D9D9;
-    border: 1px solid #585858;
-    margin-bottom: 4px;
+.KitchenOrdersList {
+    display: block;
+}
 
+.KitchenDivMain {
+    display: block;
+
+    background-color: #D9D9D9;
+    border: 1.5px solid #585858;
+    margin-bottom: 4px;
     max-width: 30%;
+    width: 30%;
 }
 
 .KitchenDiv {
     background-color: #D9D9D9;
-    border-top: 1px solid #585858;
+    border-top: 1.5px solid #585858;
 }
 
 .KitchenTopGreen {

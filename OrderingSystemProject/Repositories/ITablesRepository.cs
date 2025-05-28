@@ -5,5 +5,5 @@ namespace OrderingSystemProject.Repositories;
 public interface ITablesRepository
 {
     List<Table> GetAllTables();
-    Table GetTableByNumber(int tableId);
+    Table? GetTableById(int tableId);
 }
