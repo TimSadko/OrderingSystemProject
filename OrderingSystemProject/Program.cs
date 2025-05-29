@@ -33,10 +33,15 @@ namespace OrderingSystemProject
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
             CommonRepository._order_item_rep = _order_item_rep;
+            
+            var _bill_rep = new DbBillsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IBillRepository>(_bill_rep);
+            CommonRepository._bill_rep = _bill_rep;
 
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
+            builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
             var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);

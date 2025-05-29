@@ -5,8 +5,15 @@ public class Bill
     public int BillId { get; set; }
     public int OrderId { get; set; }
     public decimal Vat { get; set; }
-    public decimal OrderTotal { get; set; }
-    
+    public decimal OrderTotal
+    {
+        get => OrderSubtotal + Vat;
+        set
+        {
+            _total = value;
+        }
+    }
+
     public decimal OrderSubtotal
     {
         get
@@ -21,6 +28,7 @@ public class Bill
     }
     
     private Order _order;
+    private decimal _total;
 
     public Order Order
     {
@@ -31,8 +39,6 @@ public class Bill
         set
         {
             _order = value;
-            
-            OrderTotal = OrderSubtotal + Vat;
             
             decimal vat = 0;
             foreach (OrderItem item in Order.Items)

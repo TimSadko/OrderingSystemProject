@@ -34,6 +34,21 @@ public class DbBillsRepository : IBillRepository
 
         return bill;
     }
+    public void InsertBill(Bill bill)
+    {
+        using (SqlConnection conn = new SqlConnection(_connection_string))
+        {
+            string query = "INSERT INTO Bills (OrderId, TotalAmount, Vat) OUTPUT INSERTED.BillId VALUES (@orderId, @total, @vat)";
+            SqlCommand com = new SqlCommand(query, conn);
+
+            com.Parameters.AddWithValue("@orderId", bill.OrderId);
+            com.Parameters.AddWithValue("@total", bill.OrderTotal);
+            com.Parameters.AddWithValue("@vat", bill.Vat);
+
+            com.Connection.Open();
+            bill.BillId = (int)com.ExecuteScalar();
+        }
+    }
     private Bill ReadBill(SqlDataReader reader)
     {
         return new Bill((int)reader["BillId"], (int)reader["OrderId"], (decimal)reader["TotalAmount"], (int)reader["Vat"]);
