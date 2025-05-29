@@ -36,9 +36,31 @@ public class DbPaymentRepository : IPaymentRepository
 
         return payment;
     }
+    public Payment InsertPayment(Payment payment)
+    {
+        using (var conn = new SqlConnection(_connection_string))
+        {
+            var query = @"INSERT INTO Payments (BillId, PaymentAmount, TipAmount, PaymentType, Feedback)
+                      OUTPUT INSERTED.PaymentId
+                      VALUES (@BillId, @PaymentAmount, @TipAmount, @PaymentType, @Feedback)";
+            var cmd = new SqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("@BillId", payment.BillId);
+            cmd.Parameters.AddWithValue("@PaymentAmount", payment.PaymentAmount);
+            cmd.Parameters.AddWithValue("@TipAmount", payment.TipAmount);
+            cmd.Parameters.AddWithValue("@PaymentType", payment.PaymentType);
+            cmd.Parameters.AddWithValue("@Feedback", payment.Feedback ?? (object)DBNull.Value);
+
+            conn.Open();
+            payment.PaymentId = (int)cmd.ExecuteScalar();
+        }
+
+        return payment;
+    }
+    
     private Payment ReadPayment(SqlDataReader reader)
     {
-        return new Payment((int)reader["PaymentId"], (int)reader["BillId"], (decimal)reader["TipAmount"],(int)reader["PaymentType"], (decimal)reader["PaymentAmount"], (string)reader["Feedback"]);
+        return new Payment((int)reader["PaymentId"], (int)reader["BillId"], (decimal)reader["TipAmount"],(PaymentType)(int)reader["PaymentType"], (decimal)reader["PaymentAmount"], (string)reader["Feedback"]);
     }
     private void FillInPayment(Payment payment)
     {

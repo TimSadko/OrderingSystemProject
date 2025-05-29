@@ -5,4 +5,5 @@ namespace OrderingSystemProject.Repositories;
 public interface IBillRepository
 { 
     public Bill? GetById(int id);
+    void InsertBill(Bill bill);
 }

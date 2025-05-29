@@ -7,50 +7,93 @@ namespace OrderingSystemProject.Controllers;
 
 public class PaymentController : Controller
 {
-    private readonly IPaymentRepository _paymentRepository;
-    private Bill _current_bill;
-
-    public PaymentController(IPaymentRepository paymentRepository)
+    private readonly IPaymentService _paymentService;
+    public PaymentController(IPaymentService paymentService)
     {
-        _paymentRepository = paymentRepository;
+        _paymentService = paymentService;
     }
 
     [HttpGet("Payment/Pay")]
     public IActionResult Pay()
     {
-        Payment payment = new Payment();
-        payment.Bill = _current_bill;
-        return View(payment);
+        try
+        {
+            var payment = _paymentService.GetNewPayment();
+            return View(payment);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return RedirectToAction("Overview", "Restaurant");
+        }
     }
-    [HttpGet ("Bill/Details/{id}")]
+    
+    [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
-        _current_bill = new Bill();
-        var orderSummary = CommonRepository._order_rep.GetById(id);
-        if (orderSummary == null)
+        try
         {
-            return NotFound();
+            var bill = _paymentService.GetNewBill(id);
+            return View(bill);
         }
-        _current_bill.Order = orderSummary;
-        return View(_current_bill);
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return RedirectToAction("Overview", "Restaurant");
+        }
     }
-    /*
+    
     [HttpPost]
     public IActionResult Pay(Payment payment)
     {
-        if (payment.ButtonPressed == "C")
+        try
         {
-            payment.Input = "";
+            Console.WriteLine($"payment is null: {payment == null}");
+            Console.WriteLine($"payment.Bill is null: {payment?.Bill == null}");
+            Console.WriteLine($"payment.SelectedTipAmount: {payment.SelectedTipAmount}");
+            Console.WriteLine($"payment.Bill.OrderTotal: {payment?.Bill?.OrderTotal}");
+            Console.WriteLine($"payment.TipAmount: {payment?.TipAmount}");
+            Console.WriteLine($"payment.PaymentType: {payment?.PaymentType}");
+            
+            payment.Bill = CommonRepository._bill_rep.GetById(payment.BillId);
+
+            if (payment.Bill == null)
+            {
+                throw new Exception("Bill not found for given BillId.");
+            }
+            
+            //if (!ModelState.IsValid)
+            //{
+               // payment.Bill = CommonRepository._bill_rep.GetById(payment.BillId);
+                //return View(payment);
+            //}
+
+            payment.TipAmount = payment.Bill.OrderTotal * payment.SelectedTipAmount;
+            payment.PaymentAmount = payment.Bill.OrderTotal + payment.TipAmount;
+            
+            var insertedPayment = CommonRepository._payment_rep.InsertPayment(payment);
+            
+            return RedirectToAction("Confirmation", new { id = insertedPayment.PaymentId });
         }
-        else if (payment.ButtonPressed == "<")
+        catch (Exception e)
         {
-            if (!string.IsNullOrEmpty(payment.Input))
-                payment.Input = payment.Input.Substring(0, payment.Input.Length - 1);
-        }
-        else
-        {
-            payment.Input += payment.ButtonPressed;
+            Console.WriteLine(e.Message);
+            throw;
         }
     }
-    */
+    
+    [HttpGet]
+    public IActionResult Confirmation(int id)
+    {
+        try
+        {
+            var payment = CommonRepository._payment_rep.GetById(id);
+            return View(payment);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+    }
 }

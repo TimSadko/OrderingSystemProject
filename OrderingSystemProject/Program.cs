@@ -41,6 +41,7 @@ namespace OrderingSystemProject
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
+            builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
             var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
