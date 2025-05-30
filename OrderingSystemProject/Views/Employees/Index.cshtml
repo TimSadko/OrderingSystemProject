@@ -1,0 +1,78 @@
+@model IEnumerable<OrderingSystemProject.Models.Employee>
+
+@{
+    ViewData["Title"] = "Staff Management";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Staff Management</h1>
+    <a href="/Employees/Create">Create New</a>
+    <p>Number of employees: @Model.Count()</p>
+    @{
+        if (TempData["EmployeeOperationConfirmMessage"] != null)
+        {
+            <div class="alert alert-success" role="alert">@TempData["EmployeeOperationConfirmMessage"]</div>
+        }
+
+        if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
+        }
+    }
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @{
+            foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.UserName</td>
+                    <td>@employee.EmployeeType</td>
+
+                    @{
+                        var status = "";
+                        if (employee.IsActive)
+                        {
+                            status = "Active";
+                        }
+                        else
+                        {
+                            status = "Deactivated";
+                        }
+
+                        <td>@status</td>
+                    }
+
+                    <td class="d-inline-flex">
+                        @{
+                            if (employee.IsActive)
+                            {
+                                <form method="post"
+                                      action="@Url.Action("Deactivate", new { employeeId = employee.EmployeeId })">
+                                    <button type="submit" class="btn btn-primary">Deactivate</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post"
+                                      action="@Url.Action("Activate", new { employeeId = employee.EmployeeId })">
+                                    <button type="submit" class="btn btn-primary">Activate</button>
+                                </form>
+                            }
+                        }
+
+                        <a href="/Employees/Edit/@employee.EmployeeId"><button class="btn btn-primary">Edit</button></a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
