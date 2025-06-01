@@ -9,12 +9,10 @@ namespace OrderingSystemProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             
             Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
             //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
             //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
-       
 
             var _employee_rep = new DbEmployeesRepository(builder.Configuration);
             builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);

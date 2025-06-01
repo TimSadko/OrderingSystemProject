@@ -61,5 +61,24 @@ namespace OrderingSystemProject.Controllers
 
 			return RedirectToAction("Index");
 		}
+
+        [HttpGet]
+        public IActionResult Done()
+        {
+            try
+            {
+                var list = _serv.GetDoneCookOrders(); // Get list od all current orders
+
+                KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Exception"] = ex;
+            }
+
+            return View();        
+        }
 	}
 }
