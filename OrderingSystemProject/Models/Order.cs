@@ -35,5 +35,29 @@ namespace OrderingSystemProject.Models
 
         public List<OrderItem> Items { get => _items; set => _items = value; }
         public Table Table { get => _table; set => _table = value; }
-    }
+
+		public OrderStatus KitchenStatus
+		{
+            get
+            {
+                if(_order_status == OrderStatus.New) return OrderStatus.New;
+
+                int _new = 0, _prep = 0, red = 0;
+
+                for (int i = 0; i < _items.Count; i++)
+                {
+                    if (_items[i].MenuItem.Card == ItemCard.DRINKS) continue;
+                 
+                    if (_items[i].ItemStatus == OrderItemStatus.Preparing) _prep++;
+					else if(_items[i].ItemStatus == OrderItemStatus.Ready) red++;
+					else if(_items[i].ItemStatus == OrderItemStatus.NewItem) _new++;
+				}
+
+                if(_prep == 0 && red == 0) return OrderStatus.New;
+                else if (_new == 0 && _prep == 0) return OrderStatus.ReadyForPickup;
+
+				return OrderStatus.Preparing;
+            }
+		}
+	}
 }

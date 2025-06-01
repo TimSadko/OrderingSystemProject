@@ -13,7 +13,7 @@
 	{
 		<div class="alert-danger">
 			<a>An unexpected exception has occurred, please try again later</a>
-			<a>@ex.Message</a> <!-- Show error message, for debug only-->
+			<a>@ex.Message</a> <!-- Show error message, for debug-->
 		</div>
 	}
 }
@@ -21,54 +21,102 @@
 <div>
 	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
 </div>
-<div>Last Update: @Model.LastUpdate.ToString("hh:mm:ss")</div>
+<div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
 
 <div class="KitchenOrdersList">
 	@{
 		if (Model != null)
 		{
-			foreach (var order in Model.Orders)
+			foreach (var order in Model.Orders) // Go throu list of orders
 			{
+				var _time_since_order = (DateTime.Now - order.OrderTime); // Get the date since order was taken
+
 				<div class="KitchenDivMain">
 					@{
 						string order_color = "";
 
-						switch (order.OrderStatus)
+						switch (order.KitchenStatus) // Get css class with background color depending on order status
 						{
 							case OrderStatus.New:
-								order_color = "class=KitchenTopGreen"; break;
+								order_color = "KitchenTopGreen"; break;
 							case OrderStatus.Preparing:
-								order_color = (order.OrderTime - DateTime.Now).Minutes > 10 ? "class=KitchenTopRed" : "class=KitchenTopYellow"; break;
+								order_color = _time_since_order.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
 							case OrderStatus.ReadyForPickup:
-								order_color = "class=KitchenTopBlue"; break;
+								order_color = "KitchenTopBlue"; break;
 							case OrderStatus.Served:
 							case OrderStatus.Completed:
-								order_color = "class=KitchenTopGrey"; break;
+								order_color = "KitchenTopGrey"; break;
 						}
 					}
 
-					<div @order_color>
+					<div class="KitchenTopBase @order_color"> 
 						<div class="KitchenOrderTop">
 							<span class="KitchenOrderTableNumber">tbl @order.Table.TableNumber</span>
-							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("hh:mm:ss")</span>
+							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("HH:mm:ss")</span>
 						</div>
 						<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
 					</div>
 
 					@{
-						foreach (var item in order.Items)
+						foreach (var item in order.Items) // Go throu list of order_itmes of current order
 						{
 							<div class="KitchenDiv">
-								<div class="KitchenItemText">@item.MenuItem.Name x@(item.Amount)</div>
-								@if (item.Comment == "")
-								{
-									<div class="KitchenItemCommentText">- reg</div>
-								}
-								else
-								{
-									<div class="KitchenItemCommentText">- @item.Comment</div>
-								}
+								<div class="KitchenItemText">
+									@{
+										string _ord_item_color = "";
+
+										switch (item.ItemStatus) // Get css color class depending on current item status
+										{
+											case OrderItemStatus.NewItem:
+												_ord_item_color = "KitchenTopGreen"; break;
+											case OrderItemStatus.Preparing:
+												_ord_item_color = _time_since_order.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
+											case OrderItemStatus.Ready:
+												_ord_item_color = "KitchenTopBlue"; break;
+											case OrderItemStatus.Served:
+												_ord_item_color = "KitchenTopGrey"; break;
+										}
+									}
+									<div class="KitchenOrderItemColor @_ord_item_color"></div>
+									<span class="KitchenOrderItemText">@item.MenuItem.Name x@(item.Amount)</span>
+								</div>
+								<div class="KitchenOrderCommentLine">
+									@{
+										string comment;
+
+										if (item.Comment == "") comment = " - reg"; // add comment to each order item, if there is none, add default one
+										else comment = $"- {item.Comment}";
+
+										<div class="KitchenItemCommentText">@comment</div>
+									}
+
+									@{
+										switch (item.ItemStatus)
+										{
+											case OrderItemStatus.NewItem:
+												{
+													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/TakeOrder/@order.OrderId/@item.Id">
+														<div class="KitchenButtonText">T</div>
+													</a>
+													break;
+												}
+
+											case OrderItemStatus.Preparing:
+												{
+													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/FinishOrder/@order.OrderId/@item.Id">
+														<div class="KitchenButtonText">R</div>
+													</a>
+													break;
+												}
+										}
+									}
+								</div>							
 							</div>
+
+							if(item != order.Items[order.Items.Count - 1]) // if this item is not the last, add item break;
+							{
+								<div class="KitchenOrderItemBreak"></div>
+							}
 						}
 					}
 				</div>

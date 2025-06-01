@@ -31,5 +31,35 @@ namespace OrderingSystemProject.Controllers
 
             return View();
         }
-    }
+
+        [HttpGet ("Kitchen/TakeOrder/{_order_id}/{_item_id}")]
+        public IActionResult TakeOrder(int _order_id, int _item_id)
+        {
+            try
+            {
+                _serv.TakeOrder(_order_id, _item_id);
+            }
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+            return RedirectToAction("Index");
+		}
+
+		[HttpGet ("Kitchen/FinishOrder/{_order_id}/{_item_id}")]
+		public IActionResult FinishOrder(int _order_id, int _item_id)
+		{
+			try
+			{
+				_serv.FinishOrder(_order_id, _item_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+	}
 }
