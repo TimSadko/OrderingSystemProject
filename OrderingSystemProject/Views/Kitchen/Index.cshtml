@@ -55,7 +55,26 @@
 							<span class="KitchenOrderTableNumber">tbl @order.Table.TableNumber</span>
 							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("HH:mm:ss")</span>
 						</div>
-						<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
+						<div class="KitchenOrderTop">
+							@{
+								switch(order.KitchenStatus){
+									case OrderStatus.New:
+										<a class="KitchenOrderButton KitchenOrdrButtonTake" href="/Kitchen/TakeFullOrder/@order.OrderId">
+											<span class="KitchenOrderButtonText">Take</span>
+										</a>
+										break;
+									case OrderStatus.Preparing:
+										<a class="KitchenOrderButton KitchenOrdrButtonFinish" href="/Kitchen/FinishFullOrder/@order.OrderId">
+											<span class="KitchenOrderButtonText">Finish</span>
+										</a>
+										break;
+									default:
+										<span></span>
+										break;
+								}
+							}
+							<span class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</span>
+						</div>
 					</div>
 
 					@{
@@ -104,8 +123,8 @@
 
 											case OrderItemStatus.Preparing:
 												{
-													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/FinishOrder/@order.OrderId/@item.Id">
-														<div class="KitchenButtonText">R</div>
+													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonFinish" href="/Kitchen/FinishOrder/@order.OrderId/@item.Id">
+														<div class="KitchenButtonText">F</div>
 													</a>
 													break;
 												}

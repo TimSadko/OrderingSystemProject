@@ -108,9 +108,45 @@ body {
     margin-right: 3px;
 }
 
+.KitchenOrderButton {
+    display: inline;
+
+    height: 22px;
+    line-height: 22px;
+
+    border: 1.5px solid #585858;
+    border-radius: 10%;
+
+    text-decoration: none;
+
+    align-self: center;
+
+    margin-left: 3px;
+    margin-bottom: 2px;
+
+    padding: 0;
+    /*margin-bottom: 10px;*/   
+}
+
+.KitchenOrderButtonText {
+    display: inline-block;
+
+    color: #585858;
+
+    height: 22px;
+    line-height: 22px;
+
+    text-align: center;  
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
 .KitchenOrderTimePassed {
-    display: flex;
-    justify-content: end;
+    text-align: end;
 
     margin-right: 3px;
 }
@@ -185,6 +221,7 @@ body {
 
     padding: 0;
 
+    margin-top: 0;
     margin-bottom: 10px;
 }
 
@@ -194,5 +231,14 @@ body {
 
 .KitchenOrdrButtonTake:hover {
     background: #ffe78c;
+    border: 1.5px solid #363636;
+}
+
+.KitchenOrdrButtonFinish {
+    background: #AFB0FF;
+}
+
+.KitchenOrdrButtonFinish:hover {
+    background: #9698ff;
     border: 1.5px solid #363636;
 }

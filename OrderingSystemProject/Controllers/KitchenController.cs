@@ -62,7 +62,37 @@ namespace OrderingSystemProject.Controllers
 			return RedirectToAction("Index");
 		}
 
-        [HttpGet]
+		[HttpGet("Kitchen/TakeFullOrder/{_order_id}")]
+		public IActionResult TakeFullOrder(int _order_id)
+		{
+			try
+			{
+				_serv.TakeFullOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Kitchen/FinishFullOrder/{_order_id}")]
+		public IActionResult FinishFullOrder(int _order_id)
+		{
+			try
+			{
+				_serv.FinishFullOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
         public IActionResult Done()
         {
             try

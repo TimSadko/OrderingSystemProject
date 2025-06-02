@@ -66,18 +66,65 @@ namespace OrderingSystemProject.Services
 
 			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
 
+			SetOrderStatusToReadyIfAllReady(order); // Set status of the order to served, if all of the items are served
+		}
+
+		public void TakeFullOrder(int _order_id)
+		{
+			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
+
+			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
+
+			if (order.KitchenStatus != OrderStatus.New) return;
+
+            for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
+            {
+				if (order.Items[i].MenuItem.Card == ItemCard.DRINKS) continue; // if item is drink, skip it
+
+				if (order.Items[i].ItemStatus == OrderItemStatus.NewItem) // if current item status is new
+				{
+					CommonRepository._order_item_rep.UpdateOrderItemStatus(order.Items[i].Id, OrderItemStatus.Preparing); // Change status of the item in db
+				}
+            }
+
+			CommonRepository._order_rep.UpdateOrderStatus(_order_id, OrderStatus.Preparing); // Update the status of order in db		
+		}
+
+		public void FinishFullOrder(int _order_id)
+		{
+			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
+
+			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
+
+			if (order.KitchenStatus != OrderStatus.Preparing) return;
+
+			for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
+			{
+				if (order.Items[i].MenuItem.Card == ItemCard.DRINKS) continue; // if item is drink, skip it
+
+				if (order.Items[i].ItemStatus == OrderItemStatus.NewItem || order.Items[i].ItemStatus == OrderItemStatus.Preparing) // if current item status is new or preparing
+				{
+					CommonRepository._order_item_rep.UpdateOrderItemStatus(order.Items[i].Id, OrderItemStatus.Ready); // Change status of the item in db
+				}
+			}
+
+			SetOrderStatusToReadyIfAllReady(order); // Set status of the order to served, if all of the items are served	
+		}
+
+		private void SetOrderStatusToReadyIfAllReady(Order order)
+		{
 			bool all_items_ready = true;
 
-            for (int i = 0; i < order.Items.Count; i++) // Go throu list of order+items of the order, to determaine if all of them are ready
-            {
+			for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_items of the order, to determaine if all of them are ready
+			{
 				if (order.Items[i].ItemStatus == OrderItemStatus.NewItem || order.Items[i].ItemStatus == OrderItemStatus.Preparing)
 				{
 					all_items_ready = false;
 					break;
 				}
-            }
+			}
 
-            if(all_items_ready) CommonRepository._order_rep.UpdateOrderStatus(_order_id, OrderStatus.ReadyForPickup); // If all of them are ready, then update the status of order in db			
+			if (all_items_ready) CommonRepository._order_rep.UpdateOrderStatus(order.OrderId, OrderStatus.ReadyForPickup); // If all of them are ready, then update the status of order in db	
 		}
 	}
 }
