@@ -1,0 +1,54 @@
+﻿@model OrderingSystemProject.Models.Kitchen.OrderItemVieModel
+
+<div class="KitchenDiv">
+	<div class="KitchenItemText">
+		@{
+			string _ord_item_color = "";
+
+			switch (Model.Item.ItemStatus) // Get css color class depending on current item status
+			{
+				case OrderItemStatus.NewItem:
+					_ord_item_color = "KitchenTopGreen"; break;
+				case OrderItemStatus.Preparing:
+					_ord_item_color = Model.Order.TimeSinceOrder.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
+				case OrderItemStatus.Ready:
+					_ord_item_color = "KitchenTopBlue"; break;
+				case OrderItemStatus.Served:
+					_ord_item_color = "KitchenTopGrey"; break;
+			}
+		}
+		<div class="KitchenOrderItemColor @_ord_item_color"></div>
+		<span class="KitchenOrderItemText">@Model.Item.MenuItem.Name x@(Model.Item.Amount)</span>
+	</div>
+	<div class="KitchenOrderCommentLine">
+		@{
+			string comment;
+
+			if (Model.Item.Comment == "") comment = " - reg"; // add comment to each order item, if there is none, add default one
+			else comment = $"- {Model.Item.Comment}";
+
+			<div class="KitchenItemCommentText">@comment</div>
+		}
+
+		@{
+			switch (Model.Item.ItemStatus)
+			{
+				case OrderItemStatus.NewItem:
+					{
+						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/TakeOrder/@Model.Order.OrderId/@Model.Item.Id">
+							<div class="KitchenButtonText">T</div>
+						</a>
+						break;
+					}
+
+				case OrderItemStatus.Preparing:
+					{
+						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonFinish" href="/Kitchen/FinishOrder/@Model.Order.OrderId/@Model.Item.Id">
+							<div class="KitchenButtonText">F</div>
+						</a>
+						break;
+					}
+			}
+		}
+	</div>
+</div>

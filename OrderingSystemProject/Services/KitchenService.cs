@@ -1,4 +1,5 @@
 ﻿using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Kitchen;
 using OrderingSystemProject.Repositories;
 
 namespace OrderingSystemProject.Services
@@ -10,7 +11,7 @@ namespace OrderingSystemProject.Services
 
 		}
 
-		public List<Order> GetCookOrders()
+		public List<KitchenOrder> GetCookOrders()
 		{
 			var list = CommonRepository._order_rep.GetOrdersKitchen();
 
@@ -34,7 +35,7 @@ namespace OrderingSystemProject.Services
 			return list;
 		}
 
-		public List<Order> GetDoneCookOrders()
+		public List<KitchenOrder> GetDoneCookOrders()
 		{
 			return CommonRepository._order_rep.GetDoneOrdersKitchen();
 		}
@@ -71,7 +72,7 @@ namespace OrderingSystemProject.Services
 
 		public void TakeFullOrder(int _order_id)
 		{
-			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
+			var order = new KitchenOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
 
 			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
 
@@ -92,7 +93,7 @@ namespace OrderingSystemProject.Services
 
 		public void FinishFullOrder(int _order_id)
 		{
-			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
+			var order = new KitchenOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
 
 			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
 

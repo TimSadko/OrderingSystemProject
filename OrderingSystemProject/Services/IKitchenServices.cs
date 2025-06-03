@@ -1,12 +1,13 @@
 ﻿using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Kitchen;
 
 namespace OrderingSystemProject.Services
 {
 	public interface IKitchenServices
 	{
-		List<Order> GetCookOrders();
+		List<KitchenOrder> GetCookOrders();
 
-		List<Order> GetDoneCookOrders();
+		List<KitchenOrder> GetDoneCookOrders();
 
 		void TakeOrder(int _order_id, int _item_id);
 

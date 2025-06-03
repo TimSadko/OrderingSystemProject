@@ -93,21 +93,26 @@ namespace OrderingSystemProject.Repositories
             return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
         }
 
-        private void FillInOrder(Order order)
+		private KitchenOrder ReadKitchenOrder(SqlDataReader reader)
+		{
+			return new KitchenOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+		}
+
+		private void FillInOrder(Order order)
         {
             order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order
             order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
         }
 
-		private void FillInOrderNoDrinks(Order order)
+		private void FillInKitchenOrder(KitchenOrder order)
 		{
-			order.Items = CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId); // Get order items of current iteration order
+			order.SetItems(CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId)); // Get order items of current iteration order
 			order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
 		}
 
-		public List<Order> GetOrdersKitchen()
+		public List<KitchenOrder> GetOrdersKitchen()
         {
-			List<Order> orders = new List<Order>();
+			List<KitchenOrder> orders = new List<KitchenOrder>();
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
@@ -117,12 +122,12 @@ namespace OrderingSystemProject.Repositories
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();
 
-				Order ord;
+				KitchenOrder ord;
 
 				while (reader.Read())
 				{
-					ord = ReadOrder(reader);
-					FillInOrderNoDrinks(ord);
+					ord = ReadKitchenOrder(reader);
+					FillInKitchenOrder(ord);
 					orders.Add(ord);
 				}
 				reader.Close();
@@ -140,9 +145,9 @@ namespace OrderingSystemProject.Repositories
 			return orders;
 		}
 
-		public List<Order> GetDoneOrdersKitchen()
+		public List<KitchenOrder> GetDoneOrdersKitchen()
         {
-			List<Order> orders = new List<Order>();
+			List<KitchenOrder> orders = new List<KitchenOrder>();
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
@@ -152,12 +157,12 @@ namespace OrderingSystemProject.Repositories
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();
 
-				Order ord;
+				KitchenOrder ord;
 
 				while (reader.Read())
 				{
-					ord = ReadOrder(reader);
-					FillInOrderNoDrinks(ord);
+					ord = ReadKitchenOrder(reader);
+					FillInKitchenOrder(ord);
 					orders.Add(ord);
 				}
 				reader.Close();
