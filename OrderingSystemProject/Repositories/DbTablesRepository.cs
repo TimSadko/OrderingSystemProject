@@ -6,13 +6,13 @@ namespace OrderingSystemProject.Repositories;
 public class DbTablesRepository : ITablesRepository
 {
     private readonly string? _connectionString;
-    
+
     public DbTablesRepository(IConfiguration configuration)
     {
         // get (database) connectionstring from appsettings
         _connectionString = configuration.GetConnectionString("OrderingDatabase");
     }
-    
+
     public List<Table> GetAllTables()
     {
         List<Table> tables = new List<Table>();
