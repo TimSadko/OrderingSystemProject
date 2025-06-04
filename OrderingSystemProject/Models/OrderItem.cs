@@ -2,7 +2,7 @@
 {
     public enum OrderItemStatus
     {
-
+        NewItem = 0, Preparing = 1, Ready = 2, Served = 3
     }
 
     public class OrderItem

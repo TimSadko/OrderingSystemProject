@@ -22,12 +22,8 @@ public class RestaurantController : Controller
     {
         try
         {
-            // get all tables from the Service
-            List<Table> tables = _tablesServices.GetAllTables();
-            
-            // get info about orders' statuses
-            List<TableOrderInfo> orderStatuses = _tablesServices.GetOrderStatusByTableId();
-            ViewData["OrderStatuses"] = orderStatuses;
+            // get all tables with and with no order
+            List<Table> tables = _tablesServices.GetAllTablesWithOrders();
             
             return View(tables);
         }

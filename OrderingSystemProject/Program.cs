@@ -40,7 +40,7 @@ namespace OrderingSystemProject
             
             builder.Services.AddScoped<IDisplayOrderRepository, DbDisplayOrderRepository>();
 
-            var _tables_rep = new DbTablesRepository(builder.Configuration);
+            var _tables_rep = new DbTablesRepository(builder.Configuration,  _order_item_rep);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesServices, TablesServices>();
