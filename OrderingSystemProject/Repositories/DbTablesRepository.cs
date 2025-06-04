@@ -6,13 +6,13 @@ namespace OrderingSystemProject.Repositories;
 public class DbTablesRepository : ITablesRepository
 {
     private readonly string? _connectionString;
-    
+
     public DbTablesRepository(IConfiguration configuration)
     {
         // get (database) connectionstring from appsettings
         _connectionString = configuration.GetConnectionString("OrderingDatabase");
     }
-    
+
     public List<Table> GetAllTables()
     {
             List<Table> tables = new List<Table>();
@@ -21,18 +21,25 @@ public class DbTablesRepository : ITablesRepository
                 string query = "SELECT TableId, TableNumber, Status FROM Tables";
                 SqlCommand command = new SqlCommand(query, connection);
 
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
 
-                while (reader.Read())
-                {
-                    // ReadTable converts a record into a Table object
-                    Table table = ReadTable(reader);
-                    tables.Add(table);
-                }
-                reader.Close();
+            while (reader.Read())
+            {
+                // ReadTable converts a record into a Table object
+                Table table = ReadTable(reader);
+                tables.Add(table);
+
+                //var table = new Table
+                //{
+                //    TableId = reader.GetInt32(0),
+                //    Number = reader.GetInt32(1),
+                //    Status = reader.GetInt32(2) 
+                //};
             }
-            return tables;
+            reader.Close();
+        }
+        return tables;
     }
     
     public Table? GetTableById(int tableId)
@@ -46,6 +53,20 @@ public class DbTablesRepository : ITablesRepository
             command.Connection.Open();
             SqlDataReader reader = command.ExecuteReader();
                 
+
+    public Table GetTableByNumber(int tableNumber)
+    {
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT TableId, Number, Status FROM Tables WHERE Number = @Number";
+            //"SELECT TableId, Status FROM Tables WHERE TableId = @tableId";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Number", tableNumber);
+            //command.Parameters.AddWithValue("@tableId", tableId);
+
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
             // check if the table exists
             if (reader.Read())
             {
@@ -57,10 +78,10 @@ public class DbTablesRepository : ITablesRepository
             return null; // return null if no tables found
         }
     }
-    
+
     private Table ReadTable(SqlDataReader reader)
     {
 		// retrieve data from fields and return new Table object
-		return new Table((int)reader["TableId"], (TableStatus)(int)reader["Status"], (int)reader["TableNumber"]);
+		  return new Table((int)reader["TableId"], (TableStatus)(int)reader["Status"], (int)reader["TableNumber"]);
     }
 }

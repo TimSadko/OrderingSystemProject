@@ -141,6 +141,7 @@ namespace OrderingSystemProject.Repositories
 			return orderItems;
 		}
 
+
 		public List<OrderItem> GetOrderItemsNoDrinks(int order_id)
 		{
 			List<OrderItem> orderItems = new List<OrderItem>();
@@ -188,4 +189,28 @@ namespace OrderingSystemProject.Repositories
 			}          
 		}
 	}
+
+        public void AddItem(OrderItem orderItem)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = "INSERT INTO OrderItems (OrderId, MenuItemId, Amount, Comment, ItemStatus) VALUES (@OrderId, @MenuItemId, @Amount, @Comment, @ItemStatus); SELECT SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@OrderId", orderItem.OrderId);
+                command.Parameters.AddWithValue("@MenuItemId", orderItem.MenuItemId);
+                command.Parameters.AddWithValue("@Amount", orderItem.Amount);
+                command.Parameters.AddWithValue("@Comment", orderItem.Comment);
+                command.Parameters.AddWithValue("@ItemStatus", orderItem.ItemStatus);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("failed!");
+                }
+            }
+        }
+    }
+
 }
