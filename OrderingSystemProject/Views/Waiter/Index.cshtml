@@ -18,12 +18,9 @@
         {
             <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+
+    <partial name="_ErrorMessage" />
 
     <table class="table">
         <thead>

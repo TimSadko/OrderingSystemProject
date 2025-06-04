@@ -26,10 +26,89 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Exception"] = ex;
+                ViewData["Exception"] = ex.Message;
             }
 
             return View();
         }
-    }
+
+        [HttpGet ("Kitchen/TakeOrder/{_order_id}/{_item_id}")]
+        public IActionResult TakeOrder(int _order_id, int _item_id)
+        {
+            try
+            {
+                _serv.TakeOrder(_order_id, _item_id);
+            }
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex.Message;
+			}
+
+            return RedirectToAction("Index");
+		}
+
+		[HttpGet ("Kitchen/FinishOrder/{_order_id}/{_item_id}")]
+		public IActionResult FinishOrder(int _order_id, int _item_id)
+		{
+			try
+			{
+				_serv.FinishOrder(_order_id, _item_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex.Message;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Kitchen/TakeFullOrder/{_order_id}")]
+		public IActionResult TakeFullOrder(int _order_id)
+		{
+			try
+			{
+				_serv.TakeFullOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex.Message;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Kitchen/FinishFullOrder/{_order_id}")]
+		public IActionResult FinishFullOrder(int _order_id)
+		{
+			try
+			{
+				_serv.FinishFullOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex.Message;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+        public IActionResult Done()
+        {
+            try
+            {
+                var list = _serv.GetDoneCookOrders(); // Get list od all current orders
+
+                KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Exception"] = ex.Message;
+            }
+
+            return View();        
+        }
+	}
 }

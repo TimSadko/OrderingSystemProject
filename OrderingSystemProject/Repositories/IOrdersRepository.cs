@@ -12,5 +12,7 @@ namespace OrderingSystemProject.Repositories
 		List<Order> GetOrdersKitchen();
 
 		List<Order> GetDoneOrdersKitchen();
+
+		bool UpdateOrderStatus(int _order_id, OrderStatus _new_status);
 	}
 }

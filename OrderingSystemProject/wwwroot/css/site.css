@@ -83,7 +83,10 @@ a:hover {
 
 .KitchenDiv {
     background-color: #D9D9D9;
-    border-top: 1.5px solid #585858;
+}
+
+.KitchenTopBase {
+    border-bottom: 1.5px solid #585858;
 }
 
 .KitchenTopGreen {
@@ -103,7 +106,7 @@ a:hover {
 }
 
 .KitchenTopGrey {
-    background: #808080;
+    background: #9c9c9c;
 }
 
 .KitchenItemText {
@@ -111,6 +114,8 @@ a:hover {
 }
 
 .KitchenItemCommentText {
+    display: inline;
+
     color: #434343;
 
     margin-left: 13px;
@@ -131,11 +136,105 @@ a:hover {
     margin-right: 3px;
 }
 
+.KitchenOrderButton {
+    display: inline;
+
+    height: 22px;
+    line-height: 22px;
+
+    border: 1.5px solid #585858;
+    border-radius: 10%;
+
+    text-decoration: none;
+
+    align-self: center;
+
+    margin-left: 3px;
+    margin-bottom: 2px;
+
+    padding: 0;
+    /*margin-bottom: 10px;*/   
+}
+
+.KitchenOrderButtonText {
+    display: inline-block;
+
+    color: #585858;
+
+    height: 22px;
+    line-height: 22px;
+
+    text-align: center;  
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
 .KitchenOrderTimePassed {
-    display: flex;
-    justify-content: end;
+    text-align: end;
 
     margin-right: 3px;
+}
+
+.KitchenOrderItemBreak {
+    display: block;
+
+    background: #808080;
+
+    height: 0px;
+    width: 97%;
+
+    margin-bottom: 3px;
+
+    border: 0.5px solid #808080;
+    border-radius: 50px;
+
+    justify-self: center;
+}
+
+.KitchenOrderItemColor {
+    display: inline-block;
+
+    border: 1.5px solid #585858;
+
+    width: 12px;
+    height: 23px;
+
+    vertical-align: middle;
+
+    margin-bottom: 2px;
+    margin-right: 0px;
+}
+
+.KitchenOrderItemText{
+    margin-left: 0px;
+}
+
+.KitchenOrderCommentLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.KitchenOrdrItemActionButton {
+    display: inline;
+
+    width: 22px;
+    height: 22px;
+
+    border: 1.5px solid #585858;
+    border-radius: 50%;
+
+    text-decoration: none;
+
+    align-self: center;
+
+    margin-right: 3px;
+    margin-top: 1px;
+
+    padding: 0;
 }
 
 .bill_frame_bg{
@@ -334,3 +433,38 @@ a:hover {
         display: flex;
         justify-content: space-between;
     }
+   
+
+.KitchenButtonText {
+    display: flex;
+
+    color: #585858;
+
+    text-align: center;
+    vertical-align: middle;
+    
+    justify-self: center;
+
+    padding: 0;
+
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.KitchenOrdrButtonTake {
+    background: #FFEEAF;
+}
+
+.KitchenOrdrButtonTake:hover {
+    background: #ffe78c;
+    border: 1.5px solid #363636;
+}
+
+.KitchenOrdrButtonFinish {
+    background: #AFB0FF;
+}
+
+.KitchenOrdrButtonFinish:hover {
+    background: #9698ff;
+    border: 1.5px solid #363636;
+}

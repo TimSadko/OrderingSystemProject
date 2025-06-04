@@ -19,7 +19,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders";
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders ORDER BY OrderTime";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -111,7 +111,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
@@ -142,7 +142,55 @@ namespace OrderingSystemProject.Repositories
 
 		public List<Order> GetDoneOrdersKitchen()
         {
-			return GetAll();
+			List<Order> orders = new List<Order>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				Order ord;
+
+				while (reader.Read())
+				{
+					ord = ReadOrder(reader);
+					FillInOrderNoDrinks(ord);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+			for (int i = 0; i < orders.Count; i++)
+			{
+				if (orders[i].Items.Count == 0)
+				{
+					orders.RemoveAt(i);
+					i--;
+				}
+			}
+
+			return orders;
+		}
+
+		public bool UpdateOrderStatus(int _order_id, OrderStatus _new_status)
+        {
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "UPDATE Orders SET OrderStatus = @_new_status WHERE OrderId = @_order_id";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@_order_id", _order_id);
+				com.Parameters.AddWithValue("@_new_status", (int)_new_status);
+
+				com.Connection.Open();
+
+				int eff = com.ExecuteNonQuery();
+
+				return eff > 0;
+			}
 		}
 	}
 }
