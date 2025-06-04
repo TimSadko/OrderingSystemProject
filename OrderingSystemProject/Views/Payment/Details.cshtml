@@ -1,5 +1,11 @@
 @model OrderingSystemProject.Models.Bill
 
+
+<body class="bill_frame_bg">
+<h2 class="bill_table">Bill</h2>
+
+<h3 class="bill_table">Table @Model.Order.TableId</h3>
+
 <h2>Order Bill</h2>
 
 <partial name="_ErrorMessage" />
@@ -22,20 +28,19 @@ else
     <p class="text-danger">Order not found.</p>
 }
 
-<hr class="my-4" />
-
-<h3 class="mb-3">Order Items</h3>
+<hr class="my-4"/>
 
 @if (Model.Order.Items != null && Model.Order.Items.Count > 0)
 {
-    <table class="table table-bordered">
-        <thead class="table-light">
+    <table class="table-bill">
+        <thead class="thead-bill">
         <tr>
             <th>Item Name</th>
-            <th>Unit Price</th>
             <th>Quantity</th>
+            <th>Unit Price</th>
             <th>Comment</th>
             <th>Line Total</th>
+            <th>VAT</th>
         </tr>
         </thead>
         <tbody>
@@ -43,31 +48,40 @@ else
         {
             <tr>
                 <td>@item.MenuItem.Name</td>
-                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
                 <td>@item.Amount</td>
+                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
                 <td>@item.Comment</td>
                 <td>@item.LineTotal.ToString("C", euroCulture)</td>
+                @if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
+                {
+                    <td>21%</td>
+                }
+                else
+                {
+                    <td>9%</td>
+                }
             </tr>
         }
         </tbody>
         <tfoot>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">Subtotal:</td>
-            <td class="fw-bold">@Model.OrderSubtotal.ToString("C",euroCulture)</td>
+        <tr class="summary-row">
+            <td colspan="5" class="right-align bold">Subtotal:</td>
+            <td class="fw-bold">@Model.OrderSubtotal.ToString("C", euroCulture)</td>
         </tr>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">VAT:</td>
-            <td class="fw-bold">@Model.Vat.ToString("C",euroCulture)</td>
+        <tr class="summary-row">
+            <td colspan="5" class="right-align bold">VAT:</td>
+            <td class="fw-bold">@Model.Vat.ToString("C", euroCulture)</td>
         </tr>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">Total:</td>
-            <td class="fw-bold">@Model.OrderTotal.ToString("C",euroCulture)</td>
+        <tr class="summary-row">
+            <td colspan="5" class="right-align bold">Total:</td>
+            <td class="fw-bold">@Model.OrderTotal.ToString("C", euroCulture)</td>
         </tr>
         </tfoot>
     </table>
-    <a href="/Payment/Pay" class="button-create m-2" role="button">Pay</a>
+    <button class="button-pay" role="button"><a href="/Payment/Pay">Pay</a></button>
 }
 else
 {
     <p>No items in this order.</p>
 }
+</body>
