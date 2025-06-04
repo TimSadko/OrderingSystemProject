@@ -1,0 +1,117 @@
+@using Microsoft.AspNetCore.Components.Forms
+@model OrderingSystemProject.Models.Payment
+
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
+
+<partial name="_ErrorMessage" />
+
+@if (Model.Bill.Order.Items.Count > 0)
+{
+    <table class="table table-bordered">
+        <thead class="table-light">
+        <tr>
+            <th>Item Name</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Comment</th>
+            <th>Line Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Bill.Order.Items)
+        {
+            <tr>
+                <td>@item.MenuItem.Name</td>
+                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
+                <td>@item.Amount</td>
+                <td>@item.Comment</td>
+                <td>@item.LineTotal.ToString("C", euroCulture)</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+        <tr class="table-secondary">
+            <td colspan="4" class="text-end fw-bold">Subtotal:</td>
+            <td class="fw-bold">@Model.Bill.OrderSubtotal.ToString("C",euroCulture)</td>
+        </tr>
+        <tr class="table-secondary">
+            <td colspan="4" class="text-end fw-bold">VAT:</td>
+            <td class="fw-bold">@Model.Bill.Vat.ToString("C",euroCulture)</td>
+        </tr>
+        <tr class="table-secondary">
+            <td colspan="4" class="text-end fw-bold">Total:</td>
+            <td class="fw-bold">@Model.Bill.OrderTotal.ToString("C",euroCulture)</td>
+        </tr>
+        </tfoot>
+    </table>
+}
+
+<table class="table table-bordered">
+    <thead class="table-light">
+    <tr>
+        <th>Total:</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Bill.OrderTotal.ToString("C", euroCulture)</td>
+        </tr>
+    </tbody>
+</table>
+
+<form asp-controller="Payment" asp-action="Pay" method="post">
+    <input type="hidden" name="BillId" value="@Model.Bill.BillId" />
+    <input type="hidden" name="PaymentAmount" value="@Model.PaymentAmount"/>
+    <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal"/>
+
+    <div class="form-group py-2">
+        <label for="SelectedTipAmount">Tip:</label>
+        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.2m) 20%
+        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.1m) 10%
+        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0m) Not Today
+        <span asp-validation-for="SelectedTipAmount" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PaymentType">Payment Type:</label><br />
+        @foreach (var p in System.Enum.GetValues(typeof(PaymentType)))
+        {
+            <label asp-for="PaymentType">@p</label>
+            <input type="radio" asp-for="PaymentType" value="@((int)p)"/>
+        }
+        <span asp-validation-for="PaymentType" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Feedback" class="form-label"></label>
+        <textarea id="feedback" name="feedback" rows="5" cols="50" placeholder="The food was wonderful!" value="@Model.Feedback"></textarea>
+        <span asp-validation-for="Feedback" class="text-danger"></span>
+    </div>
+
+    <button type="submit" name="finalSubmit" value="true" class="btn btn-success">Submit</button>
+</form>
+
+<style>
+    .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 80px);
+        gap: 10px;
+        margin-top: 20px;
+    }
+    input[readonly] {
+        background-color: #eee;
+        font-size: 1.5rem;
+        text-align: right;
+        width: 200px;
+    }
+    button {
+        width: 110px;
+        height: 80px;
+        font-size: 1rem;
+    }
+</style>

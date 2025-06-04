@@ -4,7 +4,16 @@
     ViewData["Title"] = "Waiter Menu";
 }
 
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
+
 <div class="text-center">
+
+    <partial name="_ErrorMessage" />
 
     <table class="table">
         <thead>
@@ -39,7 +48,7 @@
                                 }
                             }
                         </td>
-                        <td>@menuItem.Price</td>
+                        <td>@menuItem.Price.ToString("C",euroCulture)</td>
                         <td>
                             <a href="/Waiter/AddItem/@menuItem.MenuItemId">Add to Order</a>
                         </td>

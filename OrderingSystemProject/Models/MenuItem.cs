@@ -8,7 +8,9 @@ namespace OrderingSystemProject.Models
 
         [Display(Name = "Dinner")] DINNER = 1,
 
-        [Display(Name = "Drinks")] DRINKS = 2
+        [Display(Name = "Drinks")] DRINKS = 2,
+        
+        [Display(Name = "Alcoholic Drinks")] ALCOHOLIC_DRINKS = 3
     }
 
     public enum ItemCategory

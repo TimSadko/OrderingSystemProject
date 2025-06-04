@@ -1,7 +1,7 @@
 ﻿@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
 
 @{
-	ViewData["Title"] = "Kitchen";
+	ViewData["Title"] = "Kitchen - Done Orders";
 }
 
 <h1>Orders List</h1>
@@ -9,8 +9,8 @@
 <partial name="_ErrorMessage" />
 
 <div>
-	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
-	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Done Orders</a>
+	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Refresh</a>
+	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Current Orders</a>
 </div>
 <div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
 
@@ -26,7 +26,7 @@
 					@{
 						string order_color = "";
 
-						switch (order.KitchenStatus) // Get css class with background color depending on order status
+						switch (order.OrderStatus) // Get css class with background color depending on order status
 						{
 							case OrderStatus.New:
 								order_color = "KitchenTopGreen"; break;
@@ -40,31 +40,12 @@
 						}
 					}
 
-					<div class="KitchenTopBase @order_color"> 
+					<div class="KitchenTopBase @order_color">
 						<div class="KitchenOrderTop">
 							<span class="KitchenOrderTableNumber">tbl @order.Table.TableNumber</span>
 							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("HH:mm:ss")</span>
 						</div>
-						<div class="KitchenOrderTop">
-							@{
-								switch(order.KitchenStatus){
-									case OrderStatus.New:
-										<a class="KitchenOrderButton KitchenOrdrButtonTake" href="/Kitchen/TakeFullOrder/@order.OrderId">
-											<span class="KitchenOrderButtonText">Take</span>
-										</a>
-										break;
-									case OrderStatus.Preparing:
-										<a class="KitchenOrderButton KitchenOrdrButtonFinish" href="/Kitchen/FinishFullOrder/@order.OrderId">
-											<span class="KitchenOrderButtonText">Finish</span>
-										</a>
-										break;
-									default:
-										<span></span>
-										break;
-								}
-							}
-							<span class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</span>
-						</div>
+						<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
 					</div>
 
 					@{
@@ -99,31 +80,10 @@
 
 										<div class="KitchenItemCommentText">@comment</div>
 									}
-
-									@{
-										switch (item.ItemStatus)
-										{
-											case OrderItemStatus.NewItem:
-												{
-													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/TakeOrder/@order.OrderId/@item.Id">
-														<div class="KitchenButtonText">T</div>
-													</a>
-													break;
-												}
-
-											case OrderItemStatus.Preparing:
-												{
-													<a class="KitchenOrdrItemActionButton KitchenOrdrButtonFinish" href="/Kitchen/FinishOrder/@order.OrderId/@item.Id">
-														<div class="KitchenButtonText">F</div>
-													</a>
-													break;
-												}
-										}
-									}
-								</div>							
+								</div>
 							</div>
 
-							if(item != order.Items[order.Items.Count - 1]) // if this item is not the last, add item break;
+							if (item != order.Items[order.Items.Count - 1]) // if this item is not the last, add item break;
 							{
 								<div class="KitchenOrderItemBreak"></div>
 							}

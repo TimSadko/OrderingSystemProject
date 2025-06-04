@@ -1,0 +1,16 @@
+@model OrderingSystemProject.Models.Payment
+
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
+
+<h2>Thank you for your order!</h2>
+<p>Order Total is: @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
+<p>Payment amount is: @Model.PaymentAmount.ToString("C", euroCulture)</p>
+<p>Your tip was: @Model.TipAmount.ToString("C", euroCulture)</p>
+<p>Your payment type was: @Model.PaymentType</p>
+
+<p>Feedback: @Model.Feedback</p>

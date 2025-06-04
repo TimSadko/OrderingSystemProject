@@ -15,11 +15,11 @@ public class DbTablesRepository : ITablesRepository
 
     public List<Table> GetAllTables()
     {
-        List<Table> tables = new List<Table>();
-        using (SqlConnection connection = new SqlConnection(_connectionString))
-        {
-            string query = "SELECT TableId, Number, Status FROM Tables";
-            SqlCommand command = new SqlCommand(query, connection);
+            List<Table> tables = new List<Table>();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT TableId, TableNumber, Status FROM Tables";
+                SqlCommand command = new SqlCommand(query, connection);
 
             command.Connection.Open();
             SqlDataReader reader = command.ExecuteReader();
@@ -41,6 +41,18 @@ public class DbTablesRepository : ITablesRepository
         }
         return tables;
     }
+    
+    public Table? GetTableById(int tableId)
+    {
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT TableId, TableNumber, Status FROM Tables WHERE TableId = @tableId";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@tableId", tableId);
+
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+                
 
     public Table GetTableByNumber(int tableNumber)
     {
@@ -55,33 +67,21 @@ public class DbTablesRepository : ITablesRepository
 
             command.Connection.Open();
             SqlDataReader reader = command.ExecuteReader();
-
             // check if the table exists
             if (reader.Read())
             {
                 Table table = ReadTable(reader);
                 reader.Close();
                 return table;
-
-                //return new Table
-                //{
-                //    TableId = reader.GetInt32(0),
-                //    Number = reader.GetInt32(1),
-                //    Status = reader.GetInt32(2)
-                //};
             }
             reader.Close();
-            return null; // return null if no employee found
+            return null; // return null if no tables found
         }
     }
 
     private Table ReadTable(SqlDataReader reader)
     {
-        // retrieve data from fields
-        int tableId = (int)reader["TableId"];
-        int tableNumber = (int)reader["Number"];
-        int status = (int)reader["Status"];
-        // return new Table object
-        return new Table(tableId, status, tableNumber);
+		// retrieve data from fields and return new Table object
+		  return new Table((int)reader["TableId"], (TableStatus)(int)reader["Status"], (int)reader["TableNumber"]);
     }
 }

@@ -9,17 +9,18 @@ public enum TableStatus
 public class Table
 {
     public int TableId { get; set; }
+    public TableStatus Status { get; set; }
+    public int TableNumber { get; set; }
 
-    public int Number { get; set; }
-    public int Status { get; set; }
     public Table()
     {
         // default constructor...
     }
-    public Table(int tableId, int tableNumber, int status)
-    {
-        TableId = tableId;
-        Number = tableNumber;
-        Status = status;
-    }
+
+	public Table(int tableId, TableStatus status, int tableNumber)
+	{
+		TableId = tableId;
+		Status = status;
+		TableNumber = tableNumber;
+	}
 }
