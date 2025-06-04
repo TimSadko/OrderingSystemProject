@@ -8,17 +8,16 @@
     <h1 class="display-4">Staff Management</h1>
     <a href="/Employees/Create">Create New</a>
     <p>Number of employees: @Model.Count()</p>
+
     @{
         if (TempData["EmployeeOperationConfirmMessage"] != null)
         {
             <div class="alert alert-success" role="alert">@TempData["EmployeeOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+
+    <partial name="_ErrorMessage"/>
+
     <table class="table">
         <thead>
         <tr>

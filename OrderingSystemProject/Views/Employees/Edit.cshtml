@@ -5,12 +5,9 @@
 
 <div>
     <h4>Edit Staff</h4>
-    @{
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
-    }
+
+    <partial name="_ErrorMessage" />
+
     <form action="/Employees/Edit" method="post">
         <input hidden type="number" name="EmployeeId" value="@Model?.EmployeeId"/>
         <div class="form-group py-2">

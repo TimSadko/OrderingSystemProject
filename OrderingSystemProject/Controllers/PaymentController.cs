@@ -24,6 +24,7 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -39,6 +40,7 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -78,6 +80,7 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
             throw;
         }
     }
@@ -93,6 +96,7 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
         }
     }

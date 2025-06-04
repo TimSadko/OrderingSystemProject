@@ -43,7 +43,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(menuItem);
         }
     }
@@ -70,7 +70,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(menuItem);
         }
     }
@@ -100,7 +100,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return View(menuItem);
         }
@@ -131,8 +131,8 @@ public class MenuItemController : Controller
                 MenuManagementViewModel.CategoryFilterType.ALL
             );
             return View(menuManagementViewMode);*/
-            
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return Index();
             /*List<Lecturer> lecturers = _lecturersRepository.GetAll();
             return View(nameof(Index), lecturers);

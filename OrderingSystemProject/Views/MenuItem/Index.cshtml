@@ -20,12 +20,10 @@
         {
             <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+
+    <partial name="_ErrorMessage" />
+
     <form method="get" action="@Url.Action("Filter")">
         <div class="form-group row">
             <div class="form-group col-md-5 form-control-lg">

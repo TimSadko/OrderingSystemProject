@@ -1,6 +1,9 @@
 @model OrderingSystemProject.Models.Bill
 
 <h2>Order Bill</h2>
+
+<partial name="_ErrorMessage" />
+
 @{
     var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
     euroCulture.NumberFormat.CurrencySymbol = "€";
