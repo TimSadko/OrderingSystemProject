@@ -28,7 +28,7 @@
     <a asp-controller="Restaurant" asp-action="RefreshOverview" class="btn btn-primary">Refresh Tables</a>
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+@* <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (Table table in Model)
     {
         string cardColorClass;
@@ -64,4 +64,47 @@
             </div>
         </div>
     }
-</div>
+</div> *@
+
+@foreach (Table table in Model)
+{
+    string cardColorClass;
+    string statusText;
+
+    if (table.Status == (int)TableStatus.Available)
+    {
+        cardColorClass = "success";
+        statusText = "Available";
+    }
+    else if (table.Status == (int)TableStatus.Occupied)
+    {
+        cardColorClass = "danger";
+        statusText = "Occupied";
+    }
+    else if (table.Status == (int)TableStatus.Reserved)
+    {
+        cardColorClass = "warning";
+        statusText = "Reserved";
+    }
+    else
+    {
+        cardColorClass = "secondary";
+        statusText = "Unknown";
+    }
+@* 
+    <a asp-controller="Waiter" asp-action="Index" asp-route-tableId="@table.TableId" class="text-decoration-none">
+        <div class="card m-1 p-0 border-0" style="width: 100%;">
+            <div class="card-header text-center">Table @table.TableId</div>
+            <div class="card-body bg-@cardColorClass text-white" style="height: 100px;">
+                <p class="card-text text-center">@statusText</p>
+            </div>
+        </div>
+    </a> *@
+
+    <form asp-action="SelectTable" method="post">
+        <input type="hidden" name="tableNumber" value="@table.Number" />
+        <button type="submit" class="btn btn-primary m-2">
+            Table @table.Number
+        </button>
+    </form>
+}

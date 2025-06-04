@@ -1,22 +1,10 @@
-﻿@model OrderingSystemProject.ViewModels.MenuManagementViewModel
+﻿@model OrderingSystemProject.ViewModels.WaiterViewModel
 
 @{
-    ViewData["Title"] = "Waiter";
+    ViewData["Title"] = "Waiter Menu";
 }
 
 <div class="text-center">
-    <p>Number of menu items: @Model.MenuItems.Count</p>
-    @{
-        if (TempData["MenuItemOperationConfirmMessage"] != null)
-        {
-            <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
-        }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
-    }
 
     <table class="table">
         <thead>
@@ -54,6 +42,34 @@
                         <td>@menuItem.Price</td>
                         <td>
                             <a href="/Waiter/AddItem/@menuItem.MenuItemId">Add to Order</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order Id</th>
+                <th>Amount</th>
+                <th>Comment</th>
+                <th>Item Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var orderItem in Model.Cart)
+                {
+                    <tr>
+                        <td>@orderItem.OrderId</td>
+                        <td>@orderItem.Amount</td>
+                        <td>@orderItem.Comment</td>
+                        <td>@orderItem.ItemStatus</td>
+                        <td>
+                            <a href="/Waiter/AddItem/@orderItem.OrderId">Send to the Kitchen</a>
                         </td>
                     </tr>
                 }

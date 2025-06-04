@@ -9,5 +9,7 @@ namespace OrderingSystemProject.Repositories
         List<OrderItem>? GetOrderItem(int orderId);
 
         List<OrderItem> GetOrderItems(int order_id);
+
+        void AddItem(OrderItem orderItem);
     }
 }

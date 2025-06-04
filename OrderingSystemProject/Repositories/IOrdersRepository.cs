@@ -7,8 +7,14 @@ namespace OrderingSystemProject.Repositories
     {
 		Order? GetById(int id);
 
-		List<Order> GetAll();
+        List<Order> GetAll();
 
 		List<Order> GetOrdersKitchen();
+
+        void Add(Order order);
+
+        Order GetByIdWithItems(int orderId);
+
+        void Update(Order order);
     }
 }

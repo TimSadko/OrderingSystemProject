@@ -76,5 +76,91 @@ namespace OrderingSystemProject.Repositories
         {
             return GetAll();
         }
+
+        //public void Add(Order order)
+        //{
+        //    using (var connection = new SqlConnection(_connection_string))
+        //    {
+        //        string query = @"INSERT INTO Orders (TableId, OrderStatus, OrderTime)
+        //               VALUES (@TableId, @OrderStatus, @OrderTime);
+        //               SELECT CAST(SCOPE_IDENTITY() as int);";
+        //        SqlCommand command = new SqlCommand(query, connection);
+
+        //        command.Parameters.AddWithValue("@TableId", order.TableId);
+        //        command.Parameters.AddWithValue("@OrderStatus", order.OrderStatus);
+        //        command.Parameters.AddWithValue("@OrderTime", order.OrderTime);
+
+        //        connection.Open();
+
+        //        if (command.ExecuteNonQuery() == 0)
+        //        {
+        //            throw new Exception("Menu item creation failed!");
+        //        }
+        //    }
+        //}
+
+        public void Add(Order order)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = @"INSERT INTO Orders (TableId, OrderStatus, OrderTime)
+                         VALUES (@TableId, @OrderStatus, @OrderTime);
+                         SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@TableId", order.TableId);
+                command.Parameters.AddWithValue("@OrderStatus", order.OrderStatus);
+                command.Parameters.AddWithValue("@OrderTime", order.OrderTime);
+
+                connection.Open();
+                var result = command.ExecuteScalar();
+                if (result != null)
+                {
+                    order.OrderId = Convert.ToInt32(result);
+                }
+                else
+                {
+                    throw new Exception("Order creation failed!");
+                }
+            }
+        }
+
+        public Order? GetByIdWithItems(int id)
+        {
+            var order = GetById(id);
+            if (order == null)
+                return null;
+
+            order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId);
+
+            return order;
+        }
+
+        public void Update(Order order)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = @"UPDATE Orders 
+                         SET TableId = @TableId, OrderStatus = @OrderStatus, OrderTime = @OrderTime
+                         WHERE OrderId = @OrderId";
+
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@TableId", order.TableId);
+                command.Parameters.AddWithValue("@OrderStatus", (int)order.OrderStatus);
+                command.Parameters.AddWithValue("@OrderTime", order.OrderTime);
+                command.Parameters.AddWithValue("@OrderId", order.OrderId);
+
+                connection.Open();
+                int affectedRows = command.ExecuteNonQuery();
+
+                if (affectedRows == 0)
+                {
+                    throw new Exception("Order update failed!");
+                }
+            }
+        }
+
     }
 }
