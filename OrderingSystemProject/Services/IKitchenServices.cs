@@ -7,14 +7,20 @@ namespace OrderingSystemProject.Services
 	{
 		List<KitchenOrder> GetCookOrders();
 
+		List<KitchenOrder> GetCookOrdersReady(List<KitchenOrder> all);
+
 		List<KitchenOrder> GetDoneCookOrders();
 
-		void TakeOrder(int _order_id, int _item_id);
+		void TakeItem(int _order_id, int _item_id);
 
-		void FinishOrder(int _order_id, int _item_id);
+		void FinishItem(int _order_id, int _item_id);
 
-		void TakeFullOrder(int _order_id);
+		void ReturnItem(int _order_id, int _item_id);
 
-		void FinishFullOrder(int _order_id);
+		void TakeOrder(int _order_id);
+
+		void FinishOrder(int _order_id);
+
+		void ReturnOrder(int _order_id);
 	}
 }

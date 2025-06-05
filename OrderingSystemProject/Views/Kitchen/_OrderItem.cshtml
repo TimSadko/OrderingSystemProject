@@ -35,16 +35,22 @@
 			{
 				case OrderItemStatus.NewItem:
 					{
-						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/TakeOrder/@Model.Order.OrderId/@Model.Item.Id">
+						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonTake" href="/Kitchen/TakeItem/@Model.Order.OrderId/@Model.Item.Id">
 							<div class="KitchenButtonText">T</div>
 						</a>
 						break;
 					}
-
 				case OrderItemStatus.Preparing:
 					{
-						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonFinish" href="/Kitchen/FinishOrder/@Model.Order.OrderId/@Model.Item.Id">
+						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonFinish" href="/Kitchen/FinishItem/@Model.Order.OrderId/@Model.Item.Id">
 							<div class="KitchenButtonText">F</div>
+						</a>
+						break;
+					}
+				case OrderItemStatus.Ready:
+					{
+						<a class="KitchenOrdrItemActionButton KitchenOrdrButtonReturn" href="/Kitchen/ReturnItem/@Model.Order.OrderId/@Model.Item.Id">
+							<div class="KitchenButtonText">R</div>
 						</a>
 						break;
 					}
