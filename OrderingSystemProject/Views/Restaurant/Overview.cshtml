@@ -17,7 +17,7 @@
     <a asp-controller="Restaurant" asp-action="RefreshOverview" class="btn btn-primary">Refresh Tables</a>
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="row row-cols-1 row-cols-md-5 g-4">
     @foreach (Table table in Model)
     {
         string cardColorClass;
@@ -25,17 +25,17 @@
         
         if (table.Status == TableStatus.Available)
         {
-            cardColorClass = "success";
+            cardColorClass = "table-available";
             statusText = "Available";
         }
         else if (table.Status == TableStatus.Occupied)
         {
-            cardColorClass = "danger";
+            cardColorClass = "table-occupied";
             statusText = "Occupied";
         }
         else
         {
-            cardColorClass = "secondary";
+            cardColorClass = "table-unknown";
             statusText = "Unknown";
         }
 
