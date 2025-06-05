@@ -51,8 +51,9 @@ public class EmployeesController : Controller
             return NotFound();
         }
 
-        var menuItem = _employeesService.GetById((int)id);
-        return View(menuItem);
+        var employee = _employeesService.GetById((int)id);
+        employee.Password = "";
+        return View(employee);
     }
 
     [HttpPost]
