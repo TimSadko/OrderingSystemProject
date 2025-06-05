@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers;
 
@@ -20,6 +21,13 @@ public class RestaurantController : Controller
     [HttpGet]
     public IActionResult Overview()
     {
+       EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+       
+       // check if user is logged in and has correct role
+        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager)
+        {
+            return RedirectToAction("Login", "Employees");
+        }
         try
         {
             // get all tables with and with no order

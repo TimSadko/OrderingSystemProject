@@ -53,7 +53,7 @@ public class Table
                 // check if this is food (LUNCH or DINNER)
                 if (item.MenuItem != null && (item.MenuItem.Card == ItemCard.LUNCH || item.MenuItem.Card == ItemCard.DINNER))
                 {
-                    if ((int)item.ItemStatus == 2) hasReady = true;        // Ready item status
+                    if ((int)item.ItemStatus == 2) hasReady = true;        // Ready item status   - compare to enum
                     if ((int)item.ItemStatus == 1) hasPreparing = true;  // Preparing item status
                     if ((int)item.ItemStatus == 0) hasNewItem = true;    // NewItem item status
                     if ((int)item.ItemStatus == 3) hasServed = true;     // Served item status
@@ -102,5 +102,6 @@ public class Table
         
             return null;
         }
+        // через switch bool не нужен 
     }
 }
