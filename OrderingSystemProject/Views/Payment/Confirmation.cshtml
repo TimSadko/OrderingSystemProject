@@ -1,16 +1,13 @@
-@model OrderingSystemProject.Models.Payment
+@model Payment
 
-@{
-    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
-    euroCulture.NumberFormat.CurrencySymbol = "€";
-    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
-    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+<h2>✅ Thank you for your payment!</h2>
+
+<p><strong>Paid:</strong> €@Model.PaymentAmount (Tip: €@Model.TipAmount)</p>
+<p><strong>Method:</strong> @Model.PaymentType</p>
+
+@if (!string.IsNullOrWhiteSpace(Model.Feedback))
+{
+    <p><strong>Your Feedback:</strong> @Model.Feedback</p>
 }
 
-<h2>Thank you for your order!</h2>
-<p>Order Total is: @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
-<p>Payment amount is: @Model.PaymentAmount.ToString("C", euroCulture)</p>
-<p>Your tip was: @Model.TipAmount.ToString("C", euroCulture)</p>
-<p>Your payment type was: @Model.PaymentType</p>
-
-<p>Feedback: @Model.Feedback</p>
+<a href="/Restaurant/Overview" class="btn btn-primary mt-3">Back to Home</a>

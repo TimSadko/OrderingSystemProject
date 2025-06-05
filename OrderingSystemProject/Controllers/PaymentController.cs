@@ -8,6 +8,7 @@ namespace OrderingSystemProject.Controllers;
 public class PaymentController : Controller
 {
     private readonly IPaymentService _paymentService;
+    private const string SplitPaymentsKey = "SplitPayments";
     public PaymentController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
@@ -19,6 +20,21 @@ public class PaymentController : Controller
         try
         {
             var payment = _paymentService.GetNewPayment();
+
+            // If billId is passed, load payments for that bill
+            
+            //Only needed when there are multiple payment from splitting part.
+            /*
+            if (billId.HasValue)
+            {
+                var payments = CommonRepository._payment_rep.GetPaymentsByBillId(billId.Value);
+                ViewBag.ExistingPayments = payments;
+            }
+            else
+            {
+                ViewBag.ExistingPayments = new List<Payment>();
+            }
+            */
             return View(payment);
         }
         catch (Exception e)
@@ -29,6 +45,7 @@ public class PaymentController : Controller
         }
     }
     
+    //checked!!
     [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
@@ -45,35 +62,116 @@ public class PaymentController : Controller
         }
     }
     
+    //checked!!!
+    [HttpGet]
+    public IActionResult SplitEqually(int id)
+    {
+        try
+        {
+            var bill = _paymentService.GetNewBill(id);
+            if (bill == null)
+                return RedirectToAction("Overview", "Restaurant");
+
+            return View("SplitEqually", new SplitEquallyViewModel { Bill = bill });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+
+    //Checked!!
+    [HttpPost]
+    public IActionResult SplitEqually(SplitEquallyViewModel model)
+    {
+        try
+        {
+            if (model.NumberOfPeople < 1)
+            {
+                Console.WriteLine("Number of people is less than 1");
+                return View(model);
+            }
+
+            // Re-fetch the bill with full details
+            
+            var bill = _paymentService.GetCurrentBill();
+            var payments = _paymentService.SplitEqually(model);
+            
+            return View("SplitEqually", new SplitEquallyViewModel { Bill = bill, Payments = payments });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+    
+    //!!!Needs Change!!!
+    [HttpGet("Payment/ProcessSplitPayment/{billId}")]
+    public IActionResult ProcessSplitPayment(int billId)
+    {
+        var bill = CommonRepository._bill_rep.GetById(billId);
+        if (bill == null)
+            return RedirectToAction("Overview", "Restaurant");
+
+        var payments = CommonRepository._payment_rep.GetPaymentsByBillId(billId);
+        var totalPaid = payments.Sum(p => p.PaymentAmount);
+        var remainingAmount = bill.OrderTotal - totalPaid;
+
+        //if (remainingAmount <= 0)
+            //return RedirectToAction("Confirmation", new { id = payments.Last().PaymentId });
+
+        var newPayment = new Payment
+        {
+            BillId = billId,
+            Bill = bill,
+            PaymentAmount = remainingAmount
+        };
+
+        ViewBag.Remaining = remainingAmount;
+        return View("ProcessSplitPayment", newPayment);
+    }
+
+    //!!!Needs Change!!!
+    [HttpPost("Payment/ProcessSplitPayment")]
+    public IActionResult ProcessSplitPayment(Payment userPayment)
+    {
+        userPayment.Bill = CommonRepository._bill_rep.GetById(userPayment.BillId);
+
+        if (userPayment.Bill == null)
+            return RedirectToAction("Overview", "Restaurant");
+
+        // Save individual payment to DB
+        CommonRepository._payment_rep.InsertPayment(userPayment);
+
+        var payments = CommonRepository._payment_rep.GetPaymentsByBillId(userPayment.BillId);
+        var totalPaid = payments.Sum(p => p.PaymentAmount);
+
+        if (totalPaid >= userPayment.Bill.OrderTotal)
+        {
+            return RedirectToAction("Confirmation", new { id = userPayment.PaymentId });
+        }
+
+        return RedirectToAction("ProcessSplitPayment", new { billId = userPayment.BillId });
+    }
+    
+    //Checked!!
     [HttpPost]
     public IActionResult Pay(Payment payment)
     {
         try
         {
-            Console.WriteLine($"payment is null: {payment == null}");
-            Console.WriteLine($"payment.Bill is null: {payment?.Bill == null}");
-            Console.WriteLine($"payment.SelectedTipAmount: {payment.SelectedTipAmount}");
-            Console.WriteLine($"payment.Bill.OrderTotal: {payment?.Bill?.OrderTotal}");
-            Console.WriteLine($"payment.TipAmount: {payment?.TipAmount}");
-            Console.WriteLine($"payment.PaymentType: {payment?.PaymentType}");
-            
-            payment.Bill = CommonRepository._bill_rep.GetById(payment.BillId);
+            payment.Bill = _paymentService.GetBillForPaymentById(payment);
 
             if (payment.Bill == null)
             {
                 throw new Exception("Bill not found for given BillId.");
             }
             
-            //if (!ModelState.IsValid)
-            //{
-               // payment.Bill = CommonRepository._bill_rep.GetById(payment.BillId);
-                //return View(payment);
-            //}
-
-            payment.TipAmount = payment.Bill.OrderTotal * payment.SelectedTipAmount;
-            payment.PaymentAmount = payment.Bill.OrderTotal + payment.TipAmount;
-            
-            var insertedPayment = CommonRepository._payment_rep.InsertPayment(payment);
+            _paymentService.SetTipAmount(payment);
+            payment.PaymentAmount = _paymentService.GetPaymentAmount(payment);
+            var insertedPayment = _paymentService.InsertUpdatedPayment(payment);
             
             return RedirectToAction("Confirmation", new { id = insertedPayment.PaymentId });
         }
@@ -85,6 +183,7 @@ public class PaymentController : Controller
         }
     }
     
+    //Checked!!
     [HttpGet]
     public IActionResult Confirmation(int id)
     {

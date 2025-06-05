@@ -1,117 +1,131 @@
-@using Microsoft.AspNetCore.Components.Forms
-@model OrderingSystemProject.Models.Payment
-
+@model Payment
 @{
-    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
-    euroCulture.NumberFormat.CurrencySymbol = "€";
-    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
-    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+    var payments = ViewBag.ExistingPayments as List<OrderingSystemProject.Models.Payment> ?? new List<OrderingSystemProject.Models.Payment>();
 }
 
-<partial name="_ErrorMessage" />
+<h2>Pay Now</h2>
 
-@if (Model.Bill.Order.Items.Count > 0)
+<p><strong>Order Total:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
+
+<form asp-action="Pay" method="post">
+    @Html.HiddenFor(m => m.BillId)
+    <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal" />
+
+    <!-- Tip selection with JavaScript to update total -->
+    <div class="form-group py-2">
+        <label>Tip:</label><br />
+        <input type="radio" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)"> 20%
+        <input type="radio" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)"> 10%
+        <input type="radio" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)"> Not Today
+        <input type="radio" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)"> Custom Tip
+    </div>
+    
+    <div id="customTipContainer" style="display:none;">
+        <label>Enter custom tip (€):</label>
+        <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
+    </div>
+    <span asp-validation-for="CustomTipAmount" class="text-danger"></span>
+
+    <p><strong>Final Payment Total:</strong> <span id="totalDisplay">€@Model.PaymentAmount</span></p>
+    <input type="hidden" id="PaymentAmount" name="PaymentAmount" value="@Model.PaymentAmount" />
+
+    <!-- Payment method -->
+    <div class="form-group py-2">
+        <label>Payment Method:</label><br />
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.Cash) Cash
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.CreditCard) Credit Card
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.DebitCard) Debit Card
+    </div>
+
+    <!-- Feedback textarea (fixed) -->
+    <div class="form-group py-2">
+        <label>Feedback:</label><br />
+        <textarea asp-for="Feedback" rows="5" cols="50" placeholder="The food was wonderful!"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit Payment</button>
+</form>
+<!-- Split Payment Options -->
+<div class="mt-4">
+    <h4>Want to split the bill?</h4>
+    <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
+        Split Equally
+    </a>
+    <a asp-action="ProcessSplitPayment" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+        Split by Custom Amounts
+    </a>
+</div>
+
+@if (payments.Any())
 {
+    <h4>Payments already made:</h4>
     <table class="table table-bordered">
-        <thead class="table-light">
+        <thead>
         <tr>
-            <th>Item Name</th>
-            <th>Unit Price</th>
-            <th>Quantity</th>
-            <th>Comment</th>
-            <th>Line Total</th>
+            <th>Payment ID</th>
+            <th>Amount Paid</th>
+            <th>Tip</th>
+            <th>Payment Type</th>
+            <th>Feedback</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.Bill.Order.Items)
+        @foreach (var pay in payments)
         {
             <tr>
-                <td>@item.MenuItem.Name</td>
-                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
-                <td>@item.Amount</td>
-                <td>@item.Comment</td>
-                <td>@item.LineTotal.ToString("C", euroCulture)</td>
+                <td>@pay.PaymentId</td>
+                <td>@pay.PaymentAmount.ToString("C", euroCulture)</td>
+                <td>@pay.TipAmount.ToString("C", euroCulture)</td>
+                <td>@pay.PaymentType</td>
+                <td>@pay.Feedback</td>
             </tr>
         }
         </tbody>
-        <tfoot>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">Subtotal:</td>
-            <td class="fw-bold">@Model.Bill.OrderSubtotal.ToString("C",euroCulture)</td>
-        </tr>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">VAT:</td>
-            <td class="fw-bold">@Model.Bill.Vat.ToString("C",euroCulture)</td>
-        </tr>
-        <tr class="table-secondary">
-            <td colspan="4" class="text-end fw-bold">Total:</td>
-            <td class="fw-bold">@Model.Bill.OrderTotal.ToString("C",euroCulture)</td>
-        </tr>
-        </tfoot>
     </table>
 }
+else
+{
+    <p>No payments have been made yet.</p>
+}
 
-<table class="table table-bordered">
-    <thead class="table-light">
-    <tr>
-        <th>Total:</th>
-    </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>@Model.Bill.OrderTotal.ToString("C", euroCulture)</td>
-        </tr>
-    </tbody>
-</table>
+<!-- Basic JavaScript to update the payment amount automatically when the user presses the desired tip amount.  -->
 
-<form asp-controller="Payment" asp-action="Pay" method="post">
-    <input type="hidden" name="BillId" value="@Model.Bill.BillId" />
-    <input type="hidden" name="PaymentAmount" value="@Model.PaymentAmount"/>
-    <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal"/>
 
-    <div class="form-group py-2">
-        <label for="SelectedTipAmount">Tip:</label>
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.2m) 20%
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.1m) 10%
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0m) Not Today
-        <span asp-validation-for="SelectedTipAmount" class="text-danger"></span>
-    </div>
+<script>
+    const orderTotal = parseFloat("@Model.Bill.OrderTotal");
 
-    <div class="form-group">
-        <label asp-for="PaymentType">Payment Type:</label><br />
-        @foreach (var p in System.Enum.GetValues(typeof(PaymentType)))
-        {
-            <label asp-for="PaymentType">@p</label>
-            <input type="radio" asp-for="PaymentType" value="@((int)p)"/>
+    function handleTipSelection(radio) {
+        const selectedValue = radio.value;
+
+        if (selectedValue === "custom") {
+            document.getElementById("customTipContainer").style.display = "block";
+            applyCustomTip(); // In case there's already a value typed
+        } else {
+            document.getElementById("customTipContainer").style.display = "none";
+            document.getElementById("customTipValue").value = "";
+
+            const tipPercent = parseFloat(selectedValue);
+            if (!isNaN(tipPercent)) {
+                const tipAmount = orderTotal * tipPercent;
+                updateTotalDisplay(tipAmount);
+            }
         }
-        <span asp-validation-for="PaymentType" class="text-danger"></span>
-    </div>
-    
-    <div class="form-group">
-        <label asp-for="Feedback" class="form-label"></label>
-        <textarea id="feedback" name="feedback" rows="5" cols="50" placeholder="The food was wonderful!" value="@Model.Feedback"></textarea>
-        <span asp-validation-for="Feedback" class="text-danger"></span>
-    </div>
+    }
 
-    <button type="submit" name="finalSubmit" value="true" class="btn btn-success">Submit</button>
-</form>
+    function applyCustomTip() {
+        const customTip = parseFloat(document.getElementById("customTipValue").value) || 0;
+        updateTotalDisplay(customTip);
+    }
 
-<style>
-    .keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 80px);
-        gap: 10px;
-        margin-top: 20px;
+    function updateTotalDisplay(tipAmount) {
+        const total = orderTotal + tipAmount;
+        document.getElementById("totalDisplay").innerText = "€" + total.toFixed(2);
+        document.getElementById("PaymentAmount").value = total.toFixed(2);
     }
-    input[readonly] {
-        background-color: #eee;
-        font-size: 1.5rem;
-        text-align: right;
-        width: 200px;
-    }
-    button {
-        width: 110px;
-        height: 80px;
-        font-size: 1rem;
-    }
-</style>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selected = document.querySelector('input[name="SelectedTipOption"]:checked');
+        if (selected) handleTipSelection(selected);
+    });
+</script>
