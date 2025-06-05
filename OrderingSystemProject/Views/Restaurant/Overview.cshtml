@@ -7,7 +7,7 @@
 <h4 class="text-center mb-4">Restaurant Overview</h4>
 
 <!-- Display error message -->
-<partial name="_ErrorMessage"/>
+<partial name="_ErrorMessage" />
 
 <!-- Display success message -->
 <partial name="_SuccessMessage"/>
@@ -23,12 +23,12 @@
         string cardColorClass;
         string statusText;
         
-        if (table.Status == (int)TableStatus.Available)
+        if (table.Status == TableStatus.Available)
         {
             cardColorClass = "success";
             statusText = "Available";
         }
-        else if (table.Status == (int)TableStatus.Occupied)
+        else if (table.Status == TableStatus.Occupied)
         {
             cardColorClass = "danger";
             statusText = "Occupied";

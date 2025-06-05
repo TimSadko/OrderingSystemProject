@@ -1,4 +1,5 @@
-﻿@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
+﻿@using OrderingSystemProject.Models.Kitchen
+@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
 
 @{
 	ViewData["Title"] = "Kitchen";
@@ -6,42 +7,42 @@
 
 <h1>Orders List</h1>
 
-@{
-	Exception? ex = (Exception?)ViewData["Exception"];
-
-	if(ex != null) // If an exception was passed display it
-	{
-		<div class="alert-danger">
-			<a>An unexpected exception has occurred, please try again later</a>
-			<a>@ex.Message</a> <!-- Show error message, for debug only-->
-		</div>
-	}
-}
+<partial name="_ErrorMessage" />
 
 <div>
 	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
+	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Done Orders</a>
 </div>
-<div>Last Update: @Model.LastUpdate.ToString("hh:mm:ss")</div>
+<div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
 
-@{
-	if(Model != null)
-	{
-		foreach(var order in Model.Orders)
+<div class="KitchenOrdersList">
+	@{
+		if (Model.Orders != null)
 		{
-			<div class="KitchenDivMain">
-				<div>tbl @order.TableId</div>
-				<div>@order.OrderTime.ToString("hh:mm:ss")</div>
-				<div>+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
-
-				@{	
-					foreach(var item in order.Items)
-					{
-						<div class="KitchenDiv">
-							<a>@item.MenuItem.Name</a>
-						</div>
-					}
-				}
-			</div>
+			foreach (var order in Model.Orders) // Go throu list of orders
+			{
+				<partial name="~/Views/Kitchen/_Order.cshtml" model="@order" />
+			}
 		}
 	}
-}
+</div>
+
+<div class="KitchenOrderListsBreak"></div>
+
+<div class="KitchenOrdersList">
+	@{
+		if (Model.ReadyOrders != null)
+		{
+			foreach (var order in Model.ReadyOrders) // Go throu list of orders
+			{
+				<partial name="~/Views/Kitchen/_Order.cshtml" model="@order" />
+			}
+		}
+	}
+</div>
+
+<script>
+	setTimeout(function () {
+		window.location.reload(1);
+	}, 5000);
+</script>

@@ -19,7 +19,7 @@ public class TablesServices : ITablesServices
     
     public Table GetTableByNumber(int tableId)
     {
-        return _tablesRepository.GetTableByNumber(tableId);
+        return _tablesRepository.GetTableById(tableId);
     }
 
     public List<Table> GetAllTablesWithOrders()

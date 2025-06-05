@@ -9,6 +9,10 @@ namespace OrderingSystemProject.Repositories
 
 		List<Order> GetAll();
 
-		List<Order> GetOrdersKitchen();
-    }
+		List<KitchenOrder> GetOrdersKitchen();
+
+		List<KitchenOrder> GetDoneOrdersKitchen();
+
+		bool UpdateOrderStatus(int _order_id, OrderStatus _new_status);
+	}
 }

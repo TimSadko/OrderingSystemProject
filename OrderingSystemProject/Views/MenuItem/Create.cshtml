@@ -2,15 +2,17 @@
 @{
     ViewData["Title"] = "Create Menu Item";
 }
-
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
 <div>
     <h4>New Menu Item</h4>
-    @{
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
-    }
+
+    <partial name="_ErrorMessage" />
+
     <form action="/MenuItem/Create" method="post">
         <div class="form-group py-2">
             <label for="Name">Name:</label>

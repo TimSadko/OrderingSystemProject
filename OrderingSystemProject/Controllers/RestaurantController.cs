@@ -29,7 +29,7 @@ public class RestaurantController : Controller
         }
         catch (Exception ex)
         {
-            ViewData["ErrorMessage"] = "An error occurred. Please try again." + ex.Message;
+            ViewData["Exception"] = "An error occurred. Please try again." + ex.Message;
             // return an empty list of tables
             return View(new List<Table>());
         }
@@ -55,7 +55,7 @@ public class RestaurantController : Controller
         catch (Exception ex)
         {
             // set error message
-            TempData["ErrorMessage"] = "Error refreshing tables: " + ex.Message;
+            ViewData["Exception"] = "Error refreshing tables: " + ex.Message;
             return RedirectToAction("Overview");
         }
     }

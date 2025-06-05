@@ -4,6 +4,12 @@
 @{
     ViewData["Title"] = "Manage Menu Items";
 }
+@{
+    var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+    euroCulture.NumberFormat.CurrencySymbol = "€";
+    euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+    euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
 
 <div class="text-center">
     <h1 class="display-4">Menu Items</h1>
@@ -14,12 +20,10 @@
         {
             <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+
+    <partial name="_ErrorMessage" />
+
     <form method="get" action="@Url.Action("Filter")">
         <div class="form-group row">
             <div class="form-group col-md-5 form-control-lg">
@@ -65,7 +69,7 @@
                 <tr>
                     <td>@menuItem.MenuItemId</td>
                     <td>@menuItem.Name</td>
-                    <td>@menuItem.Price</td>
+                    <td>@menuItem.Price.ToString("C", euroCulture)</td>
                     <td>@menuItem.Card</td>
                     <td>@menuItem.Category</td>
                     <td>
@@ -84,11 +88,42 @@
                             }
                         }
                     </td>
-                    <td>@menuItem.IsActive</td>
-                    <td>
-                        <a href="/MenuItem/Delete/@menuItem.MenuItemId">Delete</a>
-                        <a href="/MenuItem/Edit/@menuItem.MenuItemId">Edit</a>
+                    @{
+                        var status = "";
+                        if (menuItem.IsActive)
+                        {
+                            status = "Active";
+                        }
+                        else
+                        {
+                            status = "Deactivated";
+                        }
+
+                        <td>@status</td>
+                    }
+                    <td class="d-inline-flex">
+                        @{
+                            if (menuItem.IsActive)
+                            {
+                                <form method="post"
+                                      action="@Url.Action("Deactivate", new { menuItemId = menuItem.MenuItemId })">
+                                    <button type="submit" class="m-1 btn btn-primary">Deactivate</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post"
+                                      action="@Url.Action("Activate", new { menuItemId = menuItem.MenuItemId })">
+                                    <button type="submit" class="m-1 btn btn-primary">Activate</button>
+                                </form>
+                            }
+                        }
+
+                        <a href="/MenuItem/Edit/@menuItem.MenuItemId">
+                            <button class="m-1 btn btn-primary">Edit</button>
+                        </a>
                     </td>
+
                 </tr>
             }
         }

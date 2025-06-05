@@ -8,9 +8,12 @@ public enum TableStatus
 public class Table
 {
     public int TableId { get; set; }
+    public TableStatus Status { get; set; }
     public int TableNumber { get; set; }
-    public int Status { get; set; }
-    
+  
+    // holds the active order for this table
+    public Order? ActiveOrder { get; set; }
+
     public Table()
     {
         // default constructor...
@@ -21,10 +24,7 @@ public class Table
         TableId = tableId;
         TableNumber = tableNumber;
         Status = status;
-    }
-
-    // holds the active order for this table
-    public Order? ActiveOrder { get; set; }
+    }   
     
     // constructor to create table with order
     public Table(int tableId, int tableNumber, int status, Order? activeOrder)

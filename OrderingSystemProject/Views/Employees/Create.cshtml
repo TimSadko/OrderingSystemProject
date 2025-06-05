@@ -1,0 +1,55 @@
+@model Employee
+@{
+    ViewData["Title"] = "Create Staff";
+}
+
+<div>
+    <h4>New Staff</h4>
+
+    <partial name="_ErrorMessage" />
+
+    <form action="/Employees/Create" method="post">
+        <div class="form-group py-2">
+            <label for="UserName">User name:</label>
+            <input type="text" id="UserName" name="UserName" class="form-control" required value="@Model?.UserName"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="Password">Password:</label>
+            <input type="password" id="Password" name="Password" class="form-control" required
+                   value="@Model?.Password"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="EmployeeType">Employee type:</label>
+            <select class="form-control"
+                    id="EmployeeType"
+                    asp-for="@Model.EmployeeType"
+                    asp-items="@Html.GetEnumSelectList<EmployeeType>()">
+            </select>
+        </div>
+        <div class="form-group py-2">
+            <label for="FirstName">First name:</label>
+            <input type="text" id="FirstName" name="FirstName" class="form-control" required
+                   value="@Model?.FirstName"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="LastName">Last name:</label>
+            <input type="text" id="LastName" name="LastName" class="form-control" required
+                   value="@Model?.LastName"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="Email">Email:</label>
+            <input type="email" id="Email" name="Email" class="form-control" required
+                   value="@Model?.Email"/>
+        </div>
+        <div class="form-group py-2">
+            <label for="IsActive">Status:</label>
+            @Html.RadioButtonFor(employee => employee.IsActive, true, new { id = "active-true" })
+            @Html.Label("active-true", "Active")
+
+            @Html.RadioButtonFor(employee => employee.IsActive, false, new { id = "active-false" })
+            @Html.Label("active-false", "Deactivated")
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+    <a href="/Employees/Index">Back to List</a>
+</div>

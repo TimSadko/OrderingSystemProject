@@ -1,0 +1,74 @@
+﻿
+
+namespace OrderingSystemProject.Models.Kitchen
+{
+	public class KitchenOrder : Order
+	{
+		private List<OrderItem> _items_starters;
+		private List<OrderItem> _items_mains;
+		private List<OrderItem> _items_deserts;
+
+		public KitchenOrder() : base() { }
+
+
+		public KitchenOrder(int order_id, int table_id, OrderStatus order_status, DateTime order_time) : base(order_id, table_id, order_status, order_time) 
+		{
+			_items_starters = new List<OrderItem>();
+			_items_mains = new List<OrderItem>();
+			_items_deserts = new List<OrderItem>();
+		}
+
+		public KitchenOrder(Order order)
+		{
+			_order_id = order.OrderId;
+			_table_id = order.TableId;
+			_table = order.Table;
+			_order_status = order.OrderStatus;
+			_order_time = order.OrderTime;
+
+			_items_starters = new List<OrderItem>();
+			_items_mains = new List<OrderItem>();
+			_items_deserts = new List<OrderItem>();
+
+			SetItems(order.Items);
+		}
+
+		public void SetItems(List<OrderItem> list)
+		{
+			_items = list;
+
+            for (int i = 0; i < list.Count; i++)
+            {
+				if (list[i].MenuItem.Category == ItemCategory.STARTERS) _items_starters.Add(list[i]);
+				else if (list[i].MenuItem.Category == ItemCategory.MAINS) _items_mains.Add(list[i]);
+				else if (list[i].MenuItem.Category == ItemCategory.DESERTS) _items_deserts.Add(list[i]);
+            }
+        }
+
+		public TimeSpan TimeSinceOrder { get => (DateTime.Now - _order_time); }
+
+		public OrderStatus KitchenStatus
+		{
+			get
+			{
+				if (_order_status == OrderStatus.New) return OrderStatus.New;
+
+				int _new = 0, _prep = 0, red = 0;
+
+				for (int i = 0; i < _items.Count; i++)
+				{
+					if (_items[i].MenuItem.Card == ItemCard.DRINKS) continue;
+
+					if (_items[i].ItemStatus == OrderItemStatus.Preparing) _prep++;
+					else if (_items[i].ItemStatus == OrderItemStatus.Ready) red++;
+					else if (_items[i].ItemStatus == OrderItemStatus.NewItem) _new++;
+				}
+
+				if (_prep == 0 && red == 0) return OrderStatus.New;
+				else if (_new == 0 && _prep == 0) return OrderStatus.ReadyForPickup;
+
+				return OrderStatus.Preparing;
+			}
+		}
+	}
+}

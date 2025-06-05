@@ -43,12 +43,12 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(menuItem);
         }
     }
 
-    [HttpGet("MenuItem/Delete/{ItemId}")]
+    [HttpGet]
     public ActionResult Delete(int? ItemId)
     {
         if (ItemId == null)
@@ -70,7 +70,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(menuItem);
         }
     }
@@ -100,7 +100,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return View(menuItem);
         }
@@ -119,24 +119,50 @@ public class MenuItemController : Controller
                 cardFilterType,
                 categoryFilterType
             );
-            //return View(nameof(Index), lecturers);
             return View(nameof(Index), menuManagementViewMode);
         }
         catch (Exception e)
         {
-            /*List<MenuItem> menuItems = _menuItemService.GetAll();
-            var menuManagementViewMode = new MenuManagementViewModel(
-                menuItems,
-                MenuManagementViewModel.CardFilterType.ALL,
-                MenuManagementViewModel.CategoryFilterType.ALL
-            );
-            return View(menuManagementViewMode);*/
-            
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return Index();
-            /*List<Lecturer> lecturers = _lecturersRepository.GetAll();
-            return View(nameof(Index), lecturers);
-            return */
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Activate(int menuItemId)
+    {
+        try
+        {
+            _menuItemService.Activate(menuItemId);
+
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been activated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Deactivate(int menuItemId)
+    {
+        try
+        {
+            _menuItemService.Deactivate(menuItemId);
+
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been deactivated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

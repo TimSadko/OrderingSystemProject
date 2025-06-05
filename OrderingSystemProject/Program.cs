@@ -9,8 +9,10 @@ namespace OrderingSystemProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             Hasher.SetSalt(builder.Configuration.GetSection("Salt").Value); // Get salt from appsetting.json file and give it to hasher (used for hashing passwords)
+            //Console.WriteLine($"salt: {builder.Configuration.GetSection("Salt").Value}"); // Print salt to console
+            //Console.WriteLine($"pass0: {Hasher.GetHashString("waiter")}"); // Print hashed value to console
 
             var _employee_rep = new DbEmployeesRepository(builder.Configuration);
             builder.Services.AddSingleton<IEmployeesRepository>(_employee_rep);
@@ -24,21 +26,20 @@ namespace OrderingSystemProject
             var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
             CommonRepository._menu_item_rep = _menu_item_rep;
-			builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
+			      builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
             CommonRepository._order_item_rep = _order_item_rep;
+            
+            var _bill_rep = new DbBillsRepository(builder.Configuration);
+            builder.Services.AddSingleton<IBillRepository>(_bill_rep);
+            CommonRepository._bill_rep = _bill_rep;
 
             var _payment_rep = new DbPaymentRepository(builder.Configuration);
             builder.Services.AddSingleton<IPaymentRepository>(_payment_rep);
             CommonRepository._payment_rep = _payment_rep;
-            
-            var _display_order_rep = new DbDisplayOrderRepository(builder.Configuration);
-            builder.Services.AddSingleton<IDisplayOrderRepository>(_display_order_rep);
-            CommonRepository._payment_rep = _payment_rep;
-            
-            builder.Services.AddScoped<IDisplayOrderRepository, DbDisplayOrderRepository>();
+            builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
             var _tables_rep = new DbTablesRepository(builder.Configuration,  _order_item_rep);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
