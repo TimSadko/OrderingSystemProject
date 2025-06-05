@@ -19,7 +19,7 @@ public class Table
         // default constructor...
     }
     
-    public Table(int tableId, int tableNumber, int status)
+    public Table(int tableId, TableStatus status, int tableNumber)
     {
         TableId = tableId;
         TableNumber = tableNumber;
@@ -27,7 +27,7 @@ public class Table
     }   
     
     // constructor to create table with order
-    public Table(int tableId, int tableNumber, int status, Order? activeOrder)
+    public Table(int tableId, TableStatus status, int tableNumber, Order? activeOrder)
     {
         TableId = tableId;
         TableNumber = tableNumber;

@@ -17,24 +17,24 @@ public class DbTablesRepository : ITablesRepository
     
     public List<Table> GetAllTables()
     {
-            List<Table> tables = new List<Table>();
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+        List<Table> tables = new List<Table>();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT TableId, TableNumber, Status FROM Tables";
+            SqlCommand command = new SqlCommand(query, connection);
+
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
             {
-                string query = "SELECT TableId, TableNumber, Status FROM Tables";
-                SqlCommand command = new SqlCommand(query, connection);
-
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    // convert database record to Table object
-                    Table table = ReadTable(reader);
-                    tables.Add(table);
-                }
-                reader.Close();
+                // convert database record to Table object
+                Table table = ReadTable(reader);
+                tables.Add(table);
             }
-            return tables;
+            reader.Close();
+        }
+        return tables;
     }
     
     public Table? GetTableById(int tableId)
@@ -59,8 +59,13 @@ public class DbTablesRepository : ITablesRepository
             return null; // return null if no tables found
         }
     }
-    
-    private Table ReadTable(SqlDataReader reader)
+
+	public Table GetTableByNumber(int tableId)
+	{
+		throw new NotImplementedException();
+	}
+
+	private Table ReadTable(SqlDataReader reader)
     {
       // retrieve data from fields and return new Table object
       return new Table((int)reader["TableId"], (TableStatus)(int)reader["Status"], (int)reader["TableNumber"]);
@@ -96,7 +101,7 @@ public class DbTablesRepository : ITablesRepository
         // retrieve data from fields
         int tableId = (int)reader["TableId"];
         int tableNumber = (int)reader["TableNumber"];
-        int status = (int)reader["Status"];
+        TableStatus status = (TableStatus)(int)reader["Status"];
         
         // check if there is an active order for this table (left join can return null)
         if (reader["OrderId"] != DBNull.Value)
@@ -111,12 +116,12 @@ public class DbTablesRepository : ITablesRepository
             activeOrder.Items = _orderItemsRepository.GetOrderItems(orderId);
         
            // return Table with active order
-            return new Table(tableId, tableNumber, status, activeOrder);
+            return new Table(tableId, status, tableNumber, activeOrder);
         }
         else
         {
             // table has no active order
-            return new Table(tableId, tableNumber, status, null);
+            return new Table(tableId, status, tableNumber, null);
         }
-    }
+    }	
 }

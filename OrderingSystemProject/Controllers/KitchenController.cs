@@ -60,6 +60,7 @@ namespace OrderingSystemProject.Controllers
 			}
 
 			return RedirectToAction("Index");
+
 		}
 
 		[HttpGet("Kitchen/ReturnItem/{_order_id}/{_item_id}")]
