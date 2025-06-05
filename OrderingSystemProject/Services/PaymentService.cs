@@ -45,6 +45,65 @@ public class PaymentService : IPaymentService
         _current_payment = payment;
         return payment;
     }
+
+    public List<Payment> SplitEqually(SplitEquallyViewModel splitEquallyViewModel)
+    {
+        decimal baseAmountPerPerson = CalculateBaseAmountPerPerson(splitEquallyViewModel);
+
+        var payments = new List<Payment>();
+        for (int i = 0; i < splitEquallyViewModel.NumberOfPeople; i++)
+        {
+            var payment = new Payment
+            {
+                BillId = splitEquallyViewModel.Bill.BillId,
+                TipAmount = splitEquallyViewModel.ExtraTip / splitEquallyViewModel.NumberOfPeople,
+                PaymentAmount = baseAmountPerPerson + (splitEquallyViewModel.ExtraTip / splitEquallyViewModel.NumberOfPeople),
+                PaymentType = PaymentType.Cash,
+                Feedback = "",
+                Bill = splitEquallyViewModel.Bill
+            };
+            payments.Add(payment);
+        }
+        return payments;
+    }
+
+    private decimal CalculateBaseAmountPerPerson(SplitEquallyViewModel splitEquallyViewModel)
+    {
+        var bill = GetCurrentBill();
+        decimal baseAmountPerPerson = bill.OrderTotal / splitEquallyViewModel.NumberOfPeople;
+        return baseAmountPerPerson;
+    }
+
+    public Bill GetBillForPaymentById(Payment payment)
+    {
+        return CommonRepository._bill_rep.GetById(payment.BillId);
+    }
+
+    public decimal GetPaymentAmount(Payment payment)
+    {
+        return payment.Bill.OrderTotal + payment.TipAmount;
+    }
+
+    public void SetTipAmount(Payment payment)
+    {
+        if (payment.SelectedTipOption == "custom")
+        {
+            payment.TipAmount = payment.CustomTipAmount.Value;
+        }
+        else
+        {
+            if (decimal.TryParse(payment.SelectedTipOption, out var percent))
+            {
+                payment.TipAmount = payment.Bill.OrderTotal * percent;
+            }
+        }
+    }
+
+    public Payment InsertUpdatedPayment(Payment payment)
+    {
+        var insertedPayment = CommonRepository._payment_rep.InsertPayment(payment);
+        return insertedPayment;
+    }
     
     public Payment? GetCurrentPayment() { return _current_payment; }
     public Bill? GetCurrentBill() { return _current_bill; }

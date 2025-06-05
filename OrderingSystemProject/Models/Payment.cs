@@ -16,7 +16,11 @@ namespace OrderingSystemProject.Models
         public decimal TipAmount{ get; set; }
         
         [Required(ErrorMessage = "Please select a tip amount.")]
-        public decimal SelectedTipAmount { get; set; }
+        //public decimal SelectedTipOption { get; set; }
+        public string SelectedTipOption { get; set; }
+        
+        //enables only if the option custom is selected in the radio button selection
+        public decimal? CustomTipAmount { get; set; }
         
         [Required(ErrorMessage = "Please choose a payment type.")] 
         public PaymentType PaymentType { get; set; }

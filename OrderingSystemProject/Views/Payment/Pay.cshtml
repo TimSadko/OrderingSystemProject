@@ -16,10 +16,17 @@
     <!-- Tip selection with JavaScript to update total -->
     <div class="form-group py-2">
         <label>Tip:</label><br />
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.2m, new { @onclick = "updatePaymentTotal()" }) 20%
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0.1m, new { @onclick = "updatePaymentTotal()" }) 10%
-        @Html.RadioButtonFor(m => m.SelectedTipAmount, 0m, new { @onclick = "updatePaymentTotal()" }) Not Today
+        <input type="radio" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)"> 20%
+        <input type="radio" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)"> 10%
+        <input type="radio" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)"> Not Today
+        <input type="radio" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)"> Custom Tip
     </div>
+    
+    <div id="customTipContainer" style="display:none;">
+        <label>Enter custom tip (€):</label>
+        <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
+    </div>
+    <span asp-validation-for="CustomTipAmount" class="text-danger"></span>
 
     <p><strong>Final Payment Total:</strong> <span id="totalDisplay">€@Model.PaymentAmount</span></p>
     <input type="hidden" id="PaymentAmount" name="PaymentAmount" value="@Model.PaymentAmount" />
@@ -83,16 +90,43 @@ else
     <p>No payments have been made yet.</p>
 }
 
-<script>
-    function updatePaymentTotal() {
-        const orderTotal = parseFloat("@Model.Bill.OrderTotal");
-        const selectedTip = document.querySelector('input[name="SelectedTipAmount"]:checked');
-        const tipPercent = selectedTip ? parseFloat(selectedTip.value) : 0;
-        const total = orderTotal + (orderTotal * tipPercent);
+<!-- Basic JavaScript to update the payment amount automatically when the user presses the desired tip amount.  -->
 
+
+<script>
+    const orderTotal = parseFloat("@Model.Bill.OrderTotal");
+
+    function handleTipSelection(radio) {
+        const selectedValue = radio.value;
+
+        if (selectedValue === "custom") {
+            document.getElementById("customTipContainer").style.display = "block";
+            applyCustomTip(); // In case there's already a value typed
+        } else {
+            document.getElementById("customTipContainer").style.display = "none";
+            document.getElementById("customTipValue").value = "";
+
+            const tipPercent = parseFloat(selectedValue);
+            if (!isNaN(tipPercent)) {
+                const tipAmount = orderTotal * tipPercent;
+                updateTotalDisplay(tipAmount);
+            }
+        }
+    }
+
+    function applyCustomTip() {
+        const customTip = parseFloat(document.getElementById("customTipValue").value) || 0;
+        updateTotalDisplay(customTip);
+    }
+
+    function updateTotalDisplay(tipAmount) {
+        const total = orderTotal + tipAmount;
         document.getElementById("totalDisplay").innerText = "€" + total.toFixed(2);
         document.getElementById("PaymentAmount").value = total.toFixed(2);
     }
 
-    document.addEventListener("DOMContentLoaded", updatePaymentTotal);
+    document.addEventListener("DOMContentLoaded", function () {
+        const selected = document.querySelector('input[name="SelectedTipOption"]:checked');
+        if (selected) handleTipSelection(selected);
+    });
 </script>
