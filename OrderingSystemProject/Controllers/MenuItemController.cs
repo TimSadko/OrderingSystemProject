@@ -123,7 +123,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return Index();
         }
     }
@@ -141,7 +141,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return RedirectToAction(nameof(Index));
         }
@@ -160,7 +160,7 @@ public class MenuItemController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return RedirectToAction(nameof(Index));
         }
