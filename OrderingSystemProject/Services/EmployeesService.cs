@@ -66,4 +66,9 @@ public class EmployeesService : IEmployeesService
     {
         _employeesRepository.Deactivate(employeeId);
     }
+
+    public void Delete(int employeeId)
+    {
+        _employeesRepository.Delete(employeeId);
+    }
 }

@@ -8,17 +8,16 @@
     <h1 class="display-4">Staff Management</h1>
     <a href="/Employees/Create">Create New</a>
     <p>Number of employees: @Model.Count()</p>
+
     @{
         if (TempData["EmployeeOperationConfirmMessage"] != null)
         {
             <div class="alert alert-success" role="alert">@TempData["EmployeeOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+
+    <partial name="_ErrorMessage"/>
+
     <table class="table">
         <thead>
         <tr>
@@ -56,19 +55,26 @@
                             {
                                 <form method="post"
                                       action="@Url.Action("Deactivate", new { employeeId = employee.EmployeeId })">
-                                    <button type="submit" class="btn btn-primary">Deactivate</button>
+                                    <button type="submit" class="m-1 btn btn-primary">Deactivate</button>
                                 </form>
+                                <a href="/Employees/Edit/@employee.EmployeeId">
+                                    <button class="m-1 btn btn-primary">Edit</button>
+                                </a>
                             }
                             else
                             {
                                 <form method="post"
                                       action="@Url.Action("Activate", new { employeeId = employee.EmployeeId })">
-                                    <button type="submit" class="btn btn-primary">Activate</button>
+                                    <button type="submit" class="m-1 btn btn-primary">Activate</button>
+                                </form>
+                                <form method="post"
+                                      action="@Url.Action("Delete", new { employeeId = employee.EmployeeId })"
+                                      onsubmit="return confirm('Are you sure you want to remove ?');">
+                                    <button type="submit" class="m-1 btn btn-danger">Delete</button>
                                 </form>
                             }
                         }
 
-                        <a href="/Employees/Edit/@employee.EmployeeId"><button class="btn btn-primary">Edit</button></a>
                     </td>
                 </tr>
             }

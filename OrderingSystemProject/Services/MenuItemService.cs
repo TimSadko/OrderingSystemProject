@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.ViewModels;
@@ -39,14 +38,14 @@ public class MenuItemService : IMenuItemService
         _menuItemRepository.Delete(item);
     }
 
-    public void Activate(MenuItem item)
+    public void Activate(int menuItemId)
     {
-        throw new NotImplementedException();
+        _menuItemRepository.Activate(menuItemId);
     }
 
-    public void Deactivate(MenuItem item)
+    public void Deactivate(int menuItemId)
     {
-        throw new NotImplementedException();
+        _menuItemRepository.Deactivate(menuItemId);
     }
 
     public List<MenuItem> Filter(

@@ -7,17 +7,7 @@
 
 <h1>Orders List</h1>
 
-@{
-	Exception? ex = (Exception?)ViewData["Exception"];
-
-	if(ex != null) // If an exception was passed display it
-	{
-		<div class="alert-danger">
-			<a>An unexpected exception has occurred, please try again later</a>
-			<a>@ex.Message</a> <!-- Show error message, for debug-->
-		</div>
-	}
-}
+<partial name="_ErrorMessage" />
 
 <div>
 	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>

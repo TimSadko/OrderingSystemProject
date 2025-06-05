@@ -5,12 +5,9 @@
 
 <div>
     <h4>New Staff</h4>
-    @{
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
-    }
+
+    <partial name="_ErrorMessage" />
+
     <form action="/Employees/Create" method="post">
         <div class="form-group py-2">
             <label for="UserName">User name:</label>

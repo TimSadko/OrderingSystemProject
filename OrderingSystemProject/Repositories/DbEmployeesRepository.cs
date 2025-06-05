@@ -99,7 +99,8 @@ public class DbEmployeesRepository : IEmployeesRepository
 
         using (SqlConnection conn = new SqlConnection(_connectionString))
         {
-            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive From Employees WHERE EmployeeId = @Id";
+            string query =
+                "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive From Employees WHERE EmployeeId = @Id";
             SqlCommand com = new SqlCommand(query, conn);
 
             com.Parameters.AddWithValue("@Id", id);
@@ -124,7 +125,8 @@ public class DbEmployeesRepository : IEmployeesRepository
     {
         using (var connection = new SqlConnection(_connectionString))
         {
-            string query = "UPDATE Employees SET UserName = @UserName, Password = @Password, EmployeeType = @EmployeeType, FirstName = @FirstName, LastName = @LastName, Email = @Email, IsActive = @IsActive WHERE EmployeeId = @EmployeeId";
+            string query =
+                "UPDATE Employees SET UserName = @UserName, Password = @Password, EmployeeType = @EmployeeType, FirstName = @FirstName, LastName = @LastName, Email = @Email, IsActive = @IsActive WHERE EmployeeId = @EmployeeId";
             SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@UserName", employee.UserName);
@@ -151,7 +153,7 @@ public class DbEmployeesRepository : IEmployeesRepository
         {
             string query = "UPDATE Employees SET IsActive = 1 WHERE EmployeeId = @EmployeeId";
             SqlCommand command = new SqlCommand(query, connection);
-            
+
             command.Parameters.AddWithValue("@EmployeeId", employeeId);
 
             connection.Open();
@@ -169,7 +171,7 @@ public class DbEmployeesRepository : IEmployeesRepository
         {
             string query = "UPDATE Employees SET IsActive = 0 WHERE EmployeeId = @EmployeeId";
             SqlCommand command = new SqlCommand(query, connection);
-            
+
             command.Parameters.AddWithValue("@EmployeeId", employeeId);
 
             connection.Open();
@@ -178,6 +180,22 @@ public class DbEmployeesRepository : IEmployeesRepository
             {
                 throw new Exception("Staff deactivation failed!");
             }
+        }
+    }
+
+    public void Delete(int employeeId)
+    {
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "DELETE FROM Employees WHERE EmployeeId = @EmployeeId;";
+
+            SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@EmployeeId", employeeId);
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            reader.Close();
         }
     }
 

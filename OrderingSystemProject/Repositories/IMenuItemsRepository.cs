@@ -12,5 +12,7 @@ namespace OrderingSystemProject.Repositories
         List<MenuItem> FilterByCategory(ItemCategory? category);
         List<MenuItem> FilterByCard(ItemCard? card);
         List<MenuItem> FilterByCategoryAndCard(ItemCategory? category, ItemCard? card);
+        void Activate(int menuItemId);
+        void Deactivate(int menuItemId);
     }
 }

@@ -41,7 +41,8 @@ namespace OrderingSystemProject.Repositories
         {
             using (var connection = new SqlConnection(_connection_string))
             {
-                string query = "INSERT INTO MenuItems (Name, Price, Card, Category, Stock, IsActive) VALUES (@Name, @Price, @Card, @Category, @Stock, @IsActive); SELECT SCOPE_IDENTITY()";
+                string query =
+                    "INSERT INTO MenuItems (Name, Price, Card, Category, Stock, IsActive) VALUES (@Name, @Price, @Card, @Category, @Stock, @IsActive); SELECT SCOPE_IDENTITY()";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("@Name", menuItem.Name);
@@ -82,7 +83,8 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE MenuItemId = @Id";
+                string query =
+                    "SELECT MenuItemId, Name, Price, Card, Category, Stock, IsActive From MenuItems WHERE MenuItemId = @Id";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Parameters.AddWithValue("@Id", id);
@@ -90,12 +92,12 @@ namespace OrderingSystemProject.Repositories
                 com.Connection.Open();
                 SqlDataReader reader = com.ExecuteReader();
 
-				if (reader.HasRows)
+                if (reader.HasRows)
                 {
                     reader.Read();
 
-					item = ReadItem(reader);
-				}
+                    item = ReadItem(reader);
+                }
 
                 reader.Close();
             }
@@ -107,7 +109,8 @@ namespace OrderingSystemProject.Repositories
         {
             using (var connection = new SqlConnection(_connection_string))
             {
-                string query = "UPDATE MenuItems SET Name = @Name, Price = @Price, Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive WHERE MenuItemId = @MenuItemId";
+                string query =
+                    "UPDATE MenuItems SET Name = @Name, Price = @Price, Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive WHERE MenuItemId = @MenuItemId";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("@Name", menuItem.Name);
@@ -202,7 +205,44 @@ namespace OrderingSystemProject.Repositories
                 reader.Close();
             }
 
-            return items;        }
+            return items;
+        }
+
+        public void Activate(int menuItemId)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE MenuItems SET IsActive = 1 WHERE MenuItemId = @MenuItemId";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@MenuItemId", menuItemId);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item activation failed!");
+                }
+            }
+        }
+
+        public void Deactivate(int menuItemId)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query = "UPDATE MenuItems SET IsActive = 0 WHERE MenuItemId = @MenuItemId";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@MenuItemId", menuItemId);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Menu item deactivation failed!");
+                }
+            }
+        }
 
         private MenuItem ReadItem(SqlDataReader reader)
         {

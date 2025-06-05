@@ -1,11 +1,27 @@
 html {
   font-size: 14px;
 }
+@media (min-width: 576px) {
+    .navbar-list {
+        display: inline-flex;
+    }
+    .navbar-toggle {
+        display: none;
+    }
+}
 
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
+}
+
+@media (max-width: 600px) {
+    .custom-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -19,6 +35,18 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+header{
+    width: 100%;
+    text-align: center;
+}
+a{
+    text-decoration: none !important;
+}
+a:hover {
+    text-decoration: none !important;
+    cursor:pointer;
 }
 
 .KitchenOrdersList {
@@ -208,6 +236,204 @@ body {
 
     padding: 0;
 }
+
+.bill_frame_bg{
+    background-image: url('images/frame_bg.png');
+    background-repeat: no-repeat;
+    background-position: top;
+    margin: auto;
+    max-width: 1366px;
+    padding: 10px;
+}
+
+/*NAV BAR IMPROVEMENT*/
+
+.custom-navbar {
+    background-image: url("images/navbar_bg.png");
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    position: relative;
+}
+
+.navbar-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Brand logo/link */
+.navbar-brand-link {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.navbar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: block;
+}
+
+.navbar-toggle-icon {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    display: block;
+    position: relative;
+}
+
+.navbar-toggle-icon::before,
+.navbar-toggle-icon::after {
+    content: "";
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    position: absolute;
+    left: 0;
+}
+
+.navbar-toggle-icon::before {
+    top: -8px;
+}
+
+.navbar-toggle-icon::after {
+    top: 8px;
+}
+
+.navbar-links {
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+.navbar-links.show {
+    display: flex;
+}
+
+.navbar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.navbar-link {
+    color: #222;
+    text-decoration: none;
+    padding: 0.5rem;
+}
+
+.navbar-link:hover {
+    text-decoration: underline;
+}
+
+.logout-container {
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+    .navbar-links {
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: auto;
+        margin-top: 0;
+    }
+
+    .navbar-menu {
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .navbar-menu li {
+        margin-bottom: 0;
+    }
+
+    .logout-container {
+        margin-top: 0;
+        margin-left: 1rem;
+    }
+    
+    /*Improvement of bill list*/
+
+    .table-bill {
+        background-image: url("images/info_bg-proper.png");
+        width: 1242px;
+        height: 534px;
+        filter: drop-shadow(0px 4px 13px rgba(0, 0, 0, 0.20));
+        
+        margin-bottom: 1.5rem;
+
+        color: #000;
+
+        text-align: center;
+        font-family: "Montserrat", sans-serif;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+
+    .table-bill th,
+    .table-bill td {
+        border: 1px solid #000000;
+        padding: 0.75rem;
+    }
+
+    .thead-bill {
+        color: #951A28;
+    }
+
+    .summary-row {
+        color: #000000;
+        text-align: left;
+    }
+
+    .right-align {
+        text-align: right;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+    
+    /* Button Pay */
+    .button-pay{
+        display: flex;
+        flex-direction: column;
+        width: 515px;
+        height: 81px;
+        background: #951A28;
+        border-radius: 10px;
+        border: none;
+        
+        justify-content: center;
+    }
+    .button-pay a{
+        color: #F2D4D7;
+        font-family: "Montserrat", sans-serif;
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 300;
+        line-height: normal;
+    }
+    .bill_table{
+        display: flex;
+        justify-content: space-between;
+    }
+   
 
 .KitchenButtonText {
     display: flex;

@@ -11,12 +11,9 @@
 
 <div>
     <h4>Edit Menu Item</h4>
-    @{
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
-    }
+
+    <partial name="_ErrorMessage" />
+
     <form action="/MenuItem/Edit" method="post">
         <input hidden type="number" name="ItemId" value="@Model?.MenuItemId"/>
         <div class="form-group py-2">

@@ -51,8 +51,9 @@ public class EmployeesController : Controller
             return NotFound();
         }
 
-        var menuItem = _employeesService.GetById((int)id);
-        return View(menuItem);
+        var employee = _employeesService.GetById((int)id);
+        employee.Password = "";
+        return View(employee);
     }
 
     [HttpPost]
@@ -68,7 +69,7 @@ public class EmployeesController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return View(employee);
         }
@@ -87,7 +88,7 @@ public class EmployeesController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return RedirectToAction(nameof(Index));
         }
@@ -107,7 +108,27 @@ public class EmployeesController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+        
+    }
+    
+    [HttpPost]
+    public IActionResult Delete(int employeeId)
+    {
+        try
+        {
+            _employeesService.Delete(employeeId);
+        
+            TempData["EmployeeOperationConfirmMessage"] = "Staff has been removed!";
+        
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
 
             return RedirectToAction(nameof(Index));
         }
@@ -145,7 +166,7 @@ public class EmployeesController : Controller
             // if credentials are incorrect
             if (employee == null)
             {
-                ViewData["ErrorMessage"] = "Invalid username or password";
+                ViewData["Exception"] = "Invalid username or password";
                 return View(loginModel);
             }
             else
@@ -160,7 +181,7 @@ public class EmployeesController : Controller
         }
         catch (Exception ex)
         {
-            ViewData["ErrorMessage"] = "An error occurred during login. Please try again." + ex.Message;
+            ViewData["Exception"] = "An error occurred during login. Please try again." + ex.Message;
             return View(loginModel);
         }
     }

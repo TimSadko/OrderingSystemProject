@@ -7,12 +7,7 @@
 <h4 class="text-center mb-4">Restaurant Overview</h4>
 
 <!-- Display error message -->
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-}
+<partial name="_ErrorMessage" />
 
 <!-- Display success message -->
 @if (TempData["SuccessMessage"] != null)

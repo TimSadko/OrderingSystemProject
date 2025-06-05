@@ -26,7 +26,7 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Exception"] = ex;
+                ViewData["Exception"] = ex.Message;
             }
 
             return View();
@@ -41,7 +41,7 @@ namespace OrderingSystemProject.Controllers
             }
 			catch (Exception ex)
 			{
-				ViewData["Exception"] = ex;
+				ViewData["Exception"] = ex.Message;
 			}
 
             return RedirectToAction("Index");
@@ -56,7 +56,7 @@ namespace OrderingSystemProject.Controllers
 			}
 			catch (Exception ex)
 			{
-				ViewData["Exception"] = ex;
+				ViewData["Exception"] = ex.Message;
 			}
 
 			return RedirectToAction("Index");
@@ -71,7 +71,7 @@ namespace OrderingSystemProject.Controllers
 			}
 			catch (Exception ex)
 			{
-				ViewData["Exception"] = ex;
+				ViewData["Exception"] = ex.Message;
 			}
 
 			return RedirectToAction("Index");
@@ -116,7 +116,7 @@ namespace OrderingSystemProject.Controllers
 			}
 			catch (Exception ex)
 			{
-				ViewData["Exception"] = ex;
+				ViewData["Exception"] = ex.Message;
 			}
 
 			return RedirectToAction("Index");
@@ -133,7 +133,7 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Exception"] = ex;
+                ViewData["Exception"] = ex.Message;
             }
 
             return View();        
