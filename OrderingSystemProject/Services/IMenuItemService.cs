@@ -10,8 +10,8 @@ public interface IMenuItemService
     void Add(MenuItem item);
     void Update(MenuItem item);
     void Delete(MenuItem item);
-    void Activate(MenuItem item);
-    void Deactivate(MenuItem item);
+    void Activate(int menuItemId);
+    void Deactivate(int menuItemId);
     List<MenuItem> Filter(MenuManagementViewModel.CategoryFilterType category,
         MenuManagementViewModel.CardFilterType card);
 }

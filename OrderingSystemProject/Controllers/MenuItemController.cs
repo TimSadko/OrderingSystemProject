@@ -119,24 +119,50 @@ public class MenuItemController : Controller
                 cardFilterType,
                 categoryFilterType
             );
-            //return View(nameof(Index), lecturers);
             return View(nameof(Index), menuManagementViewMode);
         }
         catch (Exception e)
         {
-            /*List<MenuItem> menuItems = _menuItemService.GetAll();
-            var menuManagementViewMode = new MenuManagementViewModel(
-                menuItems,
-                MenuManagementViewModel.CardFilterType.ALL,
-                MenuManagementViewModel.CategoryFilterType.ALL
-            );
-            return View(menuManagementViewMode);*/
-
-            ViewData["Exception"] = $"Exception occured: {e.Message}";
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
             return Index();
-            /*List<Lecturer> lecturers = _lecturersRepository.GetAll();
-            return View(nameof(Index), lecturers);
-            return */
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Activate(int menuItemId)
+    {
+        try
+        {
+            _menuItemService.Activate(menuItemId);
+
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been activated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Deactivate(int menuItemId)
+    {
+        try
+        {
+            _menuItemService.Deactivate(menuItemId);
+
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been deactivated!";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
