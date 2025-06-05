@@ -21,9 +21,13 @@ public class RestaurantController : Controller
     [HttpGet]
     public IActionResult Overview()
     {
-        // check authorization using static helper
-        if (!Authorization.IsUserLoggedIn(HttpContext)) return RedirectToAction("Login", "Employees");
-        
+       EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+       
+       // check if user is logged in and has correct role
+        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager)
+        {
+            return RedirectToAction("Login", "Employees");
+        }
         try
         {
             // get all tables with and with no order

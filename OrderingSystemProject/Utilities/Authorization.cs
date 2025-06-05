@@ -5,9 +5,15 @@ namespace OrderingSystemProject.Utilities;
 
 public class Authorization
 {
-    public static bool IsUserLoggedIn(HttpContext httpContext)
+    // get the role of logged in employee, returns null if not logged in
+    public static EmployeeType? GetUserRole(HttpContext httpContext)
     {
         string? employeeJson = httpContext.Session.GetString("LoggedInEmployee");
-        return employeeJson != null;
+        if (employeeJson != null)
+        {
+            Employee? employee = JsonSerializer.Deserialize<Employee>(employeeJson);
+            return employee?.EmployeeType;
+        }
+        return null; // not logged in
     }
 }
