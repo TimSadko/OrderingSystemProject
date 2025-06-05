@@ -114,6 +114,26 @@ public class EmployeesController : Controller
         }
         
     }
+    
+    [HttpPost]
+    public IActionResult Delete(int employeeId)
+    {
+        try
+        {
+            _employeesService.Delete(employeeId);
+        
+            TempData["EmployeeOperationConfirmMessage"] = "Staff has been removed!";
+        
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception e)
+        {
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
+
+            return RedirectToAction(nameof(Index));
+        }
+        
+    }
 
     [HttpGet]
     public IActionResult Login()

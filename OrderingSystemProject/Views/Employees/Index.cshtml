@@ -57,6 +57,9 @@
                                       action="@Url.Action("Deactivate", new { employeeId = employee.EmployeeId })">
                                     <button type="submit" class="m-1 btn btn-primary">Deactivate</button>
                                 </form>
+                                <a href="/Employees/Edit/@employee.EmployeeId">
+                                    <button class="m-1 btn btn-primary">Edit</button>
+                                </a>
                             }
                             else
                             {
@@ -64,10 +67,14 @@
                                       action="@Url.Action("Activate", new { employeeId = employee.EmployeeId })">
                                     <button type="submit" class="m-1 btn btn-primary">Activate</button>
                                 </form>
+                                <form method="post"
+                                      action="@Url.Action("Delete", new { employeeId = employee.EmployeeId })"
+                                      onsubmit="return confirm('Are you sure you want to remove ?');">
+                                    <button type="submit" class="m-1 btn btn-danger">Delete</button>
+                                </form>
                             }
                         }
 
-                        <a href="/Employees/Edit/@employee.EmployeeId"><button class="m-1 btn btn-primary">Edit</button></a>
                     </td>
                 </tr>
             }
