@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers;
 
@@ -20,6 +21,9 @@ public class RestaurantController : Controller
     [HttpGet]
     public IActionResult Overview()
     {
+        // check authorization using static helper
+        if (!Authorization.IsUserLoggedIn(HttpContext)) return RedirectToAction("Login", "Employees");
+        
         try
         {
             // get all tables with and with no order
