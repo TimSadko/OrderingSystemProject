@@ -13,8 +13,9 @@ public class PaymentService : IPaymentService
         var order = CommonRepository._order_rep.GetById(orderId);
         if (order == null)
             return null;
-        
-        var bill = CommonRepository._bill_rep.GetById(orderId);
+
+        // ✅ Correct usage now
+        var bill = CommonRepository._bill_rep.GetByOrderId(orderId);
 
         if (bill == null)
         {
@@ -25,6 +26,7 @@ public class PaymentService : IPaymentService
             };
             CommonRepository._bill_rep.InsertBill(bill);
         }
+
         _current_bill = bill;
         return bill;
     }
@@ -45,4 +47,5 @@ public class PaymentService : IPaymentService
     }
     
     public Payment? GetCurrentPayment() { return _current_payment; }
+    public Bill? GetCurrentBill() { return _current_bill; }
 }
