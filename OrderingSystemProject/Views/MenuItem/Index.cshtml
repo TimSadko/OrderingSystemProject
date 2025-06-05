@@ -107,20 +107,20 @@
                             {
                                 <form method="post"
                                       action="@Url.Action("Deactivate", new { menuItemId = menuItem.MenuItemId })">
-                                    <button type="submit" class="btn btn-primary">Deactivate</button>
+                                    <button type="submit" class="m-1 btn btn-primary">Deactivate</button>
                                 </form>
                             }
                             else
                             {
                                 <form method="post"
                                       action="@Url.Action("Activate", new { menuItemId = menuItem.MenuItemId })">
-                                    <button type="submit" class="btn btn-primary">Activate</button>
+                                    <button type="submit" class="m-1 btn btn-primary">Activate</button>
                                 </form>
                             }
                         }
 
                         <a href="/MenuItem/Edit/@menuItem.MenuItemId">
-                            <button class="btn btn-primary">Edit</button>
+                            <button class="m-1 btn btn-primary">Edit</button>
                         </a>
                     </td>
 
