@@ -169,15 +169,19 @@ public class EmployeesController : Controller
                 ViewData["Exception"] = "Invalid username or password";
                 return View(loginModel);
             }
-            else
+            
+            // check if Employee is active
+            if (!employee.IsActive)
             {
+                ViewData["ErrorMessage"] = "Your account has been deactivated. Please contact administrator.";
+                return View(loginModel);
+            }
                 // remember logged in employee
                 string userJson = JsonSerializer.Serialize(employee);
                 HttpContext.Session.SetString("LoggedInEmployee", userJson);
 
                 // redirect Employee by Type
-                return RedirectEmployee((EmployeeType)employee.EmployeeType);
-            }
+                return RedirectEmployee(employee.EmployeeType);
         }
         catch (Exception ex)
         {

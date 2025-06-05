@@ -21,4 +21,9 @@ public class TablesServices : ITablesServices
     {
         return _tablesRepository.GetTableById(tableId);
     }
+
+    public List<Table> GetAllTablesWithOrders()
+    {
+        return _tablesRepository.GetAllTablesWithOrders();
+    }
 }

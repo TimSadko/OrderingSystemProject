@@ -26,7 +26,7 @@ namespace OrderingSystemProject
             var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
             CommonRepository._menu_item_rep = _menu_item_rep;
-			builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
+			      builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
@@ -41,7 +41,7 @@ namespace OrderingSystemProject
             CommonRepository._payment_rep = _payment_rep;
             builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
-            var _tables_rep = new DbTablesRepository(builder.Configuration);
+            var _tables_rep = new DbTablesRepository(builder.Configuration,  _order_item_rep);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesServices, TablesServices>();

@@ -20,8 +20,7 @@ public class DbEmployeesRepository : IEmployeesRepository
 
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            string query =
-                "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees";
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees";
             SqlCommand command = new SqlCommand(query, connection);
 
             command.Connection.Open();
@@ -39,60 +38,7 @@ public class DbEmployeesRepository : IEmployeesRepository
 
         return employees;
     }
-
-
-    public Employee GetEmployeeByLogin(string userName)
-    {
-        using (SqlConnection connection = new SqlConnection(_connectionString))
-        {
-            string query =
-                "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees WHERE UserName = @userName";
-
-            SqlCommand command = new SqlCommand(query, connection);
-            command.Parameters.AddWithValue("@userName", userName);
-
-            command.Connection.Open();
-            SqlDataReader reader = command.ExecuteReader();
-
-            // check if employee exists
-            if (reader.Read())
-            {
-                Employee employee = ReadEmployee(reader);
-                reader.Close();
-                return employee;
-            }
-
-            reader.Close();
-            return null; // return null if no employee found
-        }
-    }
-
-    public void Create(Employee employee)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            string query =
-                "INSERT INTO Employees (UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive)" +
-                " VALUES (@UserName, @Password, @EmployeeType, @FirstName, @LastName, @Email, @IsActive); SELECT SCOPE_IDENTITY()";
-            SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@UserName", employee.UserName);
-            command.Parameters.AddWithValue("@Password", Hasher.GetHashString(employee.Password));
-            command.Parameters.AddWithValue("@EmployeeType", employee.EmployeeType);
-            command.Parameters.AddWithValue("@FirstName", employee.FirstName);
-            command.Parameters.AddWithValue("@LastName", employee.LastName);
-            command.Parameters.AddWithValue("@Email", employee.Email);
-            command.Parameters.AddWithValue("@IsActive", employee.IsActive);
-
-            connection.Open();
-
-            if (command.ExecuteNonQuery() == 0)
-            {
-                throw new Exception("Staff creation failed!");
-            }
-        }
-    }
-
+    
     public Employee? GetById(int id)
     {
         Employee? employee = null;
@@ -119,6 +65,57 @@ public class DbEmployeesRepository : IEmployeesRepository
         }
 
         return employee;
+    }
+
+    public Employee GetEmployeeByLogin(string userName)
+    {
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees WHERE UserName = @userName";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@userName", userName);
+
+            command.Connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+
+            // check if employee exists
+            if (reader.Read())
+            {
+                Employee employee = ReadEmployee(reader);
+                reader.Close();
+                return employee;
+            }
+
+            reader.Close();
+            return null; // return null if no employee found
+        }
+    }
+  
+    public void Create(Employee employee)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            string query =
+                "INSERT INTO Employees (UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive)" +
+                " VALUES (@UserName, @Password, @EmployeeType, @FirstName, @LastName, @Email, @IsActive); SELECT SCOPE_IDENTITY()";
+            SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@UserName", employee.UserName);
+            command.Parameters.AddWithValue("@Password", Hasher.GetHashString(employee.Password));
+            command.Parameters.AddWithValue("@EmployeeType", employee.EmployeeType);
+            command.Parameters.AddWithValue("@FirstName", employee.FirstName);
+            command.Parameters.AddWithValue("@LastName", employee.LastName);
+            command.Parameters.AddWithValue("@Email", employee.Email);
+            command.Parameters.AddWithValue("@IsActive", employee.IsActive);
+
+            connection.Open();
+
+            if (command.ExecuteNonQuery() == 0)
+            {
+                throw new Exception("Staff creation failed!");
+            }
+        }
     }
 
     public void Update(Employee employee)

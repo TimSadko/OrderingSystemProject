@@ -10,13 +10,7 @@
 <partial name="_ErrorMessage" />
 
 <!-- Display success message -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+<partial name="_SuccessMessage"/>
 
 <!-- Refresh overview -->
 <div class="mb-4">
@@ -39,11 +33,6 @@
             cardColorClass = "danger";
             statusText = "Occupied";
         }
-        else if (table.Status == TableStatus.Reserved)
-        {
-            cardColorClass = "warning";
-            statusText = "Reserved";
-        }
         else
         {
             cardColorClass = "secondary";
@@ -53,8 +42,37 @@
         <div class="col px-1"> 
             <div class="card m-1" style="width: 100%;">
                 <div class="card-header text-center">Table @table.TableNumber</div>
-                <div class="card-body bg-@cardColorClass text-white" style="height: 100px;">
+                <div class="card-body bg-@cardColorClass text-white" style="height: 150px;">
                     <p class="card-text text-center">@statusText</p>
+                    @if (table.ActiveOrder != null)
+                    {
+                        @if (table.FoodStatus != null)
+                        {
+                            string foodStatusText = "";
+                            if ((int)table.FoodStatus == 0) foodStatusText = "New";
+                            else if ((int)table.FoodStatus == 1) foodStatusText = "Preparing";  
+                            else if ((int)table.FoodStatus == 2) foodStatusText = "Ready";
+                            else if ((int)table.FoodStatus == 3) foodStatusText = "Served";
+        
+                            <div>Food: @foodStatusText</div>
+                        }
+                        @if (table.DrinkStatus != null)
+                        {
+                            string drinkStatusText = "";
+                            if ((int)table.DrinkStatus == 0) drinkStatusText = "New";
+                            else if ((int)table.DrinkStatus == 1) drinkStatusText = "Preparing";  
+                            else if ((int)table.DrinkStatus == 2) drinkStatusText = "Ready";
+                            else if ((int)table.DrinkStatus == 3) drinkStatusText = "Served";
+        
+                            <div>Drinks: @drinkStatusText</div>
+                        }
+                        <div>Time: @table.ActiveOrder.OrderTime.ToString("HH:mm")</div>
+                    }
+                    else
+                    {
+                        <div>No active order</div>
+                    }
+                    
                 </div>
             </div>
         </div>
