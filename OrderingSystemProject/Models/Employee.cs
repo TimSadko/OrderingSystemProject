@@ -14,10 +14,11 @@ namespace OrderingSystemProject.Models
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string Email { get; set; }
+		public bool IsActive { get; set; }
 
 		public Employee() { }
 
-		public Employee(int employeeId, string userName, string password, EmployeeType employeeType, string firstName, string lastName, string email)
+		public Employee(int employeeId, string userName, string password, EmployeeType employeeType, string firstName, string lastName, string email, bool isActive)
 		{
 			EmployeeId = employeeId;
 			UserName = userName;
@@ -26,6 +27,7 @@ namespace OrderingSystemProject.Models
 			FirstName = firstName;
 			LastName = lastName;
 			Email = email;
+			IsActive = isActive;
 		}
 	}
 }

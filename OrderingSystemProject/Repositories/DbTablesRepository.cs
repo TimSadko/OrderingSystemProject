@@ -92,7 +92,6 @@ public class DbTablesRepository : ITablesRepository
                 tables.Add(table);
             }
             reader.Close();
-            
         }
         return tables;
     }
@@ -112,9 +111,8 @@ public class DbTablesRepository : ITablesRepository
             OrderStatus orderStatus = (OrderStatus)(int)reader["OrderStatus"];
             DateTime orderTime = (DateTime)reader["OrderTime"];
             
-            // create Order object
             Order activeOrder = new Order(orderId, tableId, orderStatus, orderTime);
-            // load order items to enable FoodStatus and DrinkStatus computed properties
+            // load order items to enable FoodStatus and DrinkStatus properties
             activeOrder.Items = _orderItemsRepository.GetOrderItems(orderId);
         
            // return Table with active order

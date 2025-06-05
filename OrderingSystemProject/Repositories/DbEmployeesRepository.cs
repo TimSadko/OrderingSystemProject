@@ -19,7 +19,7 @@ public class DbEmployeesRepository : IEmployeesRepository
 
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees";
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees";
             SqlCommand command = new SqlCommand(query, connection);
             
             command.Connection.Open();
@@ -41,7 +41,7 @@ public class DbEmployeesRepository : IEmployeesRepository
     {
         using (SqlConnection connection = new SqlConnection(_connectionString))
         {
-            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email FROM Employees WHERE UserName = @userName";
+            string query = "SELECT EmployeeId, UserName, Password, EmployeeType, FirstName, LastName, Email, IsActive FROM Employees WHERE UserName = @userName";
             
             SqlCommand command = new SqlCommand(query, connection);
             command.Parameters.AddWithValue("@userName", userName);
@@ -63,6 +63,6 @@ public class DbEmployeesRepository : IEmployeesRepository
 
 	private Employee ReadEmployee(SqlDataReader reader)
 	{
-		return new Employee((int)reader["EmployeeId"], (string)reader["UserName"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"]);
+		return new Employee((int)reader["EmployeeId"], (string)reader["UserName"], (string)reader["Password"], (EmployeeType)(int)reader["EmployeeType"], (string)reader["FirstName"], (string)reader["LastName"], (string)reader["Email"], (bool)reader["IsActive"]);
 	}
 }

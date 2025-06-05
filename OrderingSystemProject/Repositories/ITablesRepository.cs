@@ -7,5 +7,4 @@ public interface ITablesRepository
     List<Table> GetAllTables();
     Table GetTableByNumber(int tableId);
     List<Table> GetAllTablesWithOrders();
-    
 }
