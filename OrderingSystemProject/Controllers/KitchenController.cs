@@ -18,9 +18,9 @@ namespace OrderingSystemProject.Controllers
         {          
             try
             {
-				var list = _serv.GetCookOrders(); // Get list od all current orders
+				var list = _serv.GetCookOrders();
 
-				KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
+				KitchenViewModel model = new KitchenViewModel(list, _serv.GetCookOrdersReady(list), DateTime.Now); // Create newS view model 
 
                 return View(model); 
             }
@@ -32,12 +32,12 @@ namespace OrderingSystemProject.Controllers
             return View();
         }
 
-        [HttpGet ("Kitchen/TakeOrder/{_order_id}/{_item_id}")]
-        public IActionResult TakeOrder(int _order_id, int _item_id)
+        [HttpGet ("Kitchen/TakeItem/{_order_id}/{_item_id}")]
+        public IActionResult TakeItem(int _order_id, int _item_id)
         {
             try
             {
-                _serv.TakeOrder(_order_id, _item_id);
+                _serv.TakeItem(_order_id, _item_id);
             }
 			catch (Exception ex)
 			{
@@ -47,12 +47,12 @@ namespace OrderingSystemProject.Controllers
             return RedirectToAction("Index");
 		}
 
-		[HttpGet ("Kitchen/FinishOrder/{_order_id}/{_item_id}")]
-		public IActionResult FinishOrder(int _order_id, int _item_id)
+		[HttpGet ("Kitchen/FinishItem/{_order_id}/{_item_id}")]
+		public IActionResult FinishItem(int _order_id, int _item_id)
 		{
 			try
 			{
-				_serv.FinishOrder(_order_id, _item_id);
+				_serv.FinishItem(_order_id, _item_id);
 			}
 			catch (Exception ex)
 			{
@@ -62,12 +62,12 @@ namespace OrderingSystemProject.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpGet("Kitchen/TakeFullOrder/{_order_id}")]
-		public IActionResult TakeFullOrder(int _order_id)
+		[HttpGet("Kitchen/ReturnItem/{_order_id}/{_item_id}")]
+		public IActionResult ReturnItem(int _order_id, int _item_id)
 		{
 			try
 			{
-				_serv.TakeFullOrder(_order_id);
+				_serv.ReturnItem(_order_id, _item_id);
 			}
 			catch (Exception ex)
 			{
@@ -77,12 +77,42 @@ namespace OrderingSystemProject.Controllers
 			return RedirectToAction("Index");
 		}
 
-		[HttpGet("Kitchen/FinishFullOrder/{_order_id}")]
-		public IActionResult FinishFullOrder(int _order_id)
+		[HttpGet("Kitchen/TakeOrder/{_order_id}")]
+		public IActionResult TakeOrder(int _order_id)
 		{
 			try
 			{
-				_serv.FinishFullOrder(_order_id);
+				_serv.TakeOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Kitchen/FinishOrder/{_order_id}")]
+		public IActionResult FinishOrder(int _order_id)
+		{
+			try
+			{
+				_serv.FinishOrder(_order_id);
+			}
+			catch (Exception ex)
+			{
+				ViewData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Kitchen/ReturnOrder/{_order_id}")]
+		public IActionResult ReturnOrder(int _order_id)
+		{
+			try
+			{
+				_serv.ReturnOrder(_order_id);
 			}
 			catch (Exception ex)
 			{
@@ -96,10 +126,8 @@ namespace OrderingSystemProject.Controllers
         public IActionResult Done()
         {
             try
-            {
-                var list = _serv.GetDoneCookOrders(); // Get list od all current orders
-
-                KitchenViewModel model = new KitchenViewModel(list, DateTime.Now); // Create ne view model 
+			{ 
+                KitchenViewModel model = new KitchenViewModel(_serv.GetDoneCookOrders(), null, DateTime.Now); // Create ne view model 
 
                 return View(model);
             }

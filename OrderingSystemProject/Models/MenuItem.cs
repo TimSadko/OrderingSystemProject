@@ -19,9 +19,7 @@ namespace OrderingSystemProject.Models
 
         [Display(Name = "Mains")] MAINS = 1,
 
-        [Display(Name = "Entremets")] ENTREMENTS = 2,
-
-        [Display(Name = "Deserts")] DESERTS = 3
+        [Display(Name = "Deserts")] DESERTS = 2
     }
 
     public class MenuItem

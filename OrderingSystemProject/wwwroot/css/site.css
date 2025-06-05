@@ -468,3 +468,28 @@ a:hover {
     background: #9698ff;
     border: 1.5px solid #363636;
 }
+
+.KitchenOrdrButtonReturn {
+    background: #FF9A9A;
+}
+
+.KitchenOrdrButtonReturn:hover {
+    background: #ff7070;
+    border: 1.5px solid #363636;
+}
+
+.KitchenOrderListsBreak {
+    display: block;
+
+    background: #808080;
+
+    height: 0px;
+    width: 68%;
+
+    margin-bottom: 3px;
+
+    margin-left: 1%;
+
+    border: 0.5px solid #808080;
+    border-radius: 50px;
+}

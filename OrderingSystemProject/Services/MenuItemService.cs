@@ -101,10 +101,6 @@ public class MenuItemService : IMenuItemService
         {
             itemCategory = ItemCategory.DESERTS;
         }
-        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.ENTREMENTS)
-        {
-            itemCategory = ItemCategory.ENTREMENTS;
-        }
         else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.MAINS)
         {
             itemCategory = ItemCategory.MAINS;
