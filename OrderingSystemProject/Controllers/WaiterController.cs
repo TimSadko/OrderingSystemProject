@@ -34,5 +34,27 @@ namespace OrderingSystemProject.Controllers
 
             return RedirectToAction("Index");
         }
+        
+        public IActionResult Filter(
+            MenuManagementViewModel.CardFilterType cardFilterType,
+            MenuManagementViewModel.CategoryFilterType categoryFilterType
+        )
+        {
+            try
+            {
+                List<MenuItem> menuItems = _menuItemService.Filter(categoryFilterType, cardFilterType);
+                var menuManagementViewMode = new MenuManagementViewModel(
+                    menuItems,
+                    cardFilterType,
+                    categoryFilterType
+                );
+                return View(nameof(Index), menuManagementViewMode);
+            }
+            catch (Exception e)
+            {
+                ViewData["Exception"] = $"Exception occured: {e.Message}";
+                return Index();
+            }
+        }
     }
 }
