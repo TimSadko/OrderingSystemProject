@@ -4,7 +4,6 @@
     var payments = ViewBag.ExistingPayments as List<OrderingSystemProject.Models.Payment> ?? new List<OrderingSystemProject.Models.Payment>();
 }
 
-
 <h2>Pay Now</h2>
 
 <p><strong>Order Total:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>

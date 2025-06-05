@@ -19,7 +19,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
-                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders";
+                string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders ORDER BY OrderTime";
                 SqlCommand com = new SqlCommand(query, conn);
 
                 com.Connection.Open();
@@ -93,36 +93,41 @@ namespace OrderingSystemProject.Repositories
             return new Order((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
         }
 
-        private void FillInOrder(Order order)
+		private KitchenOrder ReadKitchenOrder(SqlDataReader reader)
+		{
+			return new KitchenOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+		}
+
+		private void FillInOrder(Order order)
         {
             order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order
             order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
         }
 
-		private void FillInOrderNoDrinks(Order order)
+		private void FillInKitchenOrder(KitchenOrder order)
 		{
-			order.Items = CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId); // Get order items of current iteration order
+			order.SetItems(CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId)); // Get order items of current iteration order
 			order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
 		}
 
-		public List<Order> GetOrdersKitchen()
+		public List<KitchenOrder> GetOrdersKitchen()
         {
-			List<Order> orders = new List<Order>();
+			List<KitchenOrder> orders = new List<KitchenOrder>();
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();
 
-				Order ord;
+				KitchenOrder ord;
 
 				while (reader.Read())
 				{
-					ord = ReadOrder(reader);
-					FillInOrderNoDrinks(ord);
+					ord = ReadKitchenOrder(reader);
+					FillInKitchenOrder(ord);
 					orders.Add(ord);
 				}
 				reader.Close();
@@ -140,9 +145,57 @@ namespace OrderingSystemProject.Repositories
 			return orders;
 		}
 
-		public List<Order> GetDoneOrdersKitchen()
+		public List<KitchenOrder> GetDoneOrdersKitchen()
         {
-			return GetAll();
+			List<KitchenOrder> orders = new List<KitchenOrder>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				KitchenOrder ord;
+
+				while (reader.Read())
+				{
+					ord = ReadKitchenOrder(reader);
+					FillInKitchenOrder(ord);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+			for (int i = 0; i < orders.Count; i++)
+			{
+				if (orders[i].Items.Count == 0)
+				{
+					orders.RemoveAt(i);
+					i--;
+				}
+			}
+
+			return orders;
+		}
+
+		public bool UpdateOrderStatus(int _order_id, OrderStatus _new_status)
+        {
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "UPDATE Orders SET OrderStatus = @_new_status WHERE OrderId = @_order_id";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@_order_id", _order_id);
+				com.Parameters.AddWithValue("@_new_status", (int)_new_status);
+
+				com.Connection.Open();
+
+				int eff = com.ExecuteNonQuery();
+
+				return eff > 0;
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿@model OrderingSystemProject.ViewModels.MenuManagementViewModel
+﻿@using OrderingSystemProject.ViewModels
+@model OrderingSystemProject.ViewModels.MenuManagementViewModel
 
 @{
     ViewData["Title"] = "Waiter";
@@ -18,12 +19,33 @@
         {
             <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
         }
-
-        if (ViewBag.ErrorMessage != null)
-        {
-            <div class="alert alert-danger" role="alert">@ViewBag.ErrorMessage</div>
-        }
     }
+    <form method="get" action="@Url.Action("Filter")">
+        <div class="form-group row">
+            <div class="form-group col-md-5 form-control-lg">
+                <label for="cardFilterType">Card:</label>
+                <select class="form-control"
+                        id="cardFilterType"
+                        name="cardFilterType"
+                        asp-for="@Model.CardFilter"
+                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CardFilterType>()">
+                </select>
+            </div>
+            <div class="form-group col-md-5 form-control-lg">
+                <label for="categoryFilterType">Category:</label>
+                <select class="form-control"
+                        id="categoryFilterType"
+                        name="categoryFilterType"
+                        asp-for="@Model.CategoryFilter"
+                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CategoryFilterType>()">
+                </select>
+            </div>
+            <div class="form-group col-md-2 form-control-lg mt-auto">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </div>
+    </form>
+    <partial name="_ErrorMessage" />
 
     <table class="table">
         <thead>

@@ -1,4 +1,5 @@
-﻿@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
+﻿@using OrderingSystemProject.Models.Kitchen
+@model OrderingSystemProject.Models.Kitchen.KitchenViewModel
 
 @{
 	ViewData["Title"] = "Kitchen";
@@ -6,73 +7,42 @@
 
 <h1>Orders List</h1>
 
-@{
-	Exception? ex = (Exception?)ViewData["Exception"];
-
-	if(ex != null) // If an exception was passed display it
-	{
-		<div class="alert-danger">
-			<a>An unexpected exception has occurred, please try again later</a>
-			<a>@ex.Message</a> <!-- Show error message, for debug only-->
-		</div>
-	}
-}
+<partial name="_ErrorMessage" />
 
 <div>
 	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
+	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Done Orders</a>
 </div>
-<div>Last Update: @Model.LastUpdate.ToString("hh:mm:ss")</div>
+<div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
 
 <div class="KitchenOrdersList">
 	@{
-		if (Model != null)
+		if (Model.Orders != null)
 		{
-			foreach (var order in Model.Orders)
+			foreach (var order in Model.Orders) // Go throu list of orders
 			{
-				<div class="KitchenDivMain">
-					@{
-						string order_color = "";
-
-						switch (order.OrderStatus)
-						{
-							case OrderStatus.New:
-								order_color = "class=KitchenTopGreen"; break;
-							case OrderStatus.Preparing:
-								order_color = (order.OrderTime - DateTime.Now).Minutes > 10 ? "class=KitchenTopRed" : "class=KitchenTopYellow"; break;
-							case OrderStatus.ReadyForPickup:
-								order_color = "class=KitchenTopBlue"; break;
-							case OrderStatus.Served:
-							case OrderStatus.Completed:
-								order_color = "class=KitchenTopGrey"; break;
-						}
-					}
-
-					<div @order_color>
-						<div class="KitchenOrderTop">
-							<span class="KitchenOrderTableNumber">tbl @order.Table.TableNumber</span>
-							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("hh:mm:ss")</span>
-						</div>
-						<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
-					</div>
-
-					@{
-						foreach (var item in order.Items)
-						{
-							<div class="KitchenDiv">
-								<div class="KitchenItemText">@item.MenuItem.Name x@(item.Amount)</div>
-								@if (item.Comment == "")
-								{
-									<div class="KitchenItemCommentText">- reg</div>
-								}
-								else
-								{
-									<div class="KitchenItemCommentText">- @item.Comment</div>
-								}
-							</div>
-						}
-					}
-				</div>
+				<partial name="~/Views/Kitchen/_Order.cshtml" model="@order" />
 			}
 		}
 	}
 </div>
+
+<div class="KitchenOrderListsBreak"></div>
+
+<div class="KitchenOrdersList">
+	@{
+		if (Model.ReadyOrders != null)
+		{
+			foreach (var order in Model.ReadyOrders) // Go throu list of orders
+			{
+				<partial name="~/Views/Kitchen/_Order.cshtml" model="@order" />
+			}
+		}
+	}
+</div>
+
+<script>
+	setTimeout(function () {
+		window.location.reload(1);
+	}, 5000);
+</script>

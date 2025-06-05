@@ -9,13 +9,13 @@ namespace OrderingSystemProject.Models
 
     public class Order
     {
-        private int _order_id;
-        private int _table_id;
-        private OrderStatus _order_status;
-        private DateTime _order_time;
+		protected int _order_id;
+		protected int _table_id;
+		protected OrderStatus _order_status;
+		protected DateTime _order_time;
 
-        private List<OrderItem> _items;
-        private Table _table;
+        protected List<OrderItem> _items;
+		protected Table _table;
 
         public Order() { }
 
@@ -35,5 +35,5 @@ namespace OrderingSystemProject.Models
 
         public List<OrderItem> Items { get => _items; set => _items = value; }
         public Table Table { get => _table; set => _table = value; }
-    }
+	}
 }

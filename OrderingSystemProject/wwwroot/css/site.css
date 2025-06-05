@@ -49,96 +49,8 @@ a:hover {
     cursor:pointer;
 }
 
-.KitchenOrdersList {
-    display: inline-block;
-
-    /*background-color: black;*/
-
-    column-count: 3;
-    column-gap: 10px;
-
-    page-break-inside: avoid;
-    break-inside: avoid-column;
-    /*grid-template-columns: auto auto auto;*/
-    /*margin-left: 20px;*/
-
-    /*margin-right: 100px;*/
-
-    width: 70%;
-
-    padding-bottom: 10px;
-}
-
-.KitchenDivMain {
-    display: inline-block;
-
-    background-color: #D9D9D9;
-    border: 1.5px solid #585858;
-
-    margin-bottom: 10px;
-    max-width: 100%;
-
-    width: 100%;
-}
-
-.KitchenDiv {
-    background-color: #D9D9D9;
-    border-top: 1.5px solid #585858;
-}
-
-.KitchenTopGreen {
-    background: #E0FFAF;
-}
-
-.KitchenTopYellow {
-    background: #FFEEAF;
-}
-
-.KitchenTopRed {
-    background: #FF9A9A;
-}
-
-.KitchenTopBlue {
-    background: #AFB0FF;
-}
-
-.KitchenTopGrey {
-    background: #808080;
-}
-
-.KitchenItemText {
-    margin-left: 3px;
-}
-
-.KitchenItemCommentText {
-    color: #434343;
-
-    margin-left: 13px;
-    margin-bottom: 3px;
-}
-
-.KitchenOrderTop {
-    display: flex;
-    justify-content: space-between;
-}
-
-.KitchenOrderTableNumber {
-    margin-left: 3px;
-}
-
-.KitchenOrderOrderTime {
-    text-align: end;
-    margin-right: 3px;
-}
-
-.KitchenOrderTimePassed {
-    display: flex;
-    justify-content: end;
-
-    margin-right: 3px;
-}
-
-.bill_frame_bg{
+/*Bill and Pay:*/
+.bill_frame_bg {
     background-image: url('images/frame_bg.png');
     background-repeat: no-repeat;
     background-position: top;
@@ -188,23 +100,23 @@ a:hover {
     position: relative;
 }
 
-.navbar-toggle-icon::before,
-.navbar-toggle-icon::after {
-    content: "";
-    width: 25px;
-    height: 3px;
-    background-color: #333;
-    position: absolute;
-    left: 0;
-}
+    .navbar-toggle-icon::before,
+    .navbar-toggle-icon::after {
+        content: "";
+        width: 25px;
+        height: 3px;
+        background-color: #333;
+        position: absolute;
+        left: 0;
+    }
 
-.navbar-toggle-icon::before {
-    top: -8px;
-}
+    .navbar-toggle-icon::before {
+        top: -8px;
+    }
 
-.navbar-toggle-icon::after {
-    top: 8px;
-}
+    .navbar-toggle-icon::after {
+        top: 8px;
+    }
 
 .navbar-links {
     width: 100%;
@@ -213,9 +125,9 @@ a:hover {
     margin-top: 1rem;
 }
 
-.navbar-links.show {
-    display: flex;
-}
+    .navbar-links.show {
+        display: flex;
+    }
 
 .navbar-menu {
     list-style: none;
@@ -225,9 +137,9 @@ a:hover {
     flex-direction: column;
 }
 
-.navbar-menu li {
-    margin-bottom: 0.5rem;
-}
+    .navbar-menu li {
+        margin-bottom: 0.5rem;
+    }
 
 .navbar-link {
     color: #222;
@@ -235,102 +147,353 @@ a:hover {
     padding: 0.5rem;
 }
 
-.navbar-link:hover {
-    text-decoration: underline;
-}
+    .navbar-link:hover {
+        text-decoration: underline;
+    }
 
 .logout-container {
     margin-top: 0.5rem;
     text-align: right;
 }
 
-    .navbar-links {
-        display: flex !important;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        width: auto;
-        margin-top: 0;
-    }
+.navbar-links {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: auto;
+    margin-top: 0;
+}
 
-    .navbar-menu {
-        flex-direction: row;
-        gap: 1rem;
-    }
+.navbar-menu {
+    flex-direction: row;
+    gap: 1rem;
+}
 
     .navbar-menu li {
         margin-bottom: 0;
     }
 
-    .logout-container {
-        margin-top: 0;
-        margin-left: 1rem;
-    }
+.logout-container {
+    margin-top: 0;
+    margin-left: 1rem;
+}
+
+/*Improvement of bill list*/
+
+.table-bill {
+    background-image: url("images/info_bg-proper.png");
+    width: 1242px;
+    height: 534px;
+    filter: drop-shadow(0px 4px 13px rgba(0, 0, 0, 0.20));
+    margin-bottom: 1.5rem;
+    color: #000;
+    text-align: center;
+    font-family: "Montserrat", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.table-bill th,
+.table-bill td {
+    border: 1px solid #000000;
+    padding: 0.75rem;
+}
+
+.thead-bill {
+    color: #951A28;
+}
+
+.summary-row {
+    color: #000000;
+    text-align: left;
+}
+
+.right-align {
+    text-align: right;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+/* Button Pay */
+.button-pay {
+    display: flex;
+    flex-direction: column;
+    width: 515px;
+    height: 81px;
+    background: #951A28;
+    border-radius: 10px;
+    border: none;
+    justify-content: center;
+}
+
+.button-pay a {
+    color: #F2D4D7;
+    font-family: "Montserrat", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+}
+
+.bill_table {
+    display: flex;
+    justify-content: space-between;
+}
+/*///Bill and Pay*/
+
+
+
+/*Kitchen and Bar*/
+.KitchenOrdersList {
+    display: inline-block;
+
+    /*background-color: black;*/
+
+    column-count: 3;
+    column-gap: 10px;
+
+    page-break-inside: avoid;
+    break-inside: avoid-column;
+    /*grid-template-columns: auto auto auto;*/
+    /*margin-left: 20px;*/
+
+    /*margin-right: 100px;*/
+
+    width: 70%;
+
+    padding-bottom: 10px;
+}
+
+.KitchenDivMain {
+    display: inline-block;
+
+    background-color: #D9D9D9;
+    border: 1.5px solid #585858;
+
+    margin-bottom: 10px;
+    max-width: 100%;
+
+    width: 100%;
+}
+
+.KitchenDiv {
+    background-color: #D9D9D9;
+}
+
+.KitchenTopBase {
+    border-bottom: 1.5px solid #585858;
+}
+
+.KitchenTopGreen {
+    background: #E0FFAF;
+}
+
+.KitchenTopYellow {
+    background: #FFEEAF;
+}
+
+.KitchenTopRed {
+    background: #FF9A9A;
+}
+
+.KitchenTopBlue {
+    background: #AFB0FF;
+}
+
+.KitchenTopGrey {
+    background: #9c9c9c;
+}
+
+.KitchenItemText {
+    margin-left: 3px;
+}
+
+.KitchenItemCommentText {
+    display: inline;
+
+    color: #434343;
+
+    margin-left: 13px;
+    margin-bottom: 3px;
+}
+
+.KitchenOrderTop {
+    display: flex;
+    justify-content: space-between;
+}
+
+.KitchenOrderTableNumber {
+    margin-left: 3px;
+}
+
+.KitchenOrderOrderTime {
+    text-align: end;
+    margin-right: 3px;
+}
+
+.KitchenOrderButton {
+    display: inline;
+
+    height: 22px;
+    line-height: 22px;
+
+    border: 1.5px solid #585858;
+    border-radius: 10%;
+
+    text-decoration: none;
+
+    align-self: center;
+
+    margin-left: 3px;
+    margin-bottom: 2px;
+
+    padding: 0;
+    /*margin-bottom: 10px;*/   
+}
+
+.KitchenOrderButtonText {
+    display: inline-block;
+
+    color: #585858;
+
+    height: 22px;
+    line-height: 22px;
+
+    text-align: center;  
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.KitchenOrderTimePassed {
+    text-align: end;
+
+    margin-right: 3px;
+}
+
+.KitchenOrderItemBreak {
+    display: block;
+
+    background: #808080;
+
+    height: 0px;
+    width: 97%;
+
+    margin-bottom: 3px;
+
+    border: 0.5px solid #808080;
+    border-radius: 50px;
+
+    justify-self: center;
+}
+
+.KitchenOrderItemColor {
+    display: inline-block;
+
+    border: 1.5px solid #585858;
+
+    width: 12px;
+    height: 23px;
+
+    vertical-align: middle;
+
+    margin-bottom: 2px;
+    margin-right: 0px;
+}
+
+.KitchenOrderItemText{
+    margin-left: 0px;
+}
+
+.KitchenOrderCommentLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.KitchenOrdrItemActionButton {
+    display: inline;
+
+    height: 22px;
+
+    border: 1.5px solid #363636;
+    border-radius: 10%;  
+
+    text-decoration: none;
+
+    align-self: center; 
+
+    margin-right: 3px;
+    margin-top: 1px;
+
+    padding: 0;
+}
+   
+.KitchenButtonText {
+    display: flex;
+
+    color: #363636;
+
+    text-align: center;
+    vertical-align: middle;
     
-    /*Improvement of bill list*/
+    justify-self: center;
 
-    .table-bill {
-        background-image: url("images/info_bg-proper.png");
-        width: 1242px;
-        height: 534px;
-        filter: drop-shadow(0px 4px 13px rgba(0, 0, 0, 0.20));
-        
-        margin-bottom: 1.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
 
-        color: #000;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
 
-        text-align: center;
-        font-family: "Montserrat", sans-serif;
-        font-size: 18px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
+.KitchenOrdrButtonTake {
+    /*background: #FFEEAF;*/
+}
 
-    .table-bill th,
-    .table-bill td {
-        border: 1px solid #000000;
-        padding: 0.75rem;
-    }
+.KitchenOrdrButtonTake:hover {
+    background: #ffe78c;
+    border: 1.5px solid #363636;
+}
 
-    .thead-bill {
-        color: #951A28;
-    }
+.KitchenOrdrButtonFinish {
+    /*background: #AFB0FF;*/
+}
 
-    .summary-row {
-        color: #000000;
-        text-align: left;
-    }
+.KitchenOrdrButtonFinish:hover {
+    background: #9698ff;
+    border: 1.5px solid #363636;
+}
 
-    .right-align {
-        text-align: right;
-    }
+.KitchenOrdrButtonReturn {
+    /*background: #FF9A9A;*/
+}
 
-    .bold {
-        font-weight: bold;
-    }
-    
-    /* Button Pay */
-    .button-pay{
-        display: flex;
-        flex-direction: column;
-        width: 515px;
-        height: 81px;
-        background: #951A28;
-        border-radius: 10px;
-        border: none;
-        
-        justify-content: center;
-    }
-    .button-pay a{
-        color: #F2D4D7;
-        font-family: "Montserrat", sans-serif;
-        font-size: 32px;
-        font-style: normal;
-        font-weight: 300;
-        line-height: normal;
-    }
-    .bill_table{
-        display: flex;
-        justify-content: space-between;
-    }
+.KitchenOrdrButtonReturn:hover {
+    background: #ff7070;
+    border: 1.5px solid #363636;
+}
+
+.KitchenOrderListsBreak {
+    display: block;
+
+    background: #808080;
+
+    height: 0px;
+    width: 68%;
+
+    margin-bottom: 3px;
+
+    margin-left: 1%;
+
+    border: 0.5px solid #808080;
+    border-radius: 50px;
+}
+
+/*//// Kitchen and Bar*/

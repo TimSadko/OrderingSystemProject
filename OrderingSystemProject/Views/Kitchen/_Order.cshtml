@@ -1,0 +1,66 @@
+﻿@using OrderingSystemProject.Models.Kitchen
+@model OrderingSystemProject.Models.Kitchen.KitchenOrder
+
+<div class="KitchenDivMain">
+	@{
+		string order_color = "";
+
+		switch (Model.KitchenStatus) // Get css class with background color depending on order status
+		{
+			case OrderStatus.New:
+				order_color = "KitchenTopGreen"; break;
+			case OrderStatus.Preparing:
+				order_color = Model.TimeSinceOrder.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
+			case OrderStatus.ReadyForPickup:
+				order_color = "KitchenTopBlue"; break;
+			case OrderStatus.Served:
+			case OrderStatus.Completed:
+				order_color = "KitchenTopGrey"; break;
+		}
+	}
+
+	<div class="KitchenTopBase @order_color">
+		<div class="KitchenOrderTop">
+			<span class="KitchenOrderTableNumber">tbl @Model.Table.TableNumber</span>
+			<span class="KitchenOrderOrderTime">@Model.OrderTime.ToString("HH:mm:ss")</span>
+		</div>
+		<div class="KitchenOrderTop">
+			@{
+				switch (Model.KitchenStatus)
+				{
+					case OrderStatus.New:
+						<a class="KitchenOrderButton KitchenOrdrButtonTake" href="/Kitchen/TakeOrder/@Model.OrderId">
+							<span class="KitchenOrderButtonText">Take</span>
+						</a>
+						break;
+					case OrderStatus.Preparing:
+						<a class="KitchenOrderButton KitchenOrdrButtonFinish" href="/Kitchen/FinishOrder/@Model.OrderId">
+							<span class="KitchenOrderButtonText">Finish</span>
+						</a>
+						break;
+					case OrderStatus.ReadyForPickup:
+						<a class="KitchenOrderButton KitchenOrdrButtonReturn" href="/Kitchen/ReturnOrder/@Model.OrderId">
+							<span class="KitchenOrderButtonText">Return</span>
+						</a>
+						break;
+					default:
+						<span></span>
+						break;
+				}
+			}
+			<span class="KitchenOrderTimePassed">+@((DateTime.Now - Model.OrderTime).ToString(@"hh\:mm\:ss"))</span>
+		</div>
+	</div>
+
+	@{
+		foreach (var item in Model.Items) // Go throu list of order_itmes of current order
+		{
+			<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
+
+			if (item != Model.Items[Model.Items.Count - 1]) // if this item is not the last, add item break;
+			{
+				<div class="KitchenOrderItemBreak"></div>
+			}
+		}
+	}
+</div>

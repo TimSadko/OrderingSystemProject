@@ -2,7 +2,7 @@
 {
     public enum OrderItemStatus
     {
-
+        NewItem = 0, Preparing = 1, Ready = 2, Served = 3
     }
 
     public class OrderItem
@@ -37,6 +37,7 @@
         public OrderItemStatus ItemStatus { get => _item_status; set => _item_status = value; }
 
         public MenuItem MenuItem { get => _menu_item; set => _menu_item = value; }
-        public decimal LineTotal => MenuItem.Price * Amount;
-    }
+
+        public decimal LineTotal => MenuItem.Price * Amount;       
+	}
 }

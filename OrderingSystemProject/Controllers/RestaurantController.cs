@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers;
 
@@ -20,16 +21,23 @@ public class RestaurantController : Controller
     [HttpGet]
     public IActionResult Overview()
     {
+       EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+       
+       // check if user is logged in and has correct role
+        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager)
+        {
+            return RedirectToAction("Login", "Employees");
+        }
         try
         {
-            // get all tables from the Service
-            List<Table> tables = _tablesServices.GetAllTables();
+            // get all tables with and with no order
+            List<Table> tables = _tablesServices.GetAllTablesWithOrders();
             
             return View(tables);
         }
         catch (Exception ex)
         {
-            ViewData["ErrorMessage"] = "An error occurred. Please try again." + ex.Message;
+            ViewData["Exception"] = "An error occurred. Please try again." + ex.Message;
             // return an empty list of tables
             return View(new List<Table>());
         }
@@ -46,9 +54,6 @@ public class RestaurantController : Controller
     {
         try
         {
-            // пet the latest data
-            List<Table> tables = _tablesServices.GetAllTables();
-        
             // set success message
             TempData["SuccessMessage"] = "Tables refreshed at " + DateTime.Now.ToString("HH:mm:ss");
         
@@ -58,7 +63,7 @@ public class RestaurantController : Controller
         catch (Exception ex)
         {
             // set error message
-            TempData["ErrorMessage"] = "Error refreshing tables: " + ex.Message;
+            ViewData["Exception"] = "Error refreshing tables: " + ex.Message;
             return RedirectToAction("Overview");
         }
     }
