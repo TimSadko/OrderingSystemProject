@@ -342,7 +342,7 @@ a:hover {
     height: 22px;
     line-height: 22px;
 
-    border: 1.5px solid #585858;
+    /*border: 1.5px solid #585858;*/
     border-radius: 10%;
 
     text-decoration: none;
@@ -363,6 +363,8 @@ a:hover {
 
     height: 22px;
     line-height: 22px;
+
+    text-decoration: underline;
 
     text-align: center;  
 
@@ -423,7 +425,7 @@ a:hover {
 
     height: 22px;
 
-    border: 1.5px solid #363636;
+    /*border: 1.5px solid #363636;*/
     border-radius: 10%;  
 
     text-decoration: none;
@@ -439,10 +441,13 @@ a:hover {
 .KitchenButtonText {
     display: flex;
 
-    color: #363636;
+    color: #585858;
 
     text-align: center;
     vertical-align: middle;
+
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
     
     justify-self: center;
 
@@ -458,8 +463,9 @@ a:hover {
 }
 
 .KitchenOrdrButtonTake:hover {
-    background: #ffe78c;
-    border: 1.5px solid #363636;
+    background: #FFEEAF;
+    /*background: #ffe78c;*/
+    /*border: 1.5px solid #363636;*/
 }
 
 .KitchenOrdrButtonFinish {
@@ -467,8 +473,9 @@ a:hover {
 }
 
 .KitchenOrdrButtonFinish:hover {
-    background: #9698ff;
-    border: 1.5px solid #363636;
+    background: #AFB0FF;
+    /*background: #9698ff;*/
+    /*border: 1.5px solid #363636;*/
 }
 
 .KitchenOrdrButtonReturn {
@@ -476,8 +483,9 @@ a:hover {
 }
 
 .KitchenOrdrButtonReturn:hover {
-    background: #ff7070;
-    border: 1.5px solid #363636;
+    background: #FF9A9A;
+    /*background: #ff7070;*/
+    /*border: 1.5px solid #363636;*/
 }
 
 .KitchenOrderListsBreak {

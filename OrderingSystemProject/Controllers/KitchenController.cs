@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models.Kitchen;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers
 {
@@ -15,7 +16,9 @@ namespace OrderingSystemProject.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {          
+        {
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
 				var list = _serv.GetCookOrders();
@@ -35,7 +38,9 @@ namespace OrderingSystemProject.Controllers
         [HttpGet ("Kitchen/TakeItem/{_order_id}/{_item_id}")]
         public IActionResult TakeItem(int _order_id, int _item_id)
         {
-            try
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
+			try
             {
                 _serv.TakeItem(_order_id, _item_id);
             }
@@ -50,6 +55,8 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet ("Kitchen/FinishItem/{_order_id}/{_item_id}")]
 		public IActionResult FinishItem(int _order_id, int _item_id)
 		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
 			try
 			{
 				_serv.FinishItem(_order_id, _item_id);
@@ -66,6 +73,8 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet("Kitchen/ReturnItem/{_order_id}/{_item_id}")]
 		public IActionResult ReturnItem(int _order_id, int _item_id)
 		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
 			try
 			{
 				_serv.ReturnItem(_order_id, _item_id);
@@ -81,6 +90,8 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet("Kitchen/TakeOrder/{_order_id}")]
 		public IActionResult TakeOrder(int _order_id)
 		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
 			try
 			{
 				_serv.TakeOrder(_order_id);
@@ -96,6 +107,8 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet("Kitchen/FinishOrder/{_order_id}")]
 		public IActionResult FinishOrder(int _order_id)
 		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
 			try
 			{
 				_serv.FinishOrder(_order_id);
@@ -111,6 +124,8 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet("Kitchen/ReturnOrder/{_order_id}")]
 		public IActionResult ReturnOrder(int _order_id)
 		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
 			try
 			{
 				_serv.ReturnOrder(_order_id);
@@ -126,7 +141,9 @@ namespace OrderingSystemProject.Controllers
 		[HttpGet]
         public IActionResult Done()
         {
-            try
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
+			try
 			{ 
                 KitchenViewModel model = new KitchenViewModel(_serv.GetDoneCookOrders(), null, DateTime.Now); // Create ne view model 
 
@@ -139,5 +156,14 @@ namespace OrderingSystemProject.Controllers
 
             return View();        
         }
+
+		private bool Authenticate()
+		{
+			var user_role = Authorization.GetUserRole(this.HttpContext);
+
+			if (user_role == Models.EmployeeType.Cook) return true;
+
+			return false;
+		}
 	}
 }
