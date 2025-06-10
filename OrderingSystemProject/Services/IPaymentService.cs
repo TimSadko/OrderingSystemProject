@@ -13,4 +13,9 @@ public interface IPaymentService
     Bill GetBillForPaymentById(Payment payment);
     decimal GetPaymentAmount(Payment payment);
     void SetTipAmount(Payment payment);
+    
+    //methods from the repo
+    public Payment? GetById(int id);
+    Payment InsertPayment(Payment payment);
+    List<Payment> GetPaymentsByBillId(int billId);
 }

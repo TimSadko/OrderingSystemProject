@@ -15,27 +15,43 @@
     <!-- Tip selection with JavaScript to update total -->
     <div class="form-group py-2">
         <label>Tip:</label><br />
-        <input type="radio" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)"> 20%
-        <input type="radio" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)"> 10%
-        <input type="radio" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)"> Not Today
-        <input type="radio" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)"> Custom Tip
+        <div class="glass-radio-group tip">
+            <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
+            <label for="tip20">20%</label>
+
+            <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
+            <label for="tip10">10%</label>
+
+            <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)">
+            <label for="tip0">Not Today</label>
+
+            <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
+            <label for="tipCustom">Custom Tip</label>
+
+            <div class="glass-glider"></div>
+        </div>
     </div>
-    
-    <div id="customTipContainer" style="display:none;">
-        <label>Enter custom tip (€):</label>
+
+    <div id="customTipContainer" class="glass-custom-input hidden">
+        <label for="customTipValue">Enter custom tip (€):</label>
         <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
     </div>
     <span asp-validation-for="CustomTipAmount" class="text-danger"></span>
 
     <p><strong>Final Payment Total:</strong> <span id="totalDisplay">€@Model.PaymentAmount</span></p>
     <input type="hidden" id="PaymentAmount" name="PaymentAmount" value="@Model.PaymentAmount" />
+    
+    <div class="glass-radio-group payment">
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.Cash, new { id = "pay-cash" })
+        <label for="pay-cash">Cash</label>
+        
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.CreditCard, new { id = "pay-credit" })
+        <label for="pay-credit">Credit Card</label>
+        
+        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.DebitCard, new { id = "pay-debit" })
+        <label for="pay-debit">Debit Card</label>
 
-    <!-- Payment method -->
-    <div class="form-group py-2">
-        <label>Payment Method:</label><br />
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.Cash) Cash
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.CreditCard) Credit Card
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.DebitCard) Debit Card
+        <div class="glass-glider"></div>
     </div>
 
     <!-- Feedback textarea (fixed) -->

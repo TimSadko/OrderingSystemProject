@@ -5,6 +5,13 @@ namespace OrderingSystemProject.Services;
 
 public class PaymentService : IPaymentService
 {
+    private readonly IPaymentRepository _paymentRepository;
+
+    public PaymentService(IPaymentRepository paymentRepository)
+    {
+        _paymentRepository = paymentRepository;
+    }
+    
     private Bill? _current_bill = null;
     private Payment? _current_payment = null;
 
@@ -13,8 +20,7 @@ public class PaymentService : IPaymentService
         var order = CommonRepository._order_rep.GetById(orderId);
         if (order == null)
             return null;
-
-        // ✅ Correct usage now
+        
         var bill = CommonRepository._bill_rep.GetByOrderId(orderId);
 
         if (bill == null)
@@ -103,6 +109,21 @@ public class PaymentService : IPaymentService
     {
         var insertedPayment = CommonRepository._payment_rep.InsertPayment(payment);
         return insertedPayment;
+    }
+    
+    public Payment? GetById(int id)
+    {
+        return _paymentRepository.GetById(id);
+    }
+
+    public Payment InsertPayment(Payment payment)
+    {
+        return _paymentRepository.InsertPayment(payment);
+    }
+
+    public List<Payment> GetPaymentsByBillId(int billId)
+    {
+        return _paymentRepository.GetPaymentsByBillId(billId);
     }
     
     public Payment? GetCurrentPayment() { return _current_payment; }
