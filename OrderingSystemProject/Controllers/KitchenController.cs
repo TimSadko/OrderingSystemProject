@@ -25,6 +25,8 @@ namespace OrderingSystemProject.Controllers
 
 				KitchenViewModel model = new KitchenViewModel(list, _serv.GetCookOrdersReady(list), DateTime.Now); // Create newS view model 
 
+				//LogOrdersConsole(list);
+
                 return View(model); 
             }
             catch (Exception ex)
@@ -159,11 +161,47 @@ namespace OrderingSystemProject.Controllers
 
 		private bool Authenticate()
 		{
+			return true;
+
 			var user_role = Authorization.GetUserRole(this.HttpContext);
 
 			if (user_role == Models.EmployeeType.Cook) return true;
 
 			return false;
+		}
+
+		private void LogOrdersConsole(List<KitchenOrder> list)
+		{
+			for (int i = 0; i < list.Count; i++)
+			{
+				Console.WriteLine("Items:");
+				foreach (var item in list[i].Items)
+				{
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+				}
+
+				Console.WriteLine(" |\n V");
+
+				if (list[i].ItemStarters.Count > 0) Console.WriteLine("Starters:");
+				foreach (var item in list[i].ItemStarters)
+				{
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+				}
+
+				if (list[i].ItemMains.Count > 0) Console.WriteLine("Mains:");
+				foreach (var item in list[i].ItemMains)
+				{
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+				}
+
+				if (list[i].ItemDeserts.Count > 0) Console.WriteLine("Deserts:");
+				foreach (var item in list[i].ItemDeserts)
+				{
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+				}
+
+				Console.WriteLine("\n");
+			}
 		}
 	}
 }

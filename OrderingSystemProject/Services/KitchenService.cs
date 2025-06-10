@@ -15,11 +15,6 @@ namespace OrderingSystemProject.Services
 		{
 			var list = CommonRepository._order_rep.GetOrdersKitchen(); // Get lists of orders for the repo
 
-			for (int i = 0; i < list.Count; i++)
-			{
-				list[i].FillInSubitemsLists(); // fill in subcatigories lists
-            }
-
 			return list; 
 		}
 

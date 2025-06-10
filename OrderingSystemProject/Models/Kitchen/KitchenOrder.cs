@@ -65,15 +65,5 @@ namespace OrderingSystemProject.Models.Kitchen
 				return OrderStatus.Preparing;
 			}
 		}
-
-		public void FillInSubitemsLists()
-		{
-			for (int i = 0; i < _items.Count; i++)
-			{
-				if (_items[i].MenuItem.Category == ItemCategory.STARTERS) _items_starters.Add(_items[i]);
-				else if (_items[i].MenuItem.Category == ItemCategory.MAINS) _items_mains.Add(_items[i]);
-				else if (_items[i].MenuItem.Category == ItemCategory.DESERTS) _items_deserts.Add(_items[i]);
-			}
-		}
 	}
 }
