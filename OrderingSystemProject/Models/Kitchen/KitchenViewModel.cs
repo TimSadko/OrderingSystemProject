@@ -6,7 +6,7 @@
         private List<KitchenOrder>? _orders_ready;
         private DateTime _last_update;
 
-		public KitchenViewModel(List<KitchenOrder> orders, List<KitchenOrder> orders_ready, DateTime last_update)
+		public KitchenViewModel(List<KitchenOrder>? orders, List<KitchenOrder>? orders_ready, DateTime last_update)
 		{
 			_orders = orders;
 			_orders_ready = orders_ready;

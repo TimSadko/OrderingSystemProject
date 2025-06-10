@@ -4,19 +4,18 @@ namespace OrderingSystemProject.Models.Kitchen
 {
 	public class KitchenOrder : Order
 	{
-		private List<OrderItem> _items_starters;
-		private List<OrderItem> _items_mains;
-		private List<OrderItem> _items_deserts;
+		private List<OrderItem> _items_starters = new List<OrderItem>();
+		private List<OrderItem> _items_mains = new List<OrderItem>();
+		private List<OrderItem> _items_deserts = new List<OrderItem>();
+
+		public List<OrderItem> ItemStarters { get => _items_starters; set => _items_starters = value; }
+		public List<OrderItem> ItemMains { get => _items_mains; set => _items_mains = value; }
+		public List<OrderItem> ItemDeserts { get => _items_deserts; set => _items_deserts = value; }
 
 		public KitchenOrder() : base() { }
 
 
-		public KitchenOrder(int order_id, int table_id, OrderStatus order_status, DateTime order_time) : base(order_id, table_id, order_status, order_time) 
-		{
-			_items_starters = new List<OrderItem>();
-			_items_mains = new List<OrderItem>();
-			_items_deserts = new List<OrderItem>();
-		}
+		public KitchenOrder(int order_id, int table_id, OrderStatus order_status, DateTime order_time) : base(order_id, table_id, order_status, order_time) { }
 
 		public KitchenOrder(Order order)
 		{
@@ -25,10 +24,6 @@ namespace OrderingSystemProject.Models.Kitchen
 			_table = order.Table;
 			_order_status = order.OrderStatus;
 			_order_time = order.OrderTime;
-
-			_items_starters = new List<OrderItem>();
-			_items_mains = new List<OrderItem>();
-			_items_deserts = new List<OrderItem>();
 
 			SetItems(order.Items);
 		}
@@ -68,6 +63,16 @@ namespace OrderingSystemProject.Models.Kitchen
 				else if (_new == 0 && _prep == 0) return OrderStatus.ReadyForPickup;
 
 				return OrderStatus.Preparing;
+			}
+		}
+
+		public void FillInSubitemsLists()
+		{
+			for (int i = 0; i < _items.Count; i++)
+			{
+				if (_items[i].MenuItem.Category == ItemCategory.STARTERS) _items_starters.Add(_items[i]);
+				else if (_items[i].MenuItem.Category == ItemCategory.MAINS) _items_mains.Add(_items[i]);
+				else if (_items[i].MenuItem.Category == ItemCategory.DESERTS) _items_deserts.Add(_items[i]);
 			}
 		}
 	}
