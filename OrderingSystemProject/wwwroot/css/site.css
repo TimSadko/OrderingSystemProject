@@ -246,7 +246,93 @@ a:hover {
 }
 /*///Bill and Pay*/
 
+/*Style for the radio buttons*/
+.glass-radio-group {
+    display: grid;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    box-shadow:
+            inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+            inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+            0 4px 12px rgba(0, 0, 0, 0.15);
+    width: fit-content;
+    margin: 1rem 0;
+}
 
+.glass-radio-group input[type="radio"] {
+    display: none;
+}
+
+.glass-radio-group label {
+    text-align: center;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease-in-out;
+}
+
+.glass-radio-group label:hover {
+    color: #000;
+}
+
+.glass-radio-group input:checked + label {
+    color: #fff;
+}
+
+/* Glider style */
+.glass-glider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #961A29;
+    border-radius: 1rem;
+    z-index: 1;
+    transition: transform 0.4s ease-in-out;
+}
+
+/* Tip-specific layout */
+.glass-radio-group.tip {
+    grid-template-columns: repeat(4, 1fr);
+}
+.glass-radio-group.tip .glass-glider {
+    width: 25%;
+}
+#tip20:checked ~ .glass-glider {
+    transform: translateX(0%);
+}
+#tip10:checked ~ .glass-glider {
+    transform: translateX(100%);
+}
+#tip0:checked ~ .glass-glider {
+    transform: translateX(200%);
+}
+#tipCustom:checked ~ .glass-glider {
+    transform: translateX(300%);
+}
+
+/* Payment-specific layout */
+.glass-radio-group.payment {
+    grid-template-columns: repeat(3, 1fr);
+}
+.glass-radio-group.payment .glass-glider {
+    width: 33.33%;
+}
+#pay-cash:checked ~ .glass-glider {
+    transform: translateX(0%);
+}
+#pay-credit:checked ~ .glass-glider {
+    transform: translateX(100%);
+}
+#pay-debit:checked ~ .glass-glider {
+    transform: translateX(200%);
+}
 
 /*Kitchen and Bar*/
 .KitchenOrdersList {
