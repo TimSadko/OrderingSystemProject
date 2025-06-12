@@ -27,6 +27,8 @@ namespace OrderingSystemProject.Controllers
 
 				//LogOrdersConsole(list);
 
+				ViewData["LastUpdate"] = model.LastUpdate.ToString("HH:mm:ss");
+
                 return View(model); 
             }
             catch (Exception ex)
@@ -149,6 +151,10 @@ namespace OrderingSystemProject.Controllers
 			{ 
                 KitchenViewModel model = new KitchenViewModel(_serv.GetDoneCookOrders(), null, DateTime.Now); // Create ne view model 
 
+				LogOrdersConsole(model.Orders);
+
+				ViewData["LastUpdate"] = model.LastUpdate.ToString("HH:mm:ss");
+
                 return View(model);
             }
             catch (Exception ex)
@@ -161,8 +167,6 @@ namespace OrderingSystemProject.Controllers
 
 		private bool Authenticate()
 		{
-			return true;
-
 			var user_role = Authorization.GetUserRole(this.HttpContext);
 
 			if (user_role == Models.EmployeeType.Cook) return true;
@@ -174,10 +178,10 @@ namespace OrderingSystemProject.Controllers
 		{
 			for (int i = 0; i < list.Count; i++)
 			{
-				Console.WriteLine("Items:");
+				Console.WriteLine($"Items: ({list[i].KitchenStatus})");
 				foreach (var item in list[i].Items)
 				{
-					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount} -> {item.ItemStatus}");
 				}
 
 				Console.WriteLine(" |\n V");
@@ -185,19 +189,19 @@ namespace OrderingSystemProject.Controllers
 				if (list[i].ItemStarters.Count > 0) Console.WriteLine("Starters:");
 				foreach (var item in list[i].ItemStarters)
 				{
-					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount} -> {item.ItemStatus}");
 				}
 
 				if (list[i].ItemMains.Count > 0) Console.WriteLine("Mains:");
 				foreach (var item in list[i].ItemMains)
 				{
-					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount} -> {item.ItemStatus}");
 				}
 
 				if (list[i].ItemDeserts.Count > 0) Console.WriteLine("Deserts:");
 				foreach (var item in list[i].ItemDeserts)
 				{
-					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount}");
+					Console.WriteLine($"  {item.MenuItem.Name} x{item.Amount} -> {item.ItemStatus}");
 				}
 
 				Console.WriteLine("\n");

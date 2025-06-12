@@ -23,23 +23,44 @@
 
             <div class="navbar-links" id="navbarLinks">
                 <ul class="navbar-menu">
-                    <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="Payment" asp-action="Details" asp-route-id="1">Details</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="Waiter" asp-action="Index">Waiter</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Kitchen</a></li>
-                    <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                    @switch ((string?)ViewData["Title"]) // Change nav bar links depending on the page title
+                    {
+                        case "Kitchen": // Nav links for Kitchen
+                        {
+                            <li>Last Upadate: @ViewData["LastUpdate"]</li>
+                            <a class="" asp-controller="Kitchen" asp-action="Index">Refresh</a>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Done">Completed Orders</a></li>
+                            break;
+                        }
+                        case "Kitchen - Done Orders": // Nav links for Kitchen
+                        {
+                            <li>Last Upadate: @ViewData["LastUpdate"]</li>
+                            <a class="" asp-controller="Kitchen" asp-action="Done">Refresh</a>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Current Orders</a></li>
+                            break;    
+                        }                    
+                        default: // Deafault links
+                        {
+                            <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Payment" asp-action="Details" asp-route-id="1">Details</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Waiter" asp-action="Index">Waiter</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Kitchen</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                            break;
+                        }
+                    }                 
+
+                    @if ((string?)ViewData["Title"] != "Login")
+                    {
+                        <li class="logout-container">
+                            <a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Logout">Logout</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
-
-        @if((string?)ViewData["Title"] != "Login")
-        {
-            <div class="logout-container">
-                <a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Logout">Logout</a>
-            </div>
-        }
     </nav>
 </header>
     <div class="container">

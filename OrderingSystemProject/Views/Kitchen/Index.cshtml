@@ -5,15 +5,18 @@
 	ViewData["Title"] = "Kitchen";
 }
 
-<h1>Orders List</h1>
-
 <partial name="_ErrorMessage" />
 
-<div>
+<h1 class="KitchenOrderListListLabel">Running:</h1>
+
+<div class="KitchenOrderListsBreak"></div>
+
+@* <div>
 	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Refresh</a>
 	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Done Orders</a>
-</div>
-<div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
+</div> *@
+
+@* <div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div> *@
 
 <div class="KitchenOrdersList">
 	@{
@@ -26,6 +29,8 @@
 		}
 	}
 </div>
+
+<h1 class="KitchenOrderListListLabel">Ready to Pickup:</h1>
 
 <div class="KitchenOrderListsBreak"></div>
 

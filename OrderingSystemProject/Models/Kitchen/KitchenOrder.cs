@@ -48,18 +48,21 @@ namespace OrderingSystemProject.Models.Kitchen
 			{
 				if (_order_status == OrderStatus.New) return OrderStatus.New;
 
-				int _new = 0, _prep = 0, red = 0;
+				int _new = 0, _prep = 0, _red = 0, _serv = 0;
 
 				for (int i = 0; i < _items.Count; i++)
 				{
 					if (_items[i].MenuItem.Card == ItemCard.DRINKS) continue;
 
 					if (_items[i].ItemStatus == OrderItemStatus.Preparing) _prep++;
-					else if (_items[i].ItemStatus == OrderItemStatus.Ready) red++;
+					else if (_items[i].ItemStatus == OrderItemStatus.Ready) _red++;
 					else if (_items[i].ItemStatus == OrderItemStatus.NewItem) _new++;
+					else if (_items[i].ItemStatus == OrderItemStatus.Served) _serv++;
 				}
 
-				if (_prep == 0 && red == 0) return OrderStatus.New;
+				if(_serv == _items.Count) return OrderStatus.Served;
+
+				if (_prep == 0 && _red == 0) return OrderStatus.New;
 				else if (_new == 0 && _prep == 0) return OrderStatus.ReadyForPickup;
 
 				return OrderStatus.Preparing;

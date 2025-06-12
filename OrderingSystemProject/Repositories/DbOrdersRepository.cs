@@ -116,7 +116,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2 ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
@@ -151,7 +151,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4 ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
