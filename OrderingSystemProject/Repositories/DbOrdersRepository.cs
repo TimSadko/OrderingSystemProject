@@ -197,5 +197,53 @@ namespace OrderingSystemProject.Repositories
 				return eff > 0;
 			}
 		}
+		
+		public List<Order> GetActiveOrders()
+		{
+			List<Order> orders = new List<Order>();
+    
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				// all orders except completed (4)
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime FROM Orders WHERE OrderStatus < 4 ORDER BY OrderTime";
+        
+				SqlCommand command = new SqlCommand(query, conn);
+				command.Connection.Open();
+				SqlDataReader reader = command.ExecuteReader();
+        
+				while (reader.Read())
+				{
+					Order order = ReadOrder(reader);
+					FillInOrder(order);
+					orders.Add(order);
+				}
+				reader.Close();
+			}
+			return orders;
+		}
+		
+		public List<Order> GetActiveOrdersByTable(int tableId)
+		{
+			List<Order> orders = new List<Order>();
+			
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime FROM Orders WHERE OrderStatus < 3 AND TableId = @tableId";
+				SqlCommand command = new SqlCommand(query, conn);
+				command.Parameters.AddWithValue("@tableId", tableId);
+				
+				command.Connection.Open();
+				SqlDataReader reader = command.ExecuteReader();
+       
+				while (reader.Read())
+				{
+					Order order = ReadOrder(reader);
+					FillInOrder(order);
+					orders.Add(order);
+				}
+				reader.Close();
+			}
+			return orders;
+		}
 	}
 }

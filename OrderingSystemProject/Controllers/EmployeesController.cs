@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers;
 
@@ -16,6 +17,10 @@ public class EmployeesController : Controller
 
     public IActionResult Index()
     {
+        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+        // check if user is logged in and has correct role
+        if (userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+
         List<Employee> employees = _employeesService.GetAllEmployees();
         return View(employees);
     }
@@ -139,18 +144,13 @@ public class EmployeesController : Controller
     public IActionResult Login()
     {
         // get the employee data from session
-        string? employeeJson = HttpContext.Session.GetString("LoggedInEmployee");
-        if (employeeJson != null)
-        {
-            // converting the JSON string into an Employee object
-            Employee? employee = JsonSerializer.Deserialize<Employee>(employeeJson);
-            if (employee != null)
-            {
-                // if employee exists in session, redirect based on employee type
-                return RedirectEmployee((EmployeeType)employee.EmployeeType);
-            }
-        }
+        Employee? employee = HttpContext.Session.GetObject<Employee>("LoggedInEmployee");
 
+        if (employee != null)
+        {
+            // if employee exists in session, redirect based on employee type
+            return RedirectEmployee((EmployeeType)employee.EmployeeType);
+        }
         // if no session exists, show login form
         return View();
     }
@@ -173,12 +173,11 @@ public class EmployeesController : Controller
             // check if Employee is active
             if (!employee.IsActive)
             {
-                ViewData["ErrorMessage"] = "Your account has been deactivated. Please contact administrator.";
+                ViewData["Exception"] = "Your account has been deactivated. Please contact administrator.";
                 return View(loginModel);
             }
                 // remember logged in employee
-                string userJson = JsonSerializer.Serialize(employee);
-                HttpContext.Session.SetString("LoggedInEmployee", userJson);
+                HttpContext.Session.SetObject("LoggedInEmployee", employee);
 
                 // redirect Employee by Type
                 return RedirectEmployee(employee.EmployeeType);

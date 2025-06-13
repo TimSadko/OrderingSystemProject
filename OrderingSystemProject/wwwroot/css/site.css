@@ -497,3 +497,113 @@ a:hover {
 }
 
 /*//// Kitchen and Bar*/
+
+/* Restaurant Overview - start*/
+
+.table-available {
+    background-color: #4A7E48 !important;
+    color: white;
+}
+
+.table-occupied {
+    background-color: #961A29 !important;
+    color: white;
+}
+
+.table-unknown {
+    background-color: #6c757d !important;
+    color: white;
+}
+
+.btn-refresh {
+    background-color: #213F65;
+    color: white;
+}
+
+.btn-refresh:hover {
+    background-color: #1b334f;
+    color: white;
+}
+
+/* Table Card Dropdown Styles */
+.table-card-dropdown {
+    position: relative;
+}
+
+.table-card-dropdown .table-dropdown-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-weight: bold;
+    text-decoration: none !important;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    font-size: inherit;
+    
+    position: relative;
+}
+
+.table-card-dropdown .table-dropdown-btn::after {
+    content: "▼";
+    font-size: 0.7rem;
+    margin-left: 0.5rem;
+    opacity: 0.7;
+}
+
+.table-card-dropdown .table-dropdown-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.table-card-dropdown .table-dropdown-btn:focus {
+    box-shadow: none;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Dropdown menu */
+.table-card-dropdown .dropdown-menu {
+    min-width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #dee2e6;
+}
+
+.table-card-dropdown .dropdown-item {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.table-card-dropdown .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.dropdown-item.occupy-action:hover {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.dropdown-item.free-action:hover {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Restaurant Overview - end*/
+
+/* Login - start*/
+
+.btn-login {
+    background-color: #213F65;
+    color: white;
+}
+
+.btn-login:hover {
+    background-color: #1b334f;
+    color: white;
+}
+
+/* Login - end*/

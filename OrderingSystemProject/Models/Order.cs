@@ -35,5 +35,93 @@ namespace OrderingSystemProject.Models
 
         public List<OrderItem> Items { get => _items; set => _items = value; }
         public Table Table { get => _table; set => _table = value; }
+        
+        public OrderItemStatus? FoodStatus
+        {
+	        get
+	        {
+		        // check if order has items
+		        if (_items == null || _items.Count == 0) return null;
+        
+		        bool hasReady = false;
+		        bool hasPreparing = false;
+		        bool hasNewItem = false;
+		        bool hasServed = false;
+        
+		        // loop through all food items
+		        foreach (OrderItem item in _items)
+		        {
+			        if (item.MenuItem != null && item.MenuItem.IsFood())
+			        {
+				        switch (item.ItemStatus)
+				        {
+					        case OrderItemStatus.Ready:
+						        hasReady = true;
+						        break;
+					        case OrderItemStatus.Preparing:
+						        hasPreparing = true;
+						        break;
+					        case OrderItemStatus.NewItem:
+						        hasNewItem = true;
+						        break;
+					        case OrderItemStatus.Served:
+						        hasServed = true;
+						        break;
+				        }
+			        }
+		        }
+		        // return by priority 
+		        if (hasReady) return OrderItemStatus.Ready;
+		        if (hasPreparing) return OrderItemStatus.Preparing;
+		        if (hasNewItem) return OrderItemStatus.NewItem;
+		        if (hasServed) return OrderItemStatus.Served;
+    
+		        return null;
+	        }
+        }
+
+        public OrderItemStatus? DrinkStatus
+        {
+	        get
+	        {
+		        // check if order has items
+		        if (_items == null || _items.Count == 0) return null;
+        
+		        bool hasReady = false;
+		        bool hasPreparing = false;
+		        bool hasNewItem = false;
+		        bool hasServed = false;
+        
+		        // loop through all food items
+		        foreach (OrderItem item in _items)
+		        {
+			        if (item.MenuItem != null && item.MenuItem.IsDrink())
+			        {
+				        switch (item.ItemStatus)
+				        {
+					        case OrderItemStatus.Ready:
+						        hasReady = true;
+						        break;
+					        case OrderItemStatus.Preparing:
+						        hasPreparing = true;
+						        break;
+					        case OrderItemStatus.NewItem:
+						        hasNewItem = true;
+						        break;
+					        case OrderItemStatus.Served:
+						        hasServed = true;
+						        break;
+				        }
+			        }
+		        }
+		        // return by priority 
+		        if (hasReady) return OrderItemStatus.Ready;
+		        if (hasPreparing) return OrderItemStatus.Preparing;
+		        if (hasNewItem) return OrderItemStatus.NewItem;
+		        if (hasServed) return OrderItemStatus.Served;
+    
+		        return null;
+	        }
+        }
 	}
 }

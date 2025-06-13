@@ -2,9 +2,9 @@ using OrderingSystemProject.Models;
 
 namespace OrderingSystemProject.Services;
 
-public interface ITablesServices
+public interface ITablesService
 {
     List<Table> GetAllTables();
     Table GetTableByNumber(int tableId);
-    List<Table> GetAllTablesWithOrders();
+    bool ChangeTableStatus(int tableId, TableStatus newStatus);
 }

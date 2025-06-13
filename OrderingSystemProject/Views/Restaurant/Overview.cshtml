@@ -1,4 +1,4 @@
-@model List<OrderingSystemProject.Models.Table>
+@model OrderingSystemProject.ViewModels.RestaurantOverviewViewModel
 
 @{
     ViewData["Title"] = "Restaurant Overview";
@@ -14,12 +14,15 @@
 
 <!-- Refresh overview -->
 <div class="mb-4">
-    <a asp-controller="Restaurant" asp-action="RefreshOverview" class="btn btn-primary">Refresh Tables</a>
+    <a asp-controller="Restaurant" asp-action="RefreshOverview" class="btn btn-refresh">Refresh Tables</a>
 </div>
 
 <div class="row row-cols-1 row-cols-md-5 g-4">
-    @foreach (Table table in Model)
+    @foreach (Table table in Model.Tables)
     {
+        // get order for this table
+        Order? order = Model.GetActiveOrderForTable(table.TableId);
+        
         string cardColorClass;
         string statusText;
         
@@ -41,32 +44,59 @@
 
         <div class="col px-1"> 
             <div class="card m-1" style="width: 100%;">
-                <div class="card-header text-center">Table @table.TableNumber</div>
-                <div class="card-body bg-@cardColorClass text-white" style="height: 150px;">
+                <div class="card-header text-center table-card-dropdown dropdown">
+                    <button class="table-dropdown-btn" 
+                            type="button" 
+                            data-bs-toggle="dropdown">
+                        Table @table.TableNumber
+                    </button>
+    
+                    <ul class="dropdown-menu">
+                        @if (table.Status == TableStatus.Available)
+                        {
+                            <li>
+                                <a class="dropdown-item occupy-action" 
+                                   asp-controller="Restaurant" 
+                                   asp-action="OccupyTable" 
+                                   asp-route-tableId="@table.TableId">Occupy Table</a>
+                            </li>
+                        }
+                        else if (table.Status == TableStatus.Occupied)
+                        {
+                            <li>
+                                <a class="dropdown-item free-action" 
+                                   asp-controller="Restaurant" 
+                                   asp-action="FreeTable" 
+                                   asp-route-tableId="@table.TableId">Free Table</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-body @cardColorClass" style="height: 150px;">
                     <p class="card-text text-center">@statusText</p>
-                    @if (table.ActiveOrder != null)
+                    @if (order != null)
                     {
-                        @if (table.FoodStatus != null)
+                        @if (order.FoodStatus != null)
                         {
                             string foodStatusText = "";
-                            if ((int)table.FoodStatus == 0) foodStatusText = "New";
-                            else if ((int)table.FoodStatus == 1) foodStatusText = "Preparing";  
-                            else if ((int)table.FoodStatus == 2) foodStatusText = "Ready";
-                            else if ((int)table.FoodStatus == 3) foodStatusText = "Served";
+                            if (order.FoodStatus == OrderItemStatus.NewItem) foodStatusText = "New";
+                            else if (order.FoodStatus == OrderItemStatus.Preparing) foodStatusText = "Preparing";  
+                            else if (order.FoodStatus == OrderItemStatus.Ready) foodStatusText = "Ready";
+                            else if (order.FoodStatus == OrderItemStatus.Served) foodStatusText = "Served";
         
                             <div>Food: @foodStatusText</div>
                         }
-                        @if (table.DrinkStatus != null)
+                        @if (order.DrinkStatus != null)
                         {
                             string drinkStatusText = "";
-                            if ((int)table.DrinkStatus == 0) drinkStatusText = "New";
-                            else if ((int)table.DrinkStatus == 1) drinkStatusText = "Preparing";  
-                            else if ((int)table.DrinkStatus == 2) drinkStatusText = "Ready";
-                            else if ((int)table.DrinkStatus == 3) drinkStatusText = "Served";
+                            if (order.DrinkStatus == OrderItemStatus.NewItem) drinkStatusText = "New";
+                            else if (order.DrinkStatus == OrderItemStatus.Preparing) drinkStatusText = "Preparing";  
+                            else if (order.DrinkStatus == OrderItemStatus.Ready) drinkStatusText = "Ready";
+                            else if (order.DrinkStatus == OrderItemStatus.Served) drinkStatusText = "Served";
         
                             <div>Drinks: @drinkStatusText</div>
                         }
-                        <div>Time: @table.ActiveOrder.OrderTime.ToString("HH:mm")</div>
+                        <div>Time: @order.OrderTime.ToString("HH:mm")</div>
                     }
                     else
                     {

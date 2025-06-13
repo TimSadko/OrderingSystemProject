@@ -47,5 +47,15 @@ namespace OrderingSystemProject.Models
             Stock = stock;
             IsActive = isActive;
         }
+        
+        public bool IsFood() 
+        {
+                return Card == ItemCard.LUNCH || Card == ItemCard.DINNER;
+        }
+
+        public bool IsDrink() 
+        {
+                return Card == ItemCard.DRINKS || Card == ItemCard.ALCOHOLIC_DRINKS;
+        }
     }
 }

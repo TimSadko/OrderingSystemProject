@@ -7,8 +7,6 @@ public interface ITablesRepository
     List<Table> GetAllTables();
   
     Table? GetTableById(int tableId);
-  
-    Table GetTableByNumber(int tableId);
-  
-    List<Table> GetAllTablesWithOrders();  
+    
+    void UpdateTableStatus(int tableId, TableStatus newTableStatus);
 }
