@@ -4,92 +4,19 @@
 	ViewData["Title"] = "Kitchen - Done Orders";
 }
 
-<h1>Orders List</h1>
-
 <partial name="_ErrorMessage" />
 
-<div>
-	<a class="btn btn-primary" asp-action="Done" asp-controller="Kitchen">Refresh</a>
-	<a class="btn btn-primary" asp-action="Index" asp-controller="Kitchen">Current Orders</a>
-</div>
-<div>Last Update: @Model.LastUpdate.ToString("HH:mm:ss")</div>
+<h1 class="KitchenOrderListListLabel">Completed Orders:</h1>
+
+<div class="KitchenOrderListsBreak"></div>
 
 <div class="KitchenOrdersList">
 	@{
-		if (Model != null)
+		if (Model.Orders != null)
 		{
 			foreach (var order in Model.Orders) // Go throu list of orders
 			{
-				var _time_since_order = (DateTime.Now - order.OrderTime); // Get the date since order was taken
-
-				<div class="KitchenDivMain">
-					@{
-						string order_color = "";
-
-						switch (order.OrderStatus) // Get css class with background color depending on order status
-						{
-							case OrderStatus.New:
-								order_color = "KitchenTopGreen"; break;
-							case OrderStatus.Preparing:
-								order_color = _time_since_order.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
-							case OrderStatus.ReadyForPickup:
-								order_color = "KitchenTopBlue"; break;
-							case OrderStatus.Served:
-							case OrderStatus.Completed:
-								order_color = "KitchenTopGrey"; break;
-						}
-					}
-
-					<div class="KitchenTopBase @order_color">
-						<div class="KitchenOrderTop">
-							<span class="KitchenOrderTableNumber">tbl @order.Table.TableNumber</span>
-							<span class="KitchenOrderOrderTime">@order.OrderTime.ToString("HH:mm:ss")</span>
-						</div>
-						<div class="KitchenOrderTimePassed">+@((DateTime.Now - order.OrderTime).ToString(@"hh\:mm\:ss"))</div>
-					</div>
-
-					@{
-						foreach (var item in order.Items) // Go throu list of order_itmes of current order
-						{
-							<div class="KitchenDiv">
-								<div class="KitchenItemText">
-									@{
-										string _ord_item_color = "";
-
-										switch (item.ItemStatus) // Get css color class depending on current item status
-										{
-											case OrderItemStatus.NewItem:
-												_ord_item_color = "KitchenTopGreen"; break;
-											case OrderItemStatus.Preparing:
-												_ord_item_color = _time_since_order.Minutes > 10 ? "KitchenTopRed" : "KitchenTopYellow"; break;
-											case OrderItemStatus.Ready:
-												_ord_item_color = "KitchenTopBlue"; break;
-											case OrderItemStatus.Served:
-												_ord_item_color = "KitchenTopGrey"; break;
-										}
-									}
-									<div class="KitchenOrderItemColor @_ord_item_color"></div>
-									<span class="KitchenOrderItemText">@item.MenuItem.Name x@(item.Amount)</span>
-								</div>
-								<div class="KitchenOrderCommentLine">
-									@{
-										string comment;
-
-										if (item.Comment == "") comment = " - reg"; // add comment to each order item, if there is none, add default one
-										else comment = $"- {item.Comment}";
-
-										<div class="KitchenItemCommentText">@comment</div>
-									}
-								</div>
-							</div>
-
-							if (item != order.Items[order.Items.Count - 1]) // if this item is not the last, add item break;
-							{
-								<div class="KitchenOrderItemBreak"></div>
-							}
-						}
-					}
-				</div>
+				<partial name="~/Views/Kitchen/_Order.cshtml" model="@order" />
 			}
 		}
 	}

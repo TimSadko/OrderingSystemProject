@@ -206,7 +206,7 @@ a:hover {
     color: #951A28;
 }
 
-.summary-row {
+.summary-row-payment {
     color: #000000;
     text-align: left;
 }
@@ -246,7 +246,154 @@ a:hover {
 }
 /*///Bill and Pay*/
 
+/*Style for the radio buttons*/
+.glass-radio-group {
+    display: grid;
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    box-shadow:
+            inset 1px 1px 4px rgba(255, 255, 255, 0.2),
+            inset -1px -1px 6px rgba(0, 0, 0, 0.3),
+            0 4px 12px rgba(0, 0, 0, 0.15);
+    width: fit-content;
+    margin: 1rem 0;
+}
 
+.glass-radio-group input[type="radio"] {
+    display: none;
+}
+
+.glass-radio-group label {
+    text-align: center;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease-in-out;
+}
+
+.glass-radio-group label:hover {
+    color: #000;
+}
+
+.glass-radio-group input:checked + label {
+    color: #fff;
+}
+
+/* Glider style */
+.glass-glider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #961A29;
+    border-radius: 1rem;
+    z-index: 1;
+    transition: transform 0.4s ease-in-out;
+}
+
+/* Tip-specific layout */
+.glass-radio-group.tip {
+    grid-template-columns: repeat(4, 1fr);
+}
+.glass-radio-group.tip .glass-glider {
+    width: 25%;
+}
+#tip20:checked ~ .glass-glider {
+    transform: translateX(0%);
+}
+#tip10:checked ~ .glass-glider {
+    transform: translateX(100%);
+}
+#tip0:checked ~ .glass-glider {
+    transform: translateX(200%);
+}
+#tipCustom:checked ~ .glass-glider {
+    transform: translateX(300%);
+}
+
+/* Payment-specific layout */
+.glass-radio-group.payment {
+    grid-template-columns: repeat(3, 1fr);
+}
+.glass-radio-group.payment .glass-glider {
+    width: 33.33%;
+}
+#pay-cash:checked ~ .glass-glider {
+    transform: translateX(0%);
+}
+#pay-credit:checked ~ .glass-glider {
+    transform: translateX(100%);
+}
+#pay-debit:checked ~ .glass-glider {
+    transform: translateX(200%);
+}
+
+/* Payment list with orders */
+.bill-container {
+    background-color: #fdf7ef; /* beige paper-like */
+    border: 1px solid #4CAF50;
+    border-radius: 10px;
+    padding: 20px;
+    height: 754px;
+    width: 425px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.table-scrollable {
+    max-height: 200px; /* adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.table-scrollable-details {
+    max-height: 300px; /* adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.bill-table td {
+    vertical-align: middle;
+    background-color: white;
+}
+
+.bill-table .item-name {
+    width: 60%;
+}
+
+.bill-summary {
+    margin-top: 10px;
+}
+
+.summary-row-payment {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    font-size: 1rem;
+    padding: 4px 0;
+}
+
+.summary-row-payment .label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.summary-row-payment .value {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.summary-row-payment.total-row {
+    border-top: 2px solid #444;
+    margin-top: 10px;
+    padding-top: 6px;
+}
 
 /*Kitchen and Bar*/
 .KitchenOrdersList {
@@ -254,8 +401,8 @@ a:hover {
 
     /*background-color: black;*/
 
-    column-count: 3;
-    column-gap: 10px;
+    column-width: 260px;
+    column-gap: 6px;
 
     page-break-inside: avoid;
     break-inside: avoid-column;
@@ -264,7 +411,7 @@ a:hover {
 
     /*margin-right: 100px;*/
 
-    width: 70%;
+    width: 100%;
 
     padding-bottom: 10px;
 }
@@ -273,20 +420,27 @@ a:hover {
     display: inline-block;
 
     background-color: #D9D9D9;
-    border: 1.5px solid #585858;
 
     margin-bottom: 10px;
     max-width: 100%;
 
     width: 100%;
+
+    border-radius: 5px;
 }
 
 .KitchenDiv {
-    background-color: #D9D9D9;
+    
 }
 
 .KitchenTopBase {
-    border-bottom: 1.5px solid #585858;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    font-family: Roboto;
+    font-size: 20px;
+
+    margin-bottom: 4px;
 }
 
 .KitchenTopGreen {
@@ -316,6 +470,8 @@ a:hover {
 .KitchenItemCommentText {
     display: inline;
 
+    font-size: 18px;
+
     color: #434343;
 
     margin-left: 13px;
@@ -329,10 +485,11 @@ a:hover {
 
 .KitchenOrderTableNumber {
     margin-left: 3px;
+    text-align: left;
 }
 
 .KitchenOrderOrderTime {
-    text-align: end;
+    text-align: right;
     margin-right: 3px;
 }
 
@@ -342,12 +499,12 @@ a:hover {
     height: 22px;
     line-height: 22px;
 
-    border: 1.5px solid #585858;
-    border-radius: 10%;
+    /*border: 1.5px solid #585858;*/
+    border-radius: 5px;
 
-    text-decoration: none;
+    text-decoration: underline;
 
-    align-self: center;
+    text-align: left;
 
     margin-left: 3px;
     margin-bottom: 2px;
@@ -364,35 +521,59 @@ a:hover {
     height: 22px;
     line-height: 22px;
 
+    text-decoration: underline;
+
     text-align: center;  
 
-    padding-left: 5px;
-    padding-right: 5px;
+/*    padding-left: 5px;
+    padding-right: 5px;*/
 
     margin-top: 0;
     margin-bottom: 10px;
 }
 
 .KitchenOrderTimePassed {
-    text-align: end;
-
+    text-align: right;
     margin-right: 3px;
 }
 
 .KitchenOrderItemBreak {
     display: block;
 
-    background: #808080;
+    background: #8080803D;
 
-    height: 0px;
-    width: 97%;
-
-    margin-bottom: 3px;
-
-    border: 0.5px solid #808080;
-    border-radius: 50px;
+    border-radius: 5px;
 
     justify-self: center;
+
+    height: 2px;
+    width: calc(100% - 6px);
+
+    margin-left: 3px;
+    margin-right: 3px;
+
+    margin-bottom: 3px;
+}
+
+.KitchenOrderItemBreakDotted {
+    display: block;
+
+    border-radius: 5px;
+
+    background-image: linear-gradient(to right, #8080803D 66%, #CBCBCB 0%);
+    background-position: bottom;
+    background-size: 3px 2px;
+    background-repeat: repeat-x;
+
+    justify-self: center;
+
+    height: 2px;
+    width: calc(100% - 6px);
+
+    margin-left: 3px;
+    margin-right: 3px;
+
+    margin-bottom: 2px;
 }
 
 .KitchenOrderItemColor {
@@ -401,30 +582,37 @@ a:hover {
     border: 1.5px solid #585858;
 
     width: 12px;
-    height: 23px;
+    height: 22px;
 
-    vertical-align: middle;
+    vertical-align: bottom;
 
-    margin-bottom: 2px;
+    margin-bottom: 3px;
+
     margin-right: 0px;
+    padding-right: 0;
 }
 
 .KitchenOrderItemText{
+    font-size: 20px;
+
     margin-left: 0px;
+    padding-left: 0;
 }
 
 .KitchenOrderCommentLine {
     display: flex;
+
+
     justify-content: space-between;
 }
 
 .KitchenOrdrItemActionButton {
     display: inline;
 
-    height: 22px;
+    height: 24px;
 
-    border: 1.5px solid #363636;
-    border-radius: 10%;  
+    /*border: 1.5px solid #363636;*/
+    border-radius: 5px;  
 
     text-decoration: none;
 
@@ -433,16 +621,23 @@ a:hover {
     margin-right: 3px;
     margin-top: 1px;
 
+    margin-bottom: 3px;
+
     padding: 0;
 }
    
 .KitchenButtonText {
     display: flex;
 
-    color: #363636;
+    font-size: 18px;
+
+    color: #585858;
 
     text-align: center;
     vertical-align: middle;
+
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
     
     justify-self: center;
 
@@ -450,7 +645,7 @@ a:hover {
     padding-right: 5px;
 
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
 }
 
 .KitchenOrdrButtonTake {
@@ -458,8 +653,9 @@ a:hover {
 }
 
 .KitchenOrdrButtonTake:hover {
-    background: #ffe78c;
-    border: 1.5px solid #363636;
+    background: #FFEEAF;
+    /*background: #ffe78c;*/
+    /*border: 1.5px solid #363636;*/
 }
 
 .KitchenOrdrButtonFinish {
@@ -467,8 +663,9 @@ a:hover {
 }
 
 .KitchenOrdrButtonFinish:hover {
-    background: #9698ff;
-    border: 1.5px solid #363636;
+    background: #AFB0FF;
+    /*background: #9698ff;*/
+    /*border: 1.5px solid #363636;*/
 }
 
 .KitchenOrdrButtonReturn {
@@ -476,24 +673,52 @@ a:hover {
 }
 
 .KitchenOrdrButtonReturn:hover {
-    background: #ff7070;
-    border: 1.5px solid #363636;
+    background: #FF9A9A;
+    /*background: #ff7070;*/
+    /*border: 1.5px solid #363636;*/
+}
+
+.KitchenOrderListListLabel{
+    font-size: 32px;
+    font-family:Roboto;
+
+    margin-bottom: 3px;
+    margin-left: 18px;
 }
 
 .KitchenOrderListsBreak {
     display: block;
 
-    background: #808080;
+    background: #1C1C1C;
 
     height: 0px;
-    width: 68%;
+    width: 100%;
 
-    margin-bottom: 3px;
+    margin-top: 0;
+    margin-bottom: 6px;
 
-    margin-left: 1%;
+    border: 1px solid #1C1C1C;
+    border-radius: 1px;
+}
 
-    border: 0.5px solid #808080;
-    border-radius: 50px;
+.KitchenOrderSubcategory {
+    border-radius: 5px;
+    background-color: #CBCBCB;
+
+    margin-left: 3px;
+    margin-right: 3px;
+
+    margin-bottom: 4px;
+}
+
+.KitchenOrderSubcategoryLabel {
+    font-size: 22px;
+
+    color: #363636;
+
+    text-align: center;
+
+    width: 100%;
 }
 
 /*//// Kitchen and Bar*/

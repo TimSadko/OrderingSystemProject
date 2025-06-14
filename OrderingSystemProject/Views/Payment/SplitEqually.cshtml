@@ -1,0 +1,144 @@
+@model SplitEquallyViewModel
+@{
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+}
+
+<h2>Split the Bill Equally</h2>
+
+<p><strong>Total:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
+
+@*
+<form asp-action="SplitEqually" asp-controller="Payment" method="post">
+    @Html.HiddenFor(m => m.Bill.BillId)
+
+    <div class="form-group">
+        <label>Number of People:</label>
+        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1", @oninput = "updateSplitPreview()" })
+        @Html.ValidationMessageFor(m => m.NumberOfPeople)
+    </div>
+
+    <div class="form-group">
+        <label>Extra Tip (total):</label>
+        @Html.TextBoxFor(m => m.TotalTip, new { @class = "form-control", @type = "number", @step = "0.01", @oninput = "updateSplitPreview()" })
+    </div>
+
+    <p id="perPersonDisplay" class="text-info mt-2"></p>
+
+    <button type="submit" class="btn btn-primary">Split & Pay</button>
+</form>
+*@
+
+
+<h2>Split and Pay</h2>
+<form asp-action="SplitEqually" asp-controller="Payment" method="post">
+    @Html.HiddenFor(m => m.Bill.BillId)
+
+    <div class="form-group">
+        <label>Number of People:</label>
+        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1", @oninput = "updateSplitPreview()" })
+        @Html.ValidationMessageFor(m => m.NumberOfPeople)
+    </div>
+    
+    @for (int i = 0; i < Model.NumberOfPeople; i++)
+    {
+        <div class="card my-3 p-3">
+            <h4>Payment @((i + 1))</h4>
+
+            <p><strong>Amount to Pay:</strong> @Model.Payments[i].PaymentAmount.ToString("C", euroCulture)</p>
+            <input type="hidden" name="Payments[@i].PaymentAmount" value="@Model.Payments[i].PaymentAmount" />
+            <input type="hidden" name="Payments[@i].BillId" value="@Model.Bill.BillId" />
+
+            <div class="glass-radio-group payment">
+                @Html.RadioButtonFor(m => m.Payments[i].PaymentType, PaymentType.Cash, new { id = "pay-cash" })
+                <label for="pay-cash">Cash</label>
+
+                @Html.RadioButtonFor(m => m.Payments[i].PaymentType, PaymentType.CreditCard, new { id = "pay-credit" })
+                <label for="pay-credit">Credit Card</label>
+
+                @Html.RadioButtonFor(m => m.Payments[i].PaymentType, PaymentType.DebitCard, new { id = "pay-debit" })
+                <label for="pay-debit">Debit Card</label>
+
+                <div class="glass-glider"></div>
+            </div>
+
+            <div class="form-group py-2">
+                <label>Tip:</label><br />
+                <div class="glass-radio-group tip">
+                    <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
+                    <label for="tip20">20%</label>
+
+                    <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
+                    <label for="tip10">10%</label>
+
+                    <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)">
+                    <label for="tip0">Not Today</label>
+
+                    <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
+                    <label for="tipCustom">Custom Tip</label>
+
+                    <div class="glass-glider"></div>
+                </div>
+            </div>
+
+            <div id="customTipContainer" class="glass-custom-input hidden">
+                <label for="customTipValue">Enter custom tip (€):</label>
+                <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
+            </div>
+            <span asp-validation-for="Payments[i].CustomTipAmount" class="text-danger"></span>
+
+            @*
+            <div class="form-group">
+                <label>Tip (€)</label>
+                <input type="number" name="Payments[@i].TipAmount" step="0.01" class="form-control" />
+            </div>
+            *@
+
+            <div class="form-group">
+                <label>Feedback</label>
+                <textarea name="Payments[@i].Feedback" class="form-control"></textarea>
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Split and Pay</button>
+</form>
+
+<script>
+    function updateSplitPreview() {
+        const total = @Model.Bill.OrderTotal;
+        const people = document.querySelector('input[name="NumberOfPeople"]').value;
+        const tip = parseFloat(document.querySelector('input[name="TotalTip"]').value || 0);
+
+        if (people > 0) {
+            const totalPerPerson = (total + tip) / people;
+            document.getElementById("perPersonDisplay").innerText = `Each person pays: €${totalPerPerson.toFixed(2)}`;
+        }
+    }
+
+    const orderTotal = parseFloat("@Model.Bill.OrderTotal");
+
+    function handleTipSelection(radio) {
+        const selectedValue = radio.value;
+
+        if (selectedValue === "custom") {
+            document.getElementById("customTipContainer").style.display = "block";
+            applyCustomTip(); // In case there's already a value typed
+        } else {
+            document.getElementById("customTipContainer").style.display = "none";
+            document.getElementById("customTipValue").value = "";
+
+            const tipPercent = parseFloat(selectedValue);
+            if (!isNaN(tipPercent)) {
+                const tipAmount = orderTotal * tipPercent;
+                //updateTotalDisplay(tipAmount);
+            }
+        }
+    }
+
+    function applyCustomTip() {
+        const customTip = parseFloat(document.getElementById("customTipValue").value) || 0;
+        //updateTotalDisplay(customTip);
+    }
+
+    document.addEventListener("DOMContentLoaded", updateSplitPreview);
+</script>

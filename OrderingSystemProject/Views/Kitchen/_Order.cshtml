@@ -48,19 +48,62 @@
 						break;
 				}
 			}
-			<span class="KitchenOrderTimePassed">+@((DateTime.Now - Model.OrderTime).ToString(@"hh\:mm\:ss"))</span>
+			<span class="KitchenOrderTimePassed">+@((DateTime.Now - Model.OrderTime).ToString(@"mm\:ss"))</span>
 		</div>
 	</div>
 
 	@{
-		foreach (var item in Model.Items) // Go throu list of order_itmes of current order
+		
+		if (Model.ItemStarters.Count > 0)
 		{
-			<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
-
-			if (item != Model.Items[Model.Items.Count - 1]) // if this item is not the last, add item break;
-			{
+			<div class="KitchenOrderSubcategory">
+				<div class="KitchenOrderSubcategoryLabel">Starters:</div>
 				<div class="KitchenOrderItemBreak"></div>
-			}
+
+				@foreach (var item in Model.ItemStarters) // Go throu list of order_itmes of current order
+				{
+				<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
+
+					@if (item != Model.ItemStarters[Model.ItemStarters.Count - 1]) // if this item is not the last, add item break;
+					{
+						<div class="KitchenOrderItemBreakDotted"></div>
+					}
+				}
+			</div>
+		}
+		if (Model.ItemMains.Count > 0)
+		{
+			<div class="KitchenOrderSubcategory">
+				<div class="KitchenOrderSubcategoryLabel">Mains:</div>
+				<div class="KitchenOrderItemBreak"></div>
+
+				@foreach (var item in Model.ItemMains) // Go throu list of order_itmes of current order
+				{
+					<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
+
+					@if (item != Model.ItemMains[Model.ItemMains.Count - 1]) // if this item is not the last, add item break;
+					{
+						<div class="KitchenOrderItemBreakDotted"></div>
+					}
+				}
+			</div>	
+		}
+		if (Model.ItemDeserts.Count > 0)
+		{
+			<div class="KitchenOrderSubcategory">
+				<div class="KitchenOrderSubcategoryLabel">Deserts:</div>
+				<div class="KitchenOrderItemBreak"></div>
+
+				@foreach (var item in Model.ItemDeserts) // Go throu list of order_itmes of current order
+				{
+					<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
+
+					@if (item != Model.ItemDeserts[Model.ItemDeserts.Count - 1]) // if this item is not the last, add item break;
+					{
+						<div class="KitchenOrderItemBreakDotted"></div>
+					}
+				}
+			</div>			
 		}
 	}
 </div>

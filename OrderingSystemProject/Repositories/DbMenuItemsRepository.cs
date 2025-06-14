@@ -109,17 +109,17 @@ namespace OrderingSystemProject.Repositories
         {
             using (var connection = new SqlConnection(_connection_string))
             {
-                string query =
-                    "UPDATE MenuItems SET Name = @Name, Price = @Price, Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive WHERE MenuItemId = @MenuItemId";
+                string query = "UPDATE MenuItems SET Name = @Name, Price = @Price, Card = @Card, Category = @Category, Stock = @Stock, IsActive = @IsActive WHERE MenuItemId = @MenuItemId";
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("@Name", menuItem.Name);
                 command.Parameters.AddWithValue("@Price", menuItem.Price);
-                command.Parameters.AddWithValue("@Card", menuItem.Card);
-                command.Parameters.AddWithValue("@Category", menuItem.Category);
+                command.Parameters.AddWithValue("@Card", (int)menuItem.Card);
+                command.Parameters.AddWithValue("@Category", (int)menuItem.Category);
                 command.Parameters.AddWithValue("@Stock", menuItem.Stock);
                 command.Parameters.AddWithValue("@IsActive", menuItem.IsActive);
                 command.Parameters.AddWithValue("@MenuItemId", menuItem.MenuItemId);
+
                 connection.Open();
 
                 if (command.ExecuteNonQuery() == 0)

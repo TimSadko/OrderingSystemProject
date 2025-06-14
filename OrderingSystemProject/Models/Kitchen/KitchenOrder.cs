@@ -4,19 +4,18 @@ namespace OrderingSystemProject.Models.Kitchen
 {
 	public class KitchenOrder : Order
 	{
-		private List<OrderItem> _items_starters;
-		private List<OrderItem> _items_mains;
-		private List<OrderItem> _items_deserts;
+		private List<OrderItem> _items_starters = new List<OrderItem>();
+		private List<OrderItem> _items_mains = new List<OrderItem>();
+		private List<OrderItem> _items_deserts = new List<OrderItem>();
+
+		public List<OrderItem> ItemStarters { get => _items_starters; set => _items_starters = value; }
+		public List<OrderItem> ItemMains { get => _items_mains; set => _items_mains = value; }
+		public List<OrderItem> ItemDeserts { get => _items_deserts; set => _items_deserts = value; }
 
 		public KitchenOrder() : base() { }
 
 
-		public KitchenOrder(int order_id, int table_id, OrderStatus order_status, DateTime order_time) : base(order_id, table_id, order_status, order_time) 
-		{
-			_items_starters = new List<OrderItem>();
-			_items_mains = new List<OrderItem>();
-			_items_deserts = new List<OrderItem>();
-		}
+		public KitchenOrder(int order_id, int table_id, OrderStatus order_status, DateTime order_time) : base(order_id, table_id, order_status, order_time) { }
 
 		public KitchenOrder(Order order)
 		{
@@ -25,10 +24,6 @@ namespace OrderingSystemProject.Models.Kitchen
 			_table = order.Table;
 			_order_status = order.OrderStatus;
 			_order_time = order.OrderTime;
-
-			_items_starters = new List<OrderItem>();
-			_items_mains = new List<OrderItem>();
-			_items_deserts = new List<OrderItem>();
 
 			SetItems(order.Items);
 		}
@@ -53,18 +48,21 @@ namespace OrderingSystemProject.Models.Kitchen
 			{
 				if (_order_status == OrderStatus.New) return OrderStatus.New;
 
-				int _new = 0, _prep = 0, red = 0;
+				int _new = 0, _prep = 0, _red = 0, _serv = 0;
 
 				for (int i = 0; i < _items.Count; i++)
 				{
 					if (_items[i].MenuItem.Card == ItemCard.DRINKS) continue;
 
 					if (_items[i].ItemStatus == OrderItemStatus.Preparing) _prep++;
-					else if (_items[i].ItemStatus == OrderItemStatus.Ready) red++;
+					else if (_items[i].ItemStatus == OrderItemStatus.Ready) _red++;
 					else if (_items[i].ItemStatus == OrderItemStatus.NewItem) _new++;
+					else if (_items[i].ItemStatus == OrderItemStatus.Served) _serv++;
 				}
 
-				if (_prep == 0 && red == 0) return OrderStatus.New;
+				if(_serv == _items.Count) return OrderStatus.Served;
+
+				if (_prep == 0 && _red == 0) return OrderStatus.New;
 				else if (_new == 0 && _prep == 0) return OrderStatus.ReadyForPickup;
 
 				return OrderStatus.Preparing;

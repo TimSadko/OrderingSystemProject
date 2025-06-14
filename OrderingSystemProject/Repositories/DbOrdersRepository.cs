@@ -87,6 +87,57 @@ namespace OrderingSystemProject.Repositories
 
             return order;
         }
+        
+        //New stuff
+        
+        public List<OrderItem> GetItemsForOrder(int orderId)
+{
+    List<OrderItem> items = new List<OrderItem>();
+
+    using (var conn = new SqlConnection(_connection_string))
+    {
+        conn.Open();
+        var cmd = new SqlCommand(@"
+            SELECT 
+                oi.OrderItemId, oi.OrderId, oi.MenuItemId, oi.Amount, oi.Comment, oi.ItemStatus,
+                mi.MenuItemId, mi.Name, mi.Price, mi.Card, mi.Category, mi.Stock, mi.IsActive
+            FROM OrderItems oi
+            JOIN MenuItems mi ON oi.MenuItemId = mi.MenuItemId
+            WHERE oi.OrderId = @OrderId", conn);
+
+        cmd.Parameters.AddWithValue("@OrderId", orderId);
+
+        using (var reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                var orderItem = new OrderItem
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("OrderItemId")),
+                    OrderId = reader.GetInt32(reader.GetOrdinal("OrderId")),
+                    MenuItemId = reader.GetInt32(reader.GetOrdinal("MenuItemId")),
+                    Amount = reader.GetInt32(reader.GetOrdinal("Amount")),
+                    Comment = reader.GetString(reader.GetOrdinal("Comment")),
+                    ItemStatus = (OrderItemStatus)reader.GetInt32(reader.GetOrdinal("ItemStatus")),
+                    MenuItem = new MenuItem
+                    {
+                        MenuItemId = reader.GetInt32(reader.GetOrdinal("MenuItemId")),
+                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                        Card = (ItemCard)reader.GetInt32(reader.GetOrdinal("Card")),
+                        Category = (ItemCategory)reader.GetInt32(reader.GetOrdinal("Category")),
+                        Stock = reader.GetInt32(reader.GetOrdinal("Stock")),
+                        IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
+                    }
+                };
+
+                items.Add(orderItem);
+            }
+        }
+    }
+
+    return items;
+}
 
         private Order ReadOrder(SqlDataReader reader)
         {
@@ -116,7 +167,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2 ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();
@@ -151,7 +202,7 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4 ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Connection.Open();

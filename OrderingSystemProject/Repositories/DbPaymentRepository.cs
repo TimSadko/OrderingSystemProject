@@ -57,6 +57,35 @@ public class DbPaymentRepository : IPaymentRepository
 
         return payment;
     }
+    public List<Payment> GetPaymentsByBillId(int billId)
+    {
+        var payments = new List<Payment>();
+
+        using (SqlConnection conn = new SqlConnection(_connection_string))
+        {
+            string query = @"SELECT PaymentId, BillId, TipAmount, PaymentType, PaymentAmount, Feedback 
+                         FROM Payments 
+                         WHERE BillId = @BillId";
+
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@BillId", billId);
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var payment = ReadPayment(reader);
+                        FillInPayment(payment);
+                        payments.Add(payment);
+                    }
+                }
+            }
+        }
+
+        return payments;
+    }
     
     private Payment ReadPayment(SqlDataReader reader)
     {

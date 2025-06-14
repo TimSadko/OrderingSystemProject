@@ -14,7 +14,7 @@ namespace OrderingSystemProject.Models
 		protected OrderStatus _order_status;
 		protected DateTime _order_time;
 
-        protected List<OrderItem> _items;
+        protected List<OrderItem> _items = new List<OrderItem>();
 		protected Table _table;
 
         public Order() { }

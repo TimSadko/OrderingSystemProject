@@ -13,11 +13,9 @@ namespace OrderingSystemProject.Services
 
 		public List<KitchenOrder> GetCookOrders()
 		{
-			var list = CommonRepository._order_rep.GetOrdersKitchen();
+			var list = CommonRepository._order_rep.GetOrdersKitchen(); // Get lists of orders for the repo
 
-			
-
-			return list;
+			return list; 
 		}
 
 		public List<KitchenOrder> GetCookOrdersReady(List<KitchenOrder> all)
