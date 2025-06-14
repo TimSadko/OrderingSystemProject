@@ -46,6 +46,10 @@ namespace OrderingSystemProject
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesService, TablesService>();
             
+            var dbFinancialOverviewRepository = new DbFinancialOverviewRepository(builder.Configuration);
+            builder.Services.AddSingleton<IFinancialOverviewRepository>(dbFinancialOverviewRepository);
+            builder.Services.AddSingleton<IFinancialOverviewService, FinancialOverviewService>();
+            
             builder.Services.AddSingleton<IOrdersService, OrdersService>();
 
             // Add services to the container.
