@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
@@ -17,9 +16,10 @@ public class EmployeesController : Controller
 
     public IActionResult Index()
     {
-        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
-        // check if user is logged in and has correct role
-        if (userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
 
         List<Employee> employees = _employeesService.GetAllEmployees();
         return View(employees);
@@ -30,7 +30,7 @@ public class EmployeesController : Controller
     {
         return View();
     }
-    
+
     [HttpPost]
     public IActionResult Create(Employee employee)
     {
@@ -46,8 +46,8 @@ public class EmployeesController : Controller
             return View(employee);
         }
     }
-    
-    
+
+
     [HttpGet]
     public IActionResult Edit(int? id)
     {
@@ -86,9 +86,9 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Activate(employeeId);
-        
+
             TempData["EmployeeOperationConfirmMessage"] = "Staff has been activated!";
-        
+
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -97,18 +97,17 @@ public class EmployeesController : Controller
 
             return RedirectToAction(nameof(Index));
         }
-        
     }
-    
+
     [HttpPost]
     public IActionResult Deactivate(int employeeId)
     {
         try
         {
             _employeesService.Deactivate(employeeId);
-        
+
             TempData["EmployeeOperationConfirmMessage"] = "Staff has been deactivated!";
-        
+
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -117,18 +116,17 @@ public class EmployeesController : Controller
 
             return RedirectToAction(nameof(Index));
         }
-        
     }
-    
+
     [HttpPost]
     public IActionResult Delete(int employeeId)
     {
         try
         {
             _employeesService.Delete(employeeId);
-        
+
             TempData["EmployeeOperationConfirmMessage"] = "Staff has been removed!";
-        
+
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -137,7 +135,6 @@ public class EmployeesController : Controller
 
             return RedirectToAction(nameof(Index));
         }
-        
     }
 
     [HttpGet]
@@ -151,6 +148,7 @@ public class EmployeesController : Controller
             // if employee exists in session, redirect based on employee type
             return RedirectEmployee((EmployeeType)employee.EmployeeType);
         }
+
         // if no session exists, show login form
         return View();
     }
@@ -169,18 +167,19 @@ public class EmployeesController : Controller
                 ViewData["Exception"] = "Invalid username or password";
                 return View(loginModel);
             }
-            
+
             // check if Employee is active
             if (!employee.IsActive)
             {
                 ViewData["Exception"] = "Your account has been deactivated. Please contact administrator.";
                 return View(loginModel);
             }
-                // remember logged in employee
-                HttpContext.Session.SetObject("LoggedInEmployee", employee);
 
-                // redirect Employee by Type
-                return RedirectEmployee(employee.EmployeeType);
+            // remember logged in employee
+            HttpContext.Session.SetObject("LoggedInEmployee", employee);
+
+            // redirect Employee by Type
+            return RedirectEmployee(employee.EmployeeType);
         }
         catch (Exception ex)
         {
@@ -211,5 +210,11 @@ public class EmployeesController : Controller
         }
 
         return RedirectToAction("Index", "Home");
+    }
+
+    private bool IsUnauthorisedUser()
+    {
+        var userRole = Authorization.GetUserRole(HttpContext);
+        return userRole != EmployeeType.Manager;
     }
 }

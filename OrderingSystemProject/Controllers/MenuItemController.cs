@@ -18,9 +18,10 @@ public class MenuItemController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
-        // check if user is logged in and has correct role
-        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
 
         List<MenuItem> menuItems = _menuItemService.GetAll();
         var menuManagementViewMode = new MenuManagementViewModel(
@@ -54,14 +55,14 @@ public class MenuItemController : Controller
     }
 
     [HttpGet]
-    public ActionResult Delete(int? ItemId)
+    public ActionResult Delete(int? itemId)
     {
-        if (ItemId == null)
+        if (itemId == null)
         {
             return NotFound();
         }
 
-        MenuItem? menuItem = _menuItemService.GetById((int)ItemId);
+        MenuItem? menuItem = _menuItemService.GetById((int)itemId);
         return View(menuItem);
     }
 
@@ -81,14 +82,14 @@ public class MenuItemController : Controller
     }
 
     [HttpGet]
-    public IActionResult Edit(int? id)
+    public IActionResult Edit(int? itemId)
     {
-        if (id == null)
+        if (itemId == null)
         {
             return NotFound();
         }
 
-        var menuItem = _menuItemService.GetById((int)id);
+        var menuItem = _menuItemService.GetById((int)itemId);
         return View(menuItem);
     }
 
@@ -169,5 +170,11 @@ public class MenuItemController : Controller
 
             return RedirectToAction(nameof(Index));
         }
+    }
+
+    private bool IsUnauthorisedUser()
+    {
+        var userRole = Authorization.GetUserRole(HttpContext);
+        return userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager;
     }
 }
