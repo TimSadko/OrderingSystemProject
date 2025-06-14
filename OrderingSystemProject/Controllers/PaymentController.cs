@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 
 namespace OrderingSystemProject.Controllers;
 
@@ -49,6 +50,10 @@ public class PaymentController : Controller
     [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
+        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+        // check if user is logged in and has correct role
+        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+
         try
         {
             var bill = _paymentService.GetNewBill(id);

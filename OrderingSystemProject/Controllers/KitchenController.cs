@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderingSystemProject.Models;
 using OrderingSystemProject.Models.Kitchen;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
@@ -16,10 +17,13 @@ namespace OrderingSystemProject.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {
-			if (!Authenticate()) return RedirectToAction("Login", "Employees");
-
-            try
+        {          
+	        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+	        // check if user is logged in and has correct role
+	        if (userRole != EmployeeType.Cook && userRole != EmployeeType.Bartender && userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+            
+	        try
+          
             {
 				var list = _serv.GetCookOrders();
 

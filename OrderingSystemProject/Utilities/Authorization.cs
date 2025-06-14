@@ -8,11 +8,10 @@ public class Authorization
     // get the role of logged in employee, returns null if not logged in
     public static EmployeeType? GetUserRole(HttpContext httpContext)
     {
-        string? employeeJson = httpContext.Session.GetString("LoggedInEmployee");
-        if (employeeJson != null)
+        Employee? employee = httpContext.Session.GetObject<Employee>("LoggedInEmployee");
+        if (employee != null)
         {
-            Employee? employee = JsonSerializer.Deserialize<Employee>(employeeJson);
-            return employee?.EmployeeType;
+            return employee.EmployeeType;
         }
         return null; // not logged in
     }

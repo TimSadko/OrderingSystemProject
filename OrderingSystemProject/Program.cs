@@ -41,10 +41,12 @@ namespace OrderingSystemProject
             CommonRepository._payment_rep = _payment_rep;
             builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
-            var _tables_rep = new DbTablesRepository(builder.Configuration,  _order_item_rep);
+            var _tables_rep = new DbTablesRepository(builder.Configuration);
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
             CommonRepository._tables_rep = _tables_rep;
-            builder.Services.AddSingleton<ITablesServices, TablesServices>();
+            builder.Services.AddSingleton<ITablesService, TablesService>();
+            
+            builder.Services.AddSingleton<IOrdersService, OrdersService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
