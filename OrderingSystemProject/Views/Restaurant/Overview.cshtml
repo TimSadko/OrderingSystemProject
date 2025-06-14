@@ -24,56 +24,54 @@
         Order? order = Model.GetActiveOrderForTable(table.TableId);
         
         string cardColorClass;
-        string statusText;
+        string tableStatusText;
         
         if (table.Status == TableStatus.Available)
         {
             cardColorClass = "table-available";
-            statusText = "Available";
+            tableStatusText = "Available";
         }
         else if (table.Status == TableStatus.Occupied)
         {
             cardColorClass = "table-occupied";
-            statusText = "Occupied";
+            tableStatusText = "Occupied";
         }
         else
         {
             cardColorClass = "table-unknown";
-            statusText = "Unknown";
+            tableStatusText = "Unknown";
         }
 
+        <!-- Table overview card -->
         <div class="col px-1"> 
             <div class="card m-1" style="width: 100%;">
                 <div class="card-header text-center table-card-dropdown dropdown">
-                    <button class="table-dropdown-btn" 
-                            type="button" 
-                            data-bs-toggle="dropdown">
-                        Table @table.TableNumber
-                    </button>
-    
+                    <!-- Table number and dropdown button -->
+                    <button class="table-dropdown-btn" type="button" data-bs-toggle="dropdown">Table @table.TableNumber</button>
                     <ul class="dropdown-menu">
                         @if (table.Status == TableStatus.Available)
                         {
                             <li>
-                                <a class="dropdown-item occupy-action" 
-                                   asp-controller="Restaurant" 
-                                   asp-action="OccupyTable" 
-                                   asp-route-tableId="@table.TableId">Occupy Table</a>
+                                <a class="dropdown-item occupy-action" asp-controller="Restaurant" asp-action="OccupyTable" asp-route-tableId="@table.TableId">Occupy Table</a>
                             </li>
                         }
                         else if (table.Status == TableStatus.Occupied)
                         {
                             <li>
-                                <a class="dropdown-item free-action" 
-                                   asp-controller="Restaurant" 
-                                   asp-action="FreeTable" 
-                                   asp-route-tableId="@table.TableId">Free Table</a>
+                                <a class="dropdown-item free-action" asp-controller="Restaurant" asp-action="FreeTable" asp-route-tableId="@table.TableId">Free Table</a>
                             </li>
                         }
                     </ul>
                 </div>
+                <!-- Bill button (when the order is Served) -->
+                @if (order != null && (order.FoodStatus == OrderItemStatus.Served || order.DrinkStatus == OrderItemStatus.Served))
+                {
+                    <a href="/Payment/Details/@order.OrderId" class="bill-button-table">Bill</a>
+                }
+                <!-- Card body with Order info -->
                 <div class="card-body @cardColorClass" style="height: 150px;">
-                    <p class="card-text text-center">@statusText</p>
+                    <p class="card-text text-center">@tableStatusText</p>
+                    <!-- Food order status info -->
                     @if (order != null)
                     {
                         @if (order.FoodStatus != null)
@@ -83,9 +81,27 @@
                             else if (order.FoodStatus == OrderItemStatus.Preparing) foodStatusText = "Preparing";  
                             else if (order.FoodStatus == OrderItemStatus.Ready) foodStatusText = "Ready";
                             else if (order.FoodStatus == OrderItemStatus.Served) foodStatusText = "Served";
-        
-                            <div>Food: @foodStatusText</div>
+                            <!-- Change food status if the order is ready(dropdown menu) -->
+                            <div>
+                                Food: 
+                                @if (order.FoodStatus == OrderItemStatus.Ready)
+                                {
+                                    <div class="dropdown d-inline">
+                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">Ready ▼</button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" onclick="markAsServed(@order.OrderId, 'food')">Mark as Served</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                }
+                                else
+                                { 
+                                    @foodStatusText
+                                }
+                            </div>
                         }
+                        <!-- Drinks order status info -->
                         @if (order.DrinkStatus != null)
                         {
                             string drinkStatusText = "";
@@ -93,8 +109,25 @@
                             else if (order.DrinkStatus == OrderItemStatus.Preparing) drinkStatusText = "Preparing";  
                             else if (order.DrinkStatus == OrderItemStatus.Ready) drinkStatusText = "Ready";
                             else if (order.DrinkStatus == OrderItemStatus.Served) drinkStatusText = "Served";
-        
-                            <div>Drinks: @drinkStatusText</div>
+                            <!-- Change drinks status if the order is ready(dropdown menu) -->
+                            <div>
+                                Drinks: 
+                                @if (order.DrinkStatus == OrderItemStatus.Ready)
+                                {
+                                    <div class="dropdown d-inline">
+                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">Ready ▼</button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" onclick="markAsServed(@order.OrderId, 'drink')">Mark as Served</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                }
+                                else
+                                {
+                                   @drinkStatusText
+                                }
+                            </div>
                         }
                         <div>Time: @order.OrderTime.ToString("HH:mm")</div>
                     }
@@ -102,7 +135,6 @@
                     {
                         <div>No active order</div>
                     }
-                    
                 </div>
             </div>
         </div>

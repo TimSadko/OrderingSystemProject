@@ -525,6 +525,22 @@ a:hover {
     color: white;
 }
 
+.bill-button-table {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: #213F65; 
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;         
+    padding: 10px 12px;         
+}
+
+.bill-button-table:hover {
+    background-color: #1b334f; 
+    color: white;
+}
+
 /* Table Card Dropdown Styles */
 .table-card-dropdown {
     position: relative;
@@ -590,6 +606,19 @@ a:hover {
 .dropdown-item.free-action:hover {
     background-color: #fff3cd;
     color: #856404;
+}
+
+.status-dropdown-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 2px 4px;
+    cursor: pointer;
+}
+
+.status-dropdown-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
 }
 
 /* Restaurant Overview - end*/
