@@ -10,12 +10,12 @@ namespace OrderingSystemProject.Controllers;
 public class RestaurantController : Controller
 {
     private readonly ITablesService _tablesService;
-    private readonly IOrdersRepository _ordersRepository;
+    private readonly IOrdersService _ordersService;
 
-    public RestaurantController(ITablesService tablesService, IOrdersRepository ordersRepository)
+    public RestaurantController(ITablesService tablesService, IOrdersService ordersService)
     {
         _tablesService = tablesService;
-        _ordersRepository = ordersRepository;
+        _ordersService = ordersService;
     }
     public IActionResult Index()
     {
@@ -34,7 +34,7 @@ public class RestaurantController : Controller
         {
             // get all tables with and with no order
             List<Table> tables = _tablesService.GetAllTables();
-            List<Order> activeOrders = _ordersRepository.GetActiveOrders();
+            List<Order> activeOrders = _ordersService.GetActiveOrders();
             
             Dictionary<int, Order> ordersDictionary = new Dictionary<int, Order>();
             foreach (Order order in activeOrders)
@@ -102,6 +102,23 @@ public class RestaurantController : Controller
         {
             TempData["ErrorMessage"] = "Cannot change table status";
             return RedirectToAction("Overview"); 
+        }
+        return RedirectToAction("RefreshOverview");
+    }
+    
+    [HttpGet]
+    public IActionResult MarkAsServed(int orderId, string itemType)
+    {
+        try
+        {
+            if (_ordersService.MarkOrderAsServed(orderId, itemType))
+                TempData["SuccessMessage"] = $"{itemType} marked as served successfully!";
+            else
+                TempData["ErrorMessage"] = $"Could not mark {itemType} as served.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = "Error updating order status: " + ex.Message;
         }
         return RedirectToAction("RefreshOverview");
     }

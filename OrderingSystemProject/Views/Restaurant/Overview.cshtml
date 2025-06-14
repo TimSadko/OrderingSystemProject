@@ -87,10 +87,10 @@
                                 @if (order.FoodStatus == OrderItemStatus.Ready)
                                 {
                                     <div class="dropdown d-inline">
-                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">Ready ▼</button>
+                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">@foodStatusText ▼</button>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" onclick="markAsServed(@order.OrderId, 'food')">Mark as Served</a>
+                                                <a class="dropdown-item" asp-controller="Restaurant" asp-action="MarkAsServed" asp-route-orderId="@order.OrderId" asp-route-itemType="food">Mark as Served</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -115,10 +115,10 @@
                                 @if (order.DrinkStatus == OrderItemStatus.Ready)
                                 {
                                     <div class="dropdown d-inline">
-                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">Ready ▼</button>
+                                        <button class="status-dropdown-btn" type="button" data-bs-toggle="dropdown">@drinkStatusText ▼</button>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <a class="dropdown-item" onclick="markAsServed(@order.OrderId, 'drink')">Mark as Served</a>
+                                                <a class="dropdown-item" asp-controller="Restaurant" asp-action="MarkAsServed" asp-route-orderId="@order.OrderId" asp-route-itemType="drink">Mark as Served</a>
                                             </li>
                                         </ul>
                                     </div>

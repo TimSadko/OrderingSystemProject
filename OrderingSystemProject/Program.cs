@@ -45,6 +45,8 @@ namespace OrderingSystemProject
             builder.Services.AddSingleton<ITablesRepository>(_tables_rep);
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesService, TablesService>();
+            
+            builder.Services.AddSingleton<IOrdersService, OrdersService>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
