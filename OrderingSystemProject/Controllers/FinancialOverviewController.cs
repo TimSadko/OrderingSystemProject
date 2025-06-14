@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Services;
+using OrderingSystemProject.Utilities;
 using OrderingSystemProject.ViewModels;
 
 namespace OrderingSystemProject.Controllers;
@@ -17,6 +18,11 @@ public class FinancialOverviewController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         var financialOverviewViewModel = new FinancialOverviewViewModel
         {
             FilterMode = DateFilterMode.Standard
@@ -94,5 +100,11 @@ public class FinancialOverviewController : Controller
     private static string GetSuccessMessageForBetweenDates(DateTime startDate, DateTime endDate)
     {
         return $"Financial overview for between {startDate} and {endDate}.";
+    }
+
+    private bool IsUnauthorisedUser()
+    {
+        var userRole = Authorization.GetUserRole(HttpContext);
+        return userRole != EmployeeType.Manager;
     }
 }
