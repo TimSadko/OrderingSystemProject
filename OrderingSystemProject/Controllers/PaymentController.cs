@@ -62,17 +62,55 @@ public class PaymentController : Controller
         }
     }
     
-    //checked!!!
+    /*
+     Before changes!!
+      */
     [HttpGet]
     public IActionResult SplitEqually(int id)
     {
         try
         {
+            /*
+            var bill = _paymentService.GetNewBill(id);
+            if (bill == null)
+                return RedirectToAction("Overview", "Restaurant");
+            
+            var model = new SplitEquallyViewModel
+            {
+                Bill = bill,
+                Payments = new List<Payment>(),
+                NumberOfPeople = 2
+            };
+            return View("SplitEqually", model);
+            */
+            
             var bill = _paymentService.GetNewBill(id);
             if (bill == null)
                 return RedirectToAction("Overview", "Restaurant");
 
-            return View("SplitEqually", new SplitEquallyViewModel { Bill = bill });
+            int numberOfPeople = 2;
+            decimal perPersonAmount = bill.OrderTotal / numberOfPeople;
+
+            var payments = new List<Payment>();
+            for (int i = 0; i < numberOfPeople; i++)
+            {
+                payments.Add(new Payment
+                {
+                    BillId = bill.BillId,
+                    PaymentAmount = perPersonAmount
+                });
+            }
+
+            var model = new SplitEquallyViewModel
+            {
+                Bill = bill,
+                NumberOfPeople = numberOfPeople,
+                Payments = payments
+            };
+
+            return View("SplitEqually", model);
+
+            //return View("SplitEqually", new SplitEquallyViewModel { Bill = bill });
         }
         catch (Exception e)
         {
@@ -87,6 +125,7 @@ public class PaymentController : Controller
     {
         try
         {
+            /*
             if (model.NumberOfPeople < 1)
             {
                 Console.WriteLine("Number of people is less than 1");
@@ -98,7 +137,34 @@ public class PaymentController : Controller
             var bill = _paymentService.GetCurrentBill();
             var payments = _paymentService.SplitEqually(model);
             
-            return View("SplitEqually", new SplitEquallyViewModel { Bill = bill, Payments = payments });
+            foreach (var payment in model.Payments)
+            {
+                _paymentService.InsertPayment(payment); // Save to repo
+            }
+
+            return RedirectToAction("Pay", new { billId = model.Bill.BillId });
+            */
+            
+            if (model.NumberOfPeople < 1)
+            {
+                Console.WriteLine("Number of people is less than 1");
+                return View(model);
+            }
+
+            var bill = _paymentService.GetCurrentBill();
+            model.Bill = bill;
+
+            var payments = _paymentService.SplitEqually(model);
+
+            foreach (var payment in payments)
+            {
+                _paymentService.InsertPayment(payment);
+            }
+
+            return RedirectToAction("Pay", new { billId = bill.BillId });
+            
+            //return RedirectToAction("Pay");
+            //return View("SplitEqually", new SplitEquallyViewModel { Bill = bill, Payments = payments });
         }
         catch (Exception e)
         {
@@ -106,6 +172,42 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
+    
+    /*
+    [HttpPost]
+    public IActionResult SplitEqually(SplitEquallyViewModel model)
+    {
+        try
+        {
+            if (model.NumberOfPeople < 1)
+            {
+                ModelState.AddModelError(nameof(model.NumberOfPeople), "Number of people must be at least 1.");
+                var bill2 = _paymentService.GetCurrentBill();
+                model.Bill = bill2;
+                return View(model);
+            }
+
+            var bill = _paymentService.GetCurrentBill();
+            var payments = _paymentService.SplitEqually(model);
+
+            var perPersonAmount = (bill.OrderTotal + model.TotalTip) / model.NumberOfPeople;
+
+            return View("SplitEqually", new SplitEquallyViewModel
+            {
+                Bill = bill,
+                Payments = payments,
+                NumberOfPeople = model.NumberOfPeople,
+                TotalTip = model.TotalTip,
+                PerPersonAmount = perPersonAmount
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+    */
     
     //!!!Needs Change!!!
     [HttpGet("Payment/ProcessSplitPayment/{billId}")]
@@ -197,6 +299,43 @@ public class PaymentController : Controller
             Console.WriteLine(e.Message);
             ViewData["Exception"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+    
+    //confirm for split payments
+    [HttpPost]
+    public IActionResult ConfirmSplitPayments(SplitEquallyViewModel model)
+    {
+        try
+        {
+            foreach (var payment in model.Payments)
+            {
+                _paymentService.InsertPayment(payment); // Save to repo
+            }
+
+            return RedirectToAction("Pay", new { billId = model.Bill.BillId });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
+            return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+    
+    [HttpPost]
+    public IActionResult FinishPayment(int billId)
+    {
+        try
+        {
+            //_paymentService.CloseBillAndFreeTable(billId);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            ViewData["Exception"] = e.Message;
+            return RedirectToAction("Pay", new { billId });
         }
     }
 }

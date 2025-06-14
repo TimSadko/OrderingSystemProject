@@ -3,15 +3,92 @@
     var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
     var payments = ViewBag.ExistingPayments as List<OrderingSystemProject.Models.Payment> ?? new List<OrderingSystemProject.Models.Payment>();
 }
+@{
+    decimal totalPaid = payments.Sum(p => p.PaymentAmount);
+    decimal totalDue = Model.Bill.OrderTotal;
+    bool isFullyPaid = totalPaid >= totalDue;
+}
 
 <h2>Pay Now</h2>
-
-<p><strong>Order Total:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
 
 <form asp-action="Pay" method="post">
     @Html.HiddenFor(m => m.BillId)
     <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal" />
 
+    <!-- The data that is retreived from the Bill -->
+    @*
+    <hr class="my-4"/>
+
+    @if (Model.Bill.Order.Items.Count > 0)
+    {
+        <table class="table-bill">
+            <thead class="thead-bill">
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Bill.Order.Items)
+            {
+                <tr>
+                    <td>@item.MenuItem.Name</td>
+                    <td>@item.Amount</td>
+                    <td>@item.LineTotal.ToString("C", euroCulture)</td>
+                </tr>
+            }
+            </tbody>
+            <tfoot>
+            <tr class="summary-row-payment">
+                <td colspan="5" class="left-align bold">Subtotal:</td>
+                <td class="right-align bold">@Model.Bill.OrderSubtotal.ToString("C", euroCulture)</td>
+            </tr>
+            <tr class="summary-row-payment">
+                <td colspan="5" class="right-align bold">VAT:</td>
+                <td class="fw-bold">@Model.Bill.Vat.ToString("C", euroCulture)</td>
+            </tr>
+            <tr class="summary-row-payment">
+                <td colspan="5" class="right-align bold">Total:</td>
+                <td class="fw-bold">@Model.Bill.OrderTotal.ToString("C", euroCulture)</td>
+            </tr>
+            </tfoot>
+        </table>
+    }
+    *@
+    
+    @if (Model.Bill.Order.Items.Count > 0)
+    {
+        <div class="bill-container">
+            <div class="table-scrollable">
+                <table class="table bill-table mb-4">
+                    <tbody>
+                    @foreach (var item in Model.Bill.Order.Items)
+                    {
+                        <tr>
+                            <td class="item-name">@item.MenuItem.Name</td>
+                            <td class="text-center">@item.Amount</td>
+                            <td class="text-end">@item.LineTotal.ToString("C", euroCulture)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+                <div class="bill-summary">
+                    <div class="summary-row-payment">
+                        <span class="label">Subtotal:</span>
+                        <span class="value">@Model.Bill.OrderSubtotal.ToString("C", euroCulture)</span>
+                    </div>
+                    <div class="summary-row-payment">
+                        <span class="label">VAT:</span>
+                        <span class="value">@Model.Bill.Vat.ToString("C", euroCulture)</span>
+                    </div>
+                    <div class="summary-row-payment total-row">
+                        <span class="label fw-bold">Total:</span>
+                        <span class="value fw-bold">@Model.Bill.OrderTotal.ToString("C", euroCulture)</span>
+                    </div>
+                </div>
+
+                <p class="text-center mt-4">No payment have been made yet.</p>
+        </div>
+    }
+    
     <!-- Tip selection with JavaScript to update total -->
     <div class="form-group py-2">
         <label>Tip:</label><br />
@@ -103,6 +180,14 @@
 else
 {
     <p>No payments have been made yet.</p>
+}
+
+@if (isFullyPaid)
+{
+    <form asp-action="FinishPayment" asp-controller="Payment" method="post">
+        <input type="hidden" name="billId" value="@Model.Bill.BillId" />
+        <button type="submit" class="btn btn-primary mt-3">Finish Payment</button>
+    </form>
 }
 
 <!-- Basic JavaScript to update the payment amount automatically when the user presses the desired tip amount.  -->
