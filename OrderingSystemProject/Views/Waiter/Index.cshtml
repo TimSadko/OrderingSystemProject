@@ -2,9 +2,7 @@
 
 @{
     ViewData["Title"] = "Waiter Menu";
-}
 
-@{
     var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
     euroCulture.NumberFormat.CurrencySymbol = "€";
     euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
@@ -12,75 +10,155 @@
 }
 
 <div class="text-center">
+    <h1 class="display-6 py-lg-4">Table №: @Model.Table</h1>
+
+    @* Повідомлення про помилку *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
-                @* <th>Card</th>
-                <th>Category</th> *@
                 <th>Stock</th>
                 <th>Price</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @{
-                foreach (var menuItem in Model.MenuItems)
-                {
-                    <tr>
-                        <td>@menuItem.Name</td>
-                        <td>
-                            @{
-                                if (menuItem.Stock <= 0)
-                                {
-                                    <span class="text-danger font-weight-bold">Out of Stock</span>
-                                }
-                                else if (menuItem.Stock <= 10)
-                                {
-                                    <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
-                                }
-                                else
-                                {
-                                    @menuItem.Stock
-                                }
-                            }
-                        </td>
-                        <td>@menuItem.Price.ToString("C",euroCulture)</td>
-                        <td>
-                            <a href="/Waiter/AddItem/@menuItem.MenuItemId">Add to Order</a>
-                        </td>
-                    </tr>
-                }
+            @foreach (var menuItem in Model.MenuItems)
+            {
+                <tr>
+                    <td>@menuItem.Name</td>
+                    <td>
+                        @if (menuItem.Stock <= 0)
+                        {
+                            <span class="text-danger font-weight-bold">Out of Stock</span>
+                        }
+                        else if (menuItem.Stock <= 10)
+                        {
+                            <span class="text-warning font-weight-bold">Low: @menuItem.Stock</span>
+                        }
+                        else
+                        {
+                            @menuItem.Stock
+                        }
+                    </td>
+                    <td>@menuItem.Price.ToString("C", euroCulture)</td>
+                    <td>
+                        @* Якщо товар є в наявності — показати кнопку "Add" *@
+                        @if (menuItem.Stock > 0)
+                        {
+                            <form method="post" asp-action="AddItem" asp-controller="Waiter">
+                                <input type="hidden" name="itemId" value="@menuItem.MenuItemId" />
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-link p-0">Add</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Unavailable</span>
+                        }
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Order Id</th>
-                <th>Amount</th>
-                <th>Comment</th>
-                <th>Item Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                foreach (var orderItem in Model.Cart)
-                {
-                    <tr>
-                        <td>@orderItem.OrderId</td>
-                        <td>@orderItem.Amount</td>
-                        <td>@orderItem.Comment</td>
-                        <td>@orderItem.ItemStatus</td>
-                        <td>
-                            <a href="/Waiter/AddItem/@orderItem.OrderId">Send to the Kitchen</a>
-                        </td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
+    @* Order Summary *@
+    <div class="col-md-4">
+        <div class="sticky-top pt-3" style="top: 20px;">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Table №@Model.Table</h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.Cart.Any())
+                    {
+                        <ul class="list-group">
+                            @{
+                                int counter = 1;
+                            }
+
+                            @foreach (var orderItem in Model.Cart)
+                            {
+                                <li class="list-group-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-danger rounded-circle me-2"
+                                              style="width: 28px; height: 28px; text-align:center;">
+                                            @counter
+                                        </span>
+
+                                        <div class="flex-grow-1 ms-2">
+                                            <h6 class="mb-1"><strong>@orderItem.MenuItem.Name</strong></h6>
+                                        </div>
+
+                                        <div class="d-flex align-items-center gap-1">
+                                            <form method="post" asp-action="DecreaseQuantity" asp-controller="Waiter">
+                                                <input type="hidden" name="itemId" value="@orderItem.MenuItemId" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary">−</button>
+                                            </form>
+
+                                            <span class="mx-1">@orderItem.Amount</span>
+
+                                            <form method="post" asp-action="IncreaseQuantity" asp-controller="Waiter">
+                                                <input type="hidden" name="itemId" value="@orderItem.MenuItemId" />
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                                            </form>
+
+                                            <form method="post" asp-action="RemoveItem" asp-controller="Waiter">
+                                                <input type="hidden" name="itemId" value="@orderItem.MenuItemId" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">🗑</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <form method="post" asp-action="UpdateComment" asp-controller="Waiter" class="mt-2">
+                                        <input type="hidden" name="itemId" value="@orderItem.MenuItemId" />
+                                        <input type="text"
+                                               name="comment"
+                                               class="form-control form-control-sm"
+                                               placeholder="Add a comment..."
+                                               value="@orderItem.Comment" />
+                                        <button type="submit" class="btn btn-sm btn-primary mt-1">Save Comment</button>
+                                    </form>
+
+                                    @{
+                                        counter++;
+                                    }
+                                </li>
+                            }
+                        </ul>
+
+                        <div class="text-center mt-3 d-flex justify-content-center gap-2">
+
+                            <form method="post" asp-action="ClearOrder" asp-controller="Waiter">
+                                <button class="btn btn-danger">Cancel Order</button>
+                            </form>
+
+                            <form method="post" asp-action="SendToKitchen" asp-controller="Waiter">
+                                <button class="btn btn-success">Send to Kitchen</button>
+                            </form>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <p class="text-muted">No items added yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

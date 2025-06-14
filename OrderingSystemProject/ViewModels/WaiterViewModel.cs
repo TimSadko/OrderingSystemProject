@@ -13,6 +13,24 @@ namespace OrderingSystemProject.ViewModels
         public List<MenuItem> MenuItems { get { return menuItems; } set { menuItems = value; } }
         public List<OrderItem> Cart { get { return cart; } set { cart = value; } }
 
-        public Table SelectedTable { get; set; }
+        //public List<MenuManagementViewModel> 
+
+        public int MenuItemId{ get; set; }
+        public Order order { get; set; }
+
+        public int TableNumber { get; set; }
+
+        public Table Table { get; set; }
     }
 }
+
+
+//public class WaiterViewModel
+//{
+//    public List<MenuItem> MenuItems { get; set; } = new();
+//    public List<OrderItem> Cart { get; set; } = new();
+//    public int MenuItemId { get; set; }
+//    public Order? Order { get; set; }  // Nullable if not always set
+//    public int TableNumber { get; set; }
+//    public Table? Table { get; set; }
+//}
