@@ -13,6 +13,8 @@ public interface IPaymentService
     Bill GetBillForPaymentById(Payment payment);
     decimal GetPaymentAmount(Payment payment);
     void SetTipAmount(Payment payment);
+
+    void GetBillById(int billId);
     
     //methods from the repo
     public Payment? GetById(int id);

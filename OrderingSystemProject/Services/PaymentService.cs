@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
 
@@ -17,9 +18,11 @@ public class PaymentService : IPaymentService
 
     public Bill? GetNewBill(int orderId)
     {
+        /*
         var order = CommonRepository._order_rep.GetById(orderId);
         if (order == null)
             return null;
+        order.Items = CommonRepository._order_item_rep.GetOrderItems(orderId);
         
         var bill = CommonRepository._bill_rep.GetByOrderId(orderId);
 
@@ -31,6 +34,38 @@ public class PaymentService : IPaymentService
                 OrderId = order.OrderId,
             };
             CommonRepository._bill_rep.InsertBill(bill);
+        }
+        else
+        {
+            bill.Order = order;
+        }
+
+        _current_bill = bill;
+        return bill;
+        */
+        
+        var order = CommonRepository._order_rep.GetById(orderId);
+        if (order == null)
+            return null;
+        
+        order.Items = CommonRepository._order_rep.GetItemsForOrder(orderId) ?? new List<OrderItem>();
+        if (order.Items.Count == 0)
+            return null;
+
+        var bill = CommonRepository._bill_rep.GetByOrderId(orderId);
+
+        if (bill == null)
+        {
+            bill = new Bill
+            {
+                Order = order,
+                OrderId = order.OrderId,
+            };
+            CommonRepository._bill_rep.InsertBill(bill);
+        }
+        else
+        {
+            bill.Order = order;
         }
 
         _current_bill = bill;
@@ -62,8 +97,8 @@ public class PaymentService : IPaymentService
             var payment = new Payment
             {
                 BillId = splitEquallyViewModel.Bill.BillId,
-                TipAmount = splitEquallyViewModel.ExtraTip / splitEquallyViewModel.NumberOfPeople,
-                PaymentAmount = baseAmountPerPerson + (splitEquallyViewModel.ExtraTip / splitEquallyViewModel.NumberOfPeople),
+                TipAmount = splitEquallyViewModel.TotalTip / splitEquallyViewModel.NumberOfPeople,
+                PaymentAmount = baseAmountPerPerson + (splitEquallyViewModel.TotalTip / splitEquallyViewModel.NumberOfPeople),
                 PaymentType = PaymentType.Cash,
                 Feedback = "",
                 Bill = splitEquallyViewModel.Bill
@@ -72,6 +107,7 @@ public class PaymentService : IPaymentService
         }
         return payments;
     }
+    
 
     private decimal CalculateBaseAmountPerPerson(SplitEquallyViewModel splitEquallyViewModel)
     {
@@ -103,6 +139,11 @@ public class PaymentService : IPaymentService
                 payment.TipAmount = payment.Bill.OrderTotal * percent;
             }
         }
+    }
+
+    public void GetBillById(int billId)
+    {
+        CommonRepository._bill_rep.GetById(billId);
     }
 
     public Payment InsertUpdatedPayment(Payment payment)

@@ -32,6 +32,7 @@ else
 
 @if (Model.Order.Items != null && Model.Order.Items.Count > 0)
 {
+    <div class="table-scrollable-details">
     <table class="table-bill">
         <thead class="thead-bill">
         <tr>
@@ -78,6 +79,7 @@ else
         </tr>
         </tfoot>
     </table>
+    </div>
     <button class="button-pay" role="button"><a href="/Payment/Pay">Pay</a></button>
 }
 else

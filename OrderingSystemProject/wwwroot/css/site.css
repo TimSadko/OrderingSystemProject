@@ -206,7 +206,7 @@ a:hover {
     color: #951A28;
 }
 
-.summary-row {
+.summary-row-payment {
     color: #000000;
     text-align: left;
 }
@@ -332,6 +332,67 @@ a:hover {
 }
 #pay-debit:checked ~ .glass-glider {
     transform: translateX(200%);
+}
+
+/* Payment list with orders */
+.bill-container {
+    background-color: #fdf7ef; /* beige paper-like */
+    border: 1px solid #4CAF50;
+    border-radius: 10px;
+    padding: 20px;
+    height: 754px;
+    width: 425px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.table-scrollable {
+    max-height: 200px; /* adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.table-scrollable-details {
+    max-height: 300px; /* adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 1rem;
+}
+
+.bill-table td {
+    vertical-align: middle;
+    background-color: white;
+}
+
+.bill-table .item-name {
+    width: 60%;
+}
+
+.bill-summary {
+    margin-top: 10px;
+}
+
+.summary-row-payment {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+    font-size: 1rem;
+    padding: 4px 0;
+}
+
+.summary-row-payment .label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.summary-row-payment .value {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.summary-row-payment.total-row {
+    border-top: 2px solid #444;
+    margin-top: 10px;
+    padding-top: 6px;
 }
 
 /*Kitchen and Bar*/

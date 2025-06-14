@@ -19,9 +19,12 @@ public class Bill
         get
         {
             decimal subtotal = 0;
-            foreach (OrderItem item in Order.Items)
+            if (Order?.Items != null)
             {
-                subtotal += item.LineTotal;
+                foreach (OrderItem item in Order.Items)
+                {
+                    subtotal += item.LineTotal;
+                }
             }
             return subtotal;
         }
@@ -39,22 +42,24 @@ public class Bill
         set
         {
             _order = value;
-            
-            decimal vat = 0;
-            foreach (OrderItem item in Order.Items)
+            if (Order?.Items != null)
             {
-                if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
+                decimal vat = 0;
+                foreach (OrderItem item in Order.Items)
                 {
-                    vat += item.LineTotal * 0.21m;
+                    if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
+                    {
+                        vat += item.LineTotal * 0.21m;
+                    }
+                    else
+                    {
+                        vat += item.LineTotal * 0.09m;
+                    }
                 }
-                else
-                {
-                    vat += item.LineTotal * 0.09m;
-                }
-            }
-            Vat = vat;
+                Vat = vat;
             
-            OrderId = Order.OrderId;
+                OrderId = Order.OrderId;
+            }
         }
     }
 
