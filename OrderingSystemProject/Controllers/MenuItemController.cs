@@ -54,15 +54,15 @@ public class MenuItemController : Controller
         }
     }
 
-    [HttpGet]
-    public ActionResult Delete(int? itemId)
+    [HttpGet("MenuItem/Delete/{menuItemId}")]
+    public ActionResult Delete(int? menuItemId)
     {
-        if (itemId == null)
+        if (menuItemId == null)
         {
             return NotFound();
         }
 
-        MenuItem? menuItem = _menuItemService.GetById((int)itemId);
+        MenuItem? menuItem = _menuItemService.GetById((int)menuItemId);
         return View(menuItem);
     }
 
@@ -81,15 +81,15 @@ public class MenuItemController : Controller
         }
     }
 
-    [HttpGet]
-    public IActionResult Edit(int? itemId)
+    [HttpGet("MenuItem/Edit/{menuItemId}")]
+    public IActionResult Edit(int? menuItemId)
     {
-        if (itemId == null)
+        if (menuItemId == null)
         {
             return NotFound();
         }
 
-        var menuItem = _menuItemService.GetById((int)itemId);
+        var menuItem = _menuItemService.GetById((int)menuItemId);
         return View(menuItem);
     }
 

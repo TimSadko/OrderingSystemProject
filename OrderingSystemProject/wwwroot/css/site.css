@@ -49,6 +49,48 @@ a:hover {
     cursor:pointer;
 }
 
+/*
+Generic items
+*/
+
+.container-background {
+    background-color: #F1EDE0;
+    font-family: "Montserrat", sans-serif;
+    padding: 32px;
+}
+
+.input-background {
+    background-color: #E4DDCB;
+    border-color: #000000;
+}
+
+.primary-button {
+    background-color: #961A29;
+    color: white;
+    padding: 14px 24px;
+    margin: 8px;
+    border: none;
+    border-radius: 8px;
+}
+
+.primary-button:hover {
+    background-color: #a02230;
+    border-color: #000000;
+}
+
+.secondary-button {
+    background-color: #213F65;
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+}
+
+.secondary-button:hover {
+    background-color: #2e5285;
+    border-color: #000000;
+}
+
 /*Bill and Pay:*/
 .bill_frame_bg {
     background-image: url('images/frame_bg.png');

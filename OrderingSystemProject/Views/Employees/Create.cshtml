@@ -3,45 +3,45 @@
     ViewData["Title"] = "Create Staff";
 }
 
-<div>
+<div class="text-center container-background">
     <h4>New Staff</h4>
 
     <partial name="_ErrorMessage" />
 
     <form action="/Employees/Create" method="post">
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="UserName">User name:</label>
-            <input type="text" id="UserName" name="UserName" class="form-control" required value="@Model?.UserName"/>
+            <input type="text" id="UserName" name="UserName" class="form-control input-background" required value="@Model?.UserName"/>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="Password">Password:</label>
-            <input type="password" id="Password" name="Password" class="form-control" required
+            <input type="password" id="Password" name="Password" class="form-control input-background" required
                    value="@Model?.Password"/>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="EmployeeType">Employee type:</label>
-            <select class="form-control"
+            <select class="form-control input-background"
                     id="EmployeeType"
                     asp-for="@Model.EmployeeType"
                     asp-items="@Html.GetEnumSelectList<EmployeeType>()">
             </select>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="FirstName">First name:</label>
-            <input type="text" id="FirstName" name="FirstName" class="form-control" required
+            <input type="text" id="FirstName" name="FirstName" class="form-control input-background" required
                    value="@Model?.FirstName"/>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="LastName">Last name:</label>
-            <input type="text" id="LastName" name="LastName" class="form-control" required
+            <input type="text" id="LastName" name="LastName" class="form-control input-background" required
                    value="@Model?.LastName"/>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="Email">Email:</label>
-            <input type="email" id="Email" name="Email" class="form-control" required
+            <input type="email" id="Email" name="Email" class="form-control input-background" required
                    value="@Model?.Email"/>
         </div>
-        <div class="form-group py-2">
+        <div class="form-group py-2 text-start">
             <label for="IsActive">Status:</label>
             @Html.RadioButtonFor(employee => employee.IsActive, true, new { id = "active-true" })
             @Html.Label("active-true", "Active")
@@ -49,7 +49,7 @@
             @Html.RadioButtonFor(employee => employee.IsActive, false, new { id = "active-false" })
             @Html.Label("active-false", "Deactivated")
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="primary-button">Add</button>
     </form>
     <a href="/Employees/Index">Back to List</a>
 </div>

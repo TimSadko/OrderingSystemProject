@@ -207,6 +207,8 @@ public class EmployeesController : Controller
                 return RedirectToAction("Privacy", "Home");
             case EmployeeType.Cook:
                 return RedirectToAction("Index", "Kitchen");
+            case EmployeeType.Manager:
+                return RedirectToAction("Index", "Employees");
         }
 
         return RedirectToAction("Index", "Home");
