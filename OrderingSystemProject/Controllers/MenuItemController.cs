@@ -72,6 +72,9 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Delete(menuItem);
+            
+            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been removed!";
+            
             return RedirectToAction("Index");
         }
         catch (Exception e)
