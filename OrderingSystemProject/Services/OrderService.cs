@@ -26,7 +26,7 @@ namespace OrderingSystemProject.Services
             {
                 // Connect item to order
                 item.OrderId = order.OrderId;
-                _order_item_rep.AddItem(item);
+                _order_item_rep.Add(item);
 
                 // Refreshed amount
                 var menuItem = _menu_item_rep.GetById(item.MenuItemId);

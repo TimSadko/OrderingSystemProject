@@ -78,23 +78,23 @@ public class DbTablesRepository : ITablesRepository
         }
     }
 
-    public bool IsTableOccupied(int tableId)
-    {
-        using (SqlConnection connection = new SqlConnection(_connectionString))
-        using (var command = new SqlCommand(
-            "SELECT 1 FROM Tables WHERE TableId = @tableId AND Status = @occupiedStatus",
-            connection))
-        {
-            command.Parameters.AddWithValue("@tableId", tableId);
-            command.Parameters.AddWithValue("@occupiedStatus", (int)TableStatus.Occupied);
+    //public bool IsTableOccupied(int tableId)
+    //{
+    //    using (SqlConnection connection = new SqlConnection(_connectionString))
+    //    using (var command = new SqlCommand(
+    //        "SELECT 1 FROM Tables WHERE TableId = @tableId AND Status = @occupiedStatus",
+    //        connection))
+    //    {
+    //        command.Parameters.AddWithValue("@tableId", tableId);
+    //        command.Parameters.AddWithValue("@occupiedStatus", (int)TableStatus.Occupied);
 
-            connection.Open();
-            using (var reader = command.ExecuteReader())
-            {
-                return reader.HasRows;
-            }
-        }
-    }
+    //        connection.Open();
+    //        using (var reader = command.ExecuteReader())
+    //        {
+    //            return reader.HasRows;
+    //        }
+    //    }
+    //}
 
 	private Table ReadTable(SqlDataReader reader)
     {
@@ -102,18 +102,18 @@ public class DbTablesRepository : ITablesRepository
       return new Table((int)reader["TableId"], (TableStatus)(int)reader["Status"], (int)reader["TableNumber"]);
     }
 
-    public void UpdateTableStatus(int tableId, TableStatus newTableStatus)
-    {
-        using (SqlConnection connection = new SqlConnection(_connectionString))
-        {
-            string query = "UPDATE Tables SET Status = @status WHERE TableId = @tableId";
-            SqlCommand command = new SqlCommand(query, connection);
+    //public void UpdateTableStatus(int tableId, TableStatus newTableStatus)
+    //{
+    //    using (SqlConnection connection = new SqlConnection(_connectionString))
+    //    {
+    //        string query = "UPDATE Tables SET Status = @status WHERE TableId = @tableId";
+    //        SqlCommand command = new SqlCommand(query, connection);
             
-            command.Parameters.AddWithValue("@tableId", tableId);
-            command.Parameters.AddWithValue("@status", (int)newTableStatus);
+    //        command.Parameters.AddWithValue("@tableId", tableId);
+    //        command.Parameters.AddWithValue("@status", (int)newTableStatus);
             
-            command.Connection.Open();
-            command.ExecuteNonQuery();
-        }
-    }
+    //        command.Connection.Open();
+    //        command.ExecuteNonQuery();
+    //    }
+    //}
 }

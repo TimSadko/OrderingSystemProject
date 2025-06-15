@@ -8,5 +8,5 @@ public interface ITablesRepository
   
     Table? GetTableById(int tableId);
     
-    void UpdateTableStatus(int tableId, TableStatus newTableStatus);
+    bool UpdateTableStatus(int tableId, TableStatus newTableStatus);
 }
