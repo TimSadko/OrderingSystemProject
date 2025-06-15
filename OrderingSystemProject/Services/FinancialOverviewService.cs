@@ -48,14 +48,9 @@ public class FinancialOverviewService : IFinancialOverviewService
 
     public FinancialOverview? GetFinancialOverviewForBetweenDates(DateTime? startDate, DateTime? endDate)
     {
-        if (startDate == null)
+        if (startDate == null || endDate == null)
         {
-            throw new Exception("Start date has not been selected!. Please select a start date.");
-        }
-
-        if (endDate == null)
-        {
-            throw new Exception("End date has not been selected!. Please select an end date.");
+            throw new Exception("Start/End date has not been selected!. Please select.");
         }
 
         var financialOverview =
