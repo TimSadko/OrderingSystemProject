@@ -6,8 +6,8 @@
 
 <h4 class="text-center mb-4">Restaurant Overview</h4>
 
-<!-- Display error message -->
 <partial name="_ErrorMessage" />
+<partial name="_SuccessMessage" />
 
 <!-- Display success message -->
 <partial name="_SuccessMessage"/>
@@ -135,6 +135,113 @@
                     {
                         <div>No active order</div>
                     }
+                </div>
+            </div>
+        </div>
+    }
+</div> *@
+
+@foreach (Table table in Model)
+{
+    string cardColorClass;
+    string statusText;
+
+    if (table.Status == TableStatus.Available)
+    {
+        cardColorClass = "success";
+        statusText = "Available";
+    }
+    else if (table.Status == TableStatus.Occupied)
+    {
+        cardColorClass = "danger";
+        statusText = "Occupied";
+    }
+    else if (table.Status == TableStatus.Reserved)
+    {
+        cardColorClass = "warning";
+        statusText = "Reserved";
+    }
+    else
+    {
+        cardColorClass = "secondary";
+        statusText = "Unknown";
+    }
+}
+
+
+<div class="mb-4">
+    <a asp-action="RefreshOverview" class="btn btn-primary">Refresh Tables</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (Table table in Model)
+    {
+        string cardColorClass;
+        string statusText;
+
+        if (table.Status == TableStatus.Available)
+        {
+            cardColorClass = "success";
+            statusText = "Available";
+        }
+        else if (table.Status == TableStatus.Occupied)
+        {
+            cardColorClass = "danger";
+            statusText = "Occupied";
+        }
+        else if (table.Status == TableStatus.Reserved)
+        {
+            cardColorClass = "warning";
+            statusText = "Reserved";
+        }
+        else
+        {
+            cardColorClass = "secondary";
+            statusText = "Unknown";
+        }
+
+        <div class="col px-1">
+            <div class="card m-1">
+                <div class="card-header text-center">Table @table.TableNumber</div>
+                <div class="card-body bg-@cardColorClass text-white p-2">
+                    <p class="card-text text-center mb-2">@statusText</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        @switch (table.Status)
+                        {
+                            case TableStatus.Available:
+                                <form asp-action="UpdateTableStatus" method="post">
+                                    <input type="hidden" name="tableId" value="@table.TableId" />
+                                    <input type="hidden" name="status" value="@((int)TableStatus.Occupied)" />
+                                    <button type="submit" class="btn btn-sm btn-light">Occupy table</button>
+                                </form>
+                                break;
+
+                            case TableStatus.Occupied:
+                                <form asp-action="UpdateTableStatus" method="post">
+                                    <input type="hidden" name="tableId" value="@table.TableId" />
+                                    <input type="hidden" name="status" value="@((int)TableStatus.Available)" />
+                                    <button type="submit" class="btn btn-sm btn-light">Free table</button>
+                                </form>
+                                break;
+
+                            case TableStatus.Reserved:
+                                <form asp-action="UpdateTableStatus" method="post">
+                                    <input type="hidden" name="tableId" value="@table.TableId" />
+                                    <input type="hidden" name="status" value="@((int)TableStatus.Occupied)" />
+                                    <button type="submit" class="btn btn-sm btn-light">Occupy</button>
+                                </form>
+                                <form asp-action="UpdateTableStatus" method="post">
+                                    <input type="hidden" name="tableId" value="@table.TableId" />
+                                    <input type="hidden" name="status" value="@((int)TableStatus.Available)" />
+                                    <button type="submit" class="btn btn-sm btn-light">Cancel Reservation</button>
+                                </form>
+                                break;
+                        }
+                    </div>
+                </div>
+                <div class="card-footer p-0">
+                    <a href="/Waiter/Index/@table.TableId"
+                       class="btn btn-primary w-100">Select</a>
                 </div>
             </div>
         </div>

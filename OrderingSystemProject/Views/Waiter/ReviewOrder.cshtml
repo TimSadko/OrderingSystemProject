@@ -1,0 +1,76 @@
+﻿@model OrderingSystemProject.ViewModels.WaiterViewModel
+
+@{
+	ViewData["Title"] = "Review Full Order";
+
+	var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
+	euroCulture.NumberFormat.CurrencySymbol = "€";
+	euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
+	euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
+}
+
+<partial name="_SuccessMessage" />
+<partial name="_ErrorMessage" />
+
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h1>Order Review</h1>
+        <h2 class="text-muted">Table №@Model.Table.TableNumber</h2>
+    </div>
+
+    @if (Model.Cart.Any())
+    {
+        <div class="border rounded p-3 mb-3 bg-white shadow-sm">
+            <ul class="list-group mb-0">
+                @{
+                    int counter = 1;
+                }
+
+                @foreach (var orderItem in Model.Cart)
+                {
+                    <li class="list-group-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-danger rounded-circle me-2" style="width: 28px; height: 28px; text-align:center;">
+                                @counter
+                            </span>
+
+                            <div class="flex-grow-1 ms-2 d-flex justify-content-between align-items-center">
+                                <strong>@orderItem.MenuItem.Name</strong>
+                                <span class="text-muted ms-3">x @orderItem.Amount</span>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(orderItem.Comment))
+                        {
+                            <p class="mb-0 ms-5"><em>Comment:</em> @orderItem.Comment</p>
+                        }
+                    </li>
+                    counter++;
+                }
+            </ul>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-controller="Waiter" asp-action="Index"
+               asp-route-tableId="@Model.Table.TableId"
+               class="btn btn-outline-primary btn-lg flex-fill me-2">
+                ← Back to Order
+            </a>
+
+            <form method="post" asp-action="SendToKitchen" asp-controller="Waiter" class="flex-fill ms-2">
+                <input type="hidden" name="tableId" value="@Model.Table.TableId" />
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    Send to Kitchen/Bar
+                </button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted text-center">Order has been sent successfully!</p>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Restaurant" asp-action="Overview" class="btn btn-primary">Back to Table Selection</a>
+        </div>
+    }
+</div>
