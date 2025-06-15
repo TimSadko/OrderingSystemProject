@@ -29,29 +29,6 @@ public class MenuItemService : IMenuItemService
     }
 
     //my COOOOOOOOOOOOOOOODDDDDDDDDDDDDDEEEEEEEEEEEEEEE
-    //public void AddItem(int itemId)
-    //{
-    //    var menuItem = _menuItemRepository.GetById(itemId);
-
-    //    foreach (var item in cart)
-    //    {
-    //        if (item.MenuItemId == itemId)
-    //        {
-    //            item.Amount++; // зб≥льшити к≥льк≥сть
-    //            return;
-    //        }
-    //    }
-
-    //    // якщо не знайдено Ч додати новий
-    //    cart.Add(new OrderItem
-    //    {
-    //        MenuItemId = itemId,
-    //        MenuItem = menuItem,
-    //        Amount = 1,
-    //        Comment = "",
-    //        ItemStatus = OrderItemStatus.NewItem
-    //    });
-    //}
 
     public void AddItem(int itemId)
     {
@@ -62,22 +39,17 @@ public class MenuItemService : IMenuItemService
             throw new Exception("Menu item not found.");
         }
 
-        if (menuItem.Stock <= 0)
-        {
-            throw new Exception($"'{menuItem.Name}' is out of stock and cannot be added.");
-        }
-
-        // ѕерев≥р€Їмо, чи товар вже Ї в кошику
+        // Checker
         foreach (var item in cart)
         {
             if (item.MenuItemId == itemId)
             {
-                item.Amount++; // якщо Ї, то просто зб≥льшуЇмо к≥льк≥сть
+                item.Amount++; 
                 return;
             }
         }
 
-        // якщо не знайдено Ч додаЇмо новий товар у кошик
+        // Adding Item to Order
         cart.Add(new OrderItem
         {
             MenuItemId = itemId,
@@ -126,7 +98,7 @@ public class MenuItemService : IMenuItemService
 
     public void DecreaseQuantity(int itemId)
     {
-        OrderItem itemToRemove = null;
+        OrderItem decrQ = null;
 
         foreach (var item in cart)
         {
@@ -136,16 +108,16 @@ public class MenuItemService : IMenuItemService
 
                 if (item.Amount <= 0)
                 {
-                    itemToRemove = item;
+                    decrQ = item;
                 }
 
                 break;
             }
         }
 
-        if (itemToRemove != null)
+        if (decrQ != null)
         {
-            cart.Remove(itemToRemove);
+            cart.Remove(decrQ);
         }
     }
 
@@ -163,38 +135,15 @@ public class MenuItemService : IMenuItemService
 
     public void CancelOrder()
     {
-        // ¬идал€Їмо елементи поки в кошику щось Ї
         while (cart.Count > 0)
         {
-            cart.RemoveAt(0); // ¬идал€Їмо перший елемент
+            cart.RemoveAt(0); // Removing 1st element
         }
     }
 
-    //public void AddToCart(MenuItem menuItem)
-    //{
-    //    // Check if item already exists in cart
-    //    var existingItem = _cartItems.FirstOrDefault(item => item.MenuItemId == menuItem.MenuItemId);
+    //Till here is my code
 
-    //    if (existingItem != null)
-    //    {
-    //        // Increase quantity if exists
-    //        existingItem.Amount++;
-    //    }
-    //    else
-    //    {
-    //        // Add new item if not exists
-    //        _cartItems.Add(new OrderItem(
-    //            id: -1,                     // Temporary ID
-    //            order_id: -1,                // Not assigned to order yet
-    //            menu_item_id: menuItem.MenuItemId,
-    //            amount: 1,                   // Start with quantity 1
-    //            comment: "",                 // Empty comment by default
-    //            item_status: OrderItemStatus.NewItem)
-    //        {
-    //            MenuItem = menuItem          // Set the menu item reference
-    //        });
-    //    }
-    //}
+
     public List<OrderItem> GetCart()
     {
         return new List<OrderItem>(cart);

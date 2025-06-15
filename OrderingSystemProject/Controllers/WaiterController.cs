@@ -4,6 +4,7 @@ using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
 using OrderingSystemProject.ViewModels;
+using System.Reflection;
 
 namespace OrderingSystemProject.Controllers
 {
@@ -33,98 +34,154 @@ namespace OrderingSystemProject.Controllers
         //    return View(_waiterViewModel);
         //}
 
-        [HttpGet]
-        public IActionResult Index()
+        [HttpGet("Waiter/Index/{tableId}")]
+        public IActionResult Index(int? tableId)
         {
-            var model = new WaiterViewModel
+            try
             {
-                MenuItems = _menuItemService.GetAll(),
-                Cart = _menuItemService.GetCart()
-            };
-            return View(model);
+                if (tableId == null)
+                {
+                    return RedirectToAction("Overview", "Restaurant");
+                }
+                var table = _tablesService.GetTableById((int)tableId);
+                if (table == null)
+                {
+                    throw new Exception("Invalid Table ID");
+                }
+
+
+                var model = new WaiterViewModel
+                {
+                    Table = _tablesService.GetTableById((int)tableId),
+                    MenuItems = _menuItemService.GetAll(),
+                    Cart = _menuItemService.GetCart()
+                };
+              
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Exception"] = ex.Message;
+                return RedirectToAction("Overview", "Restaurant");
+            }
         }
 
         [HttpPost]
-        public IActionResult AddItem(int itemId)
+        public IActionResult AddItem(int itemId, int tableId)
         {
             try
             {
                 _menuItemService.AddItem(itemId);
-                return RedirectToAction("Index");
+                var addedItem = _menuItemService.GetById(itemId);
+
+                TempData["SuccessMessage"] = $"Item {addedItem.Name} was added to the Order!";
+                return RedirectToAction("Index", new { tableId });
             }
             catch (Exception e)
             {
-                TempData["ErrorMessage"] = $"Error adding item: {e.Message}";
-                return RedirectToAction("Index");
+                TempData["Exception"] = $"Error with adding item to the Order: {e.Message}";
+                return RedirectToAction("Index", new { tableId });
             }
         }
 
 
         [HttpPost]
-        public IActionResult IncreaseQuantity(int itemId)
+        public IActionResult IncreaseQuantity(int itemId, int tableId)
         {
-            _menuItemService.IncreaseQuantity(itemId);
-            return RedirectToAction("Index");
+            try
+            {
+                _menuItemService.IncreaseQuantity(itemId);
+
+                var increaseQ = _menuItemService.GetById(itemId);
+                TempData["SuccessMessage"] = $"Amount of '{increaseQ.Name}' was increased by 1";
+
+                return RedirectToAction("Index", new { tableId });
+            }
+            catch (Exception e)
+            {
+                TempData["Exception"] = $"Error with increasing amount: {e.Message}";
+
+                return RedirectToAction("Index", new { tableId });
+            }
         }
 
         [HttpPost]
-        public IActionResult DecreaseQuantity(int itemId)
+        public IActionResult DecreaseQuantity(int itemId, int tableId)
         {
-            _menuItemService.DecreaseQuantity(itemId);
-            return RedirectToAction("Index");
+            try
+            {
+                _menuItemService.DecreaseQuantity(itemId);
+
+                var decreaseQ = _menuItemService.GetById(itemId);
+                TempData["SuccessMessage"] = $"Amount of '{decreaseQ.Name}' was deacresed by 1";
+
+                return RedirectToAction("Index", new { tableId });
+            }
+            catch (Exception e)
+            {
+                TempData["Exception"] = $"Error with decreasing amount: {e.Message}";
+
+                return RedirectToAction("Index", new { tableId });
+            }
+        }
+
+
+        [HttpPost]
+        public IActionResult RemoveItem(int itemId, int tableId)
+        {
+            try
+            {
+                _menuItemService.RemoveItem(itemId);
+
+                var removedItem = _menuItemService.GetById(itemId);
+                TempData["SuccessMessage"] = $"Item '{removedItem.Name}' was removed!";
+
+                return RedirectToAction("Index", new { tableId });
+            }
+            catch (Exception e)
+            {
+                TempData["Exception"] = $"Error with removing item: {e.Message}";
+
+                return RedirectToAction("Index", new { tableId });
+            }
         }
 
         [HttpPost]
-        public IActionResult RemoveItem(int itemId)
-        {
-            _menuItemService.RemoveItem(itemId);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult UpdateComment(int itemId, string comment)
+        public IActionResult UpdateComment(int itemId, string comment, int tableId)
         {
             try
             {
                 _menuItemService.UpdateComment(itemId, comment);
-                return RedirectToAction("Index");
+                var updatedItem = _menuItemService.GetById(itemId);
+
+                TempData["SuccessMessage"] = $"Comment '{comment}' was added to {updatedItem.Name}!";
+                return RedirectToAction("Index", new { tableId });
             }
             catch (Exception e)
             {
-                TempData["ErrorMessage"] = $"Error updating comment: {e.Message}";
-                return RedirectToAction("Index");
+                TempData["Exception"] = $"Error updating comment: {e.Message}";
+
+                return RedirectToAction("Index", new { tableId });
             }
         }
 
         [HttpPost]
-        public IActionResult ClearOrder()
-        {
-            _menuItemService.CancelOrder();
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult SendToKitchen(int tableId, List<OrderItem> items)
+        public IActionResult ClearOrder(int tableId)
         {
             try
             {
-                if (items == null || items.Count == 0)
-                {
-                    return RedirectToAction("Index");
-                }
+                _menuItemService.CancelOrder();
 
-                var order = _orderService.CreateOrder(tableId, items);
-
-                TempData["SuccessMessage"] = $"Order №{order.OrderId} was successfully sent to the Kitchen!";
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = $"Order was Cancelled!";
+                return RedirectToAction("Index", new { tableId });
             }
             catch (Exception e)
             {
-                TempData["ErrorMessage"] = $"Order Error: {e.Message}";
-                return RedirectToAction("Index");
+                TempData["Exception"] = $"Error with Order canceling: {e.Message}";
+
+                return RedirectToAction("Index", new { tableId });
             }
         }
-
 
         //[HttpGet("Waiter/AddItem/{itemId}")]
         //public IActionResult AddItem(int itemId)
@@ -148,25 +205,48 @@ namespace OrderingSystemProject.Controllers
         //    }
         //}
 
-        [HttpPost]
-        public IActionResult SubmitOrder(int tableId)
+        [HttpGet]
+        public IActionResult ReviewOrder(int tableId)
         {
-            var cartItems = _menuItemService.GetCart();
-            var order = _orderService.CreateOrder(tableId, cartItems);
+            try
+            {
+                var model = new WaiterViewModel
+                {
+                    Table = _tablesService.GetTableById(tableId),
+                    MenuItems = _menuItemService.GetAll(),
+                    Cart = _menuItemService.GetCart()
+                };
 
-            return RedirectToAction("OrderConfirmation", new { orderId = order.OrderId });
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                TempData["Exception"] = $"Error with Order Review: {e.Message}";
+
+                return View();
+            }
         }
 
-        public IActionResult Tables()
-        {
-            var tables = _tablesService.GetAllTables();
-            return View(tables);
-        }
-
         [HttpPost]
-        public IActionResult SelectTable(int tableNumber)
+        public IActionResult SendToKitchen(int tableId)
         {
-            return RedirectToAction("Index", new { tableNumber });
+            try
+            {
+                var orderedItems = _menuItemService.GetCart();
+                
+                var order = _orderService.CreateOrder(tableId, orderedItems);
+
+                // Cleaning Cart
+                _menuItemService.CancelOrder();
+
+                TempData["SuccessMessage"] = $"Order №{order.OrderId} was successfully sent to the Kitchen!";
+                return RedirectToAction("ReviewOrder", new { tableId });
+            }
+            catch (Exception e)
+            {
+                TempData["Exception"] = $"Order Error: {e.Message}";
+                return RedirectToAction("ReviewOrder", new { tableId });
+            }
         }
         
         public IActionResult Filter(

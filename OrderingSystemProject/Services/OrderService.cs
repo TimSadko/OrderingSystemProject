@@ -17,20 +17,6 @@ namespace OrderingSystemProject.Services
             _menu_item_rep = menuItemsRep;
         }
 
-        //public Order CreateOrder(int tableId, List<OrderItem> items)
-        //{
-        //    var order = new Order { TableId = tableId, OrderTime = DateTime.Now };
-        //    _ordersRepo.Add(order);
-
-        //    foreach (var item in items)
-        //    {
-        //        item.OrderId = order.OrderId;
-        //        _order_item_rep.AddItem(item);
-        //    }
-
-        //    return order;
-        //}
-
         public Order CreateOrder(int tableId, List<OrderItem> items)
         {
             var order = new Order { TableId = tableId, OrderTime = DateTime.Now };
@@ -38,18 +24,18 @@ namespace OrderingSystemProject.Services
 
             foreach (var item in items)
             {
-                // Зв’язуємо позицію з новим замовленням
+                // Connect item to order
                 item.OrderId = order.OrderId;
                 _order_item_rep.AddItem(item);
 
-                // Оновлюємо запас товару
+                // Refreshed amount
                 var menuItem = _menu_item_rep.GetById(item.MenuItemId);
                 if (menuItem != null)
                 {
                     menuItem.Stock -= item.Amount;
 
                     if (menuItem.Stock < 0)
-                        menuItem.Stock = 0; // Запобігаємо від’ємному запасу
+                        menuItem.Stock = 0; // don't want to be less than 0
 
                     
                     _menu_item_rep.Update(menuItem);
