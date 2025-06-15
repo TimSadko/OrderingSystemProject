@@ -22,6 +22,7 @@ namespace OrderingSystemProject
             var _order_rep = new DbOrdersRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
+            builder.Services.AddSingleton<IOrderService, OrderService>();
 
             var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
@@ -63,7 +64,7 @@ namespace OrderingSystemProject
             });
 
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
