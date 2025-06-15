@@ -11,11 +11,11 @@ namespace OrderingSystemProject.Controllers
     public class WaiterController : Controller
     {
         private readonly IMenuItemService _menuItemService;
-        private readonly ITablesServices _tablesService;
+        private readonly ITablesService _tablesService;
         private WaiterViewModel _waiterViewModel;
         private readonly IOrderService _orderService;
 
-        public WaiterController(IMenuItemService menuItemService, ITablesServices tablesService, IOrderService orderService)
+        public WaiterController(IMenuItemService menuItemService, ITablesService tablesService, IOrderService orderService)
         {
             _menuItemService = menuItemService;
             _tablesService = tablesService;
@@ -43,7 +43,7 @@ namespace OrderingSystemProject.Controllers
                 {
                     return RedirectToAction("Overview", "Restaurant");
                 }
-                var table = _tablesService.GetTableById((int)tableId);
+                var table = _tablesService.GetTableByNumber((int)tableId);
                 if (table == null)
                 {
                     throw new Exception("Invalid Table ID");
@@ -52,7 +52,7 @@ namespace OrderingSystemProject.Controllers
 
                 var model = new WaiterViewModel
                 {
-                    Table = _tablesService.GetTableById((int)tableId),
+                    Table = _tablesService.GetTableByNumber((int)tableId),
                     MenuItems = _menuItemService.GetAll(),
                     Cart = _menuItemService.GetCart()
                 };
@@ -212,7 +212,7 @@ namespace OrderingSystemProject.Controllers
             {
                 var model = new WaiterViewModel
                 {
-                    Table = _tablesService.GetTableById(tableId),
+                    Table = _tablesService.GetTableByNumber(tableId),
                     MenuItems = _menuItemService.GetAll(),
                     Cart = _menuItemService.GetCart()
                 };
@@ -267,7 +267,7 @@ namespace OrderingSystemProject.Controllers
             catch (Exception e)
             {
                 ViewData["Exception"] = $"Exception occured: {e.Message}";
-                return Index();
+                return View();
             }
         }
     }

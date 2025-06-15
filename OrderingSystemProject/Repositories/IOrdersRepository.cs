@@ -8,8 +8,9 @@ namespace OrderingSystemProject.Repositories
 		Order? GetById(int id);
 
         List<Order> GetAll();
+        void Add(Order order);
 
-		List<KitchenOrder> GetOrdersKitchen();
+        List<KitchenOrder> GetOrdersKitchen();
 
 		List<KitchenOrder> GetDoneOrdersKitchen();
 

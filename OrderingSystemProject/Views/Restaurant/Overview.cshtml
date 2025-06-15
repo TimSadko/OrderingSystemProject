@@ -63,10 +63,16 @@
                         }
                     </ul>
                 </div>
-                <!-- Bill button (when the order is Served) -->
-                @if (order != null && (order.FoodStatus == OrderItemStatus.Served || order.DrinkStatus == OrderItemStatus.Served))
+                <!-- Always show "Bill" if there's an order -->
+                @if (order != null)
                 {
-                    <a href="/Payment/Details/@order.OrderId" class="bill-button-table">Bill</a>
+                    <a asp-controller="Payment" asp-action="Details" asp-route-orderId="@order.OrderId" asp-route-tableId="@table.TableId" class="bill-button-table">Bill</a>
+                }
+
+                <!-- Show "Select" only if the table is available -->
+                @if (table.Status == TableStatus.Available)
+                {
+                    <a asp-controller="Waiter" asp-action="Index" asp-route-tableId="@table.TableId" class="btn btn-primary mt-1">Select</a>
                 }
                 <!-- Card body with Order info -->
                 <div class="card-body @cardColorClass" style="height: 150px;">
@@ -139,9 +145,9 @@
             </div>
         </div>
     }
-</div> *@
+</div> 
 
-@foreach (Table table in Model)
+@* @foreach (Table table in Model)
 {
     string cardColorClass;
     string statusText;
@@ -174,7 +180,7 @@
 </div>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (Table table in Model)
+    @foreach (Table table in Model.Tables)
     {
         string cardColorClass;
         string statusText;
@@ -188,11 +194,6 @@
         {
             cardColorClass = "danger";
             statusText = "Occupied";
-        }
-        else if (table.Status == TableStatus.Reserved)
-        {
-            cardColorClass = "warning";
-            statusText = "Reserved";
         }
         else
         {
@@ -223,19 +224,6 @@
                                     <button type="submit" class="btn btn-sm btn-light">Free table</button>
                                 </form>
                                 break;
-
-                            case TableStatus.Reserved:
-                                <form asp-action="UpdateTableStatus" method="post">
-                                    <input type="hidden" name="tableId" value="@table.TableId" />
-                                    <input type="hidden" name="status" value="@((int)TableStatus.Occupied)" />
-                                    <button type="submit" class="btn btn-sm btn-light">Occupy</button>
-                                </form>
-                                <form asp-action="UpdateTableStatus" method="post">
-                                    <input type="hidden" name="tableId" value="@table.TableId" />
-                                    <input type="hidden" name="status" value="@((int)TableStatus.Available)" />
-                                    <button type="submit" class="btn btn-sm btn-light">Cancel Reservation</button>
-                                </form>
-                                break;
                         }
                     </div>
                 </div>
@@ -246,4 +234,4 @@
             </div>
         </div>
     }
-</div>
+</div> *@
