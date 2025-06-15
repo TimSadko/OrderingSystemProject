@@ -1,15 +1,14 @@
-﻿using OrderingSystemProject.Models;
-using OrderingSystemProject.Models.Kitchen;
+﻿using OrderingSystemProject.Models.Bar;
 
 namespace OrderingSystemProject.Services
 {
-	public interface IKitchenServices
+    public interface IBarService
 	{
-		List<KitchenOrder> GetCookOrders();
+		List<BarOrder> GetBarOrders();
 
-		List<KitchenOrder> GetCookOrdersReady(List<KitchenOrder> all);
+		List<BarOrder> GetBarOrdersReady(List<BarOrder> all);
 
-		List<KitchenOrder> GetDoneCookOrders();	
+		List<BarOrder> GetDoneBarOrders();
 
 		void TakeItem(int _order_id, int _item_id);
 

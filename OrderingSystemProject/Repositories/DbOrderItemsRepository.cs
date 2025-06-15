@@ -147,7 +147,36 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId NOT IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2) ORDER BY MenuItemId";
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId NOT IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2 OR [Card] = 3) ORDER BY MenuItemId";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@order_id", order_id);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				OrderItem itm;
+
+				while (reader.Read())
+				{
+					itm = ReadItem(reader);
+					FillInItem(itm);
+
+					orderItems.Add(itm);
+				}
+				reader.Close();
+			}
+
+			return orderItems;
+		}
+
+		public List<OrderItem> GetOrderItemsDrinksOnly(int order_id)
+		{
+			List<OrderItem> orderItems = new List<OrderItem>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2 OR [Card] = 3) ORDER BY MenuItemId";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Parameters.AddWithValue("@order_id", order_id);
