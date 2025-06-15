@@ -53,11 +53,11 @@
     </form>
 
     <form id="customDateSection" method="post" action="@Url.Action("GetFinancialOverviewForBetweenDates")">
-        <div class="text-start" >
+        <div class="text-start">
             <label>Start Date</label>
-            <input asp-for="@Model.StartDate" type="date" class="form-control"/>
+            <input asp-for="@Model.StartDate" type="date" class="form-control input-background"/>
             <label>End Date</label>
-            <input asp-for="@Model.EndDate" type="date" class="form-control"/>
+            <input asp-for="@Model.EndDate" type="date" class="form-control input-background"/>
         </div>
 
         <button type="submit" class="primary-button">Show Overview</button>
@@ -95,6 +95,11 @@
                 <tr>
                     <td colspan="2">Total Tips</td>
                     <td>@Model.FinancialOverview?.TotalTips.ToString("C", euroCulture)</td>
+                </tr>
+                <tr>
+                    <td class="bold">Total</td>
+                    <td class="bold">@Model.FinancialOverview?.TotalSales</td>
+                    <td class="bold">@Model.FinancialOverview?.TotalIncome.ToString("C", euroCulture)</td>
                 </tr>
                 </tbody>
             </table>

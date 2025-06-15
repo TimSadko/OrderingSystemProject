@@ -9,6 +9,8 @@ public class FinancialOverview
     public decimal TotalIncomeLunch { get; set; }
     public decimal TotalIncomeDinner { get; set; }
     public decimal TotalTips { get; set; }
+    public decimal TotalIncome { get; set; }
+    public decimal TotalSales { get; set; }
 
     public FinancialOverview()
     {
@@ -23,5 +25,7 @@ public class FinancialOverview
         TotalIncomeLunch = totalIncomeLunch;
         TotalIncomeDinner = totalIncomeDinner;
         TotalTips = totalTips;
+        TotalIncome = totalIncomeDrinks + totalIncomeLunch + totalIncomeDinner;
+        TotalSales = totalSalesDrinks + totalSalesLunch + totalSalesDinner;
     }
 }
