@@ -6,99 +6,101 @@
     euroCulture.NumberFormat.CurrencyDecimalSeparator = ".";
     euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
 }
-<h2>Financial Overview</h2>
+<div class="text-center container-background">
+    <h2>Financial Overview</h2>
 
-<partial name="_ErrorMessage"/>
-<partial name="_SuccessMessage"/>
+    <partial name="_ErrorMessage"/>
+    <partial name="_SuccessMessage"/>
 
-<div>
-    <label><strong>Select filter type</strong></label><br/>
-    <label>
-        <input type="radio" name="filterMode" value="STANDARD"
-               @(Model.FilterMode == DateFilterMode.Standard ? "checked" : "")>
-        Standard Period
-    </label>
-    <label>
-        <input type="radio" name="filterMode" value="CUSTOM"
-               @(Model.FilterMode == DateFilterMode.Custom ? "checked" : "")>
-        Custom Date Range
-    </label>
-</div>
+    <div>
+        <label><strong>Select filter type</strong></label><br/>
+        <label>
+            <input type="radio" name="filterMode" value="STANDARD"
+                   @(Model.FilterMode == DateFilterMode.Standard ? "checked" : "")>
+            Standard Period
+        </label>
+        <label>
+            <input type="radio" name="filterMode" value="CUSTOM"
+                   @(Model.FilterMode == DateFilterMode.Custom ? "checked" : "")>
+            Custom Date Range
+        </label>
+    </div>
 
 
-<form id="standardPeriodSection" method="get" action="@Url.Action("GetFinancialOverviewForPeriod")">
-    <div class="form-group">
-        @{
-            <div style="margin-top: 1rem;">
-                <label>Select a period:</label>
-                @{
-                    foreach (DatePeriod period in Enum.GetValues(typeof(DatePeriod)))
-                    {
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   asp-for="SelectedPeriod"
-                                   value="@period"
-                                   checked="@(Model.SelectedPeriod == period)"/>
-                            <label class="form-check-label" for="SelectedPeriod">@period</label>
-                        </div>
+    <form id="standardPeriodSection" method="get" action="@Url.Action("GetFinancialOverviewForPeriod")">
+        <div class="form-group">
+            @{
+                <div style="margin-top: 1rem;">
+                    <label>Select a period:</label>
+                    @{
+                        foreach (DatePeriod period in Enum.GetValues(typeof(DatePeriod)))
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       asp-for="SelectedPeriod"
+                                       value="@period"
+                                       checked="@(Model.SelectedPeriod == period)"/>
+                                <label class="form-check-label" for="SelectedPeriod">@period</label>
+                            </div>
+                        }
                     }
-                }
-            </div>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="primary-button">Show Overview</button>
+    </form>
+
+    <form id="customDateSection" method="post" action="@Url.Action("GetFinancialOverviewForBetweenDates")">
+        <div class="text-start" >
+            <label>Start Date</label>
+            <input asp-for="@Model.StartDate" type="date" class="form-control"/>
+            <label>End Date</label>
+            <input asp-for="@Model.EndDate" type="date" class="form-control"/>
+        </div>
+
+        <button type="submit" class="primary-button">Show Overview</button>
+    </form>
+
+    <hr/>
+    @{
+        if (@Model.FinancialOverview != null)
+        {
+            <h3>Financial Overview</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Sales</th>
+                    <th>Income</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Drinks</td>
+                    <td>@Model.FinancialOverview?.TotalSalesDrinks</td>
+                    <td>@Model.FinancialOverview?.TotalIncomeDrinks.ToString("C", euroCulture)</td>
+                </tr>
+                <tr>
+                    <td>Lunch</td>
+                    <td>@Model.FinancialOverview?.TotalSalesLunch</td>
+                    <td>@Model.FinancialOverview?.TotalIncomeLunch.ToString("C", euroCulture)</td>
+                </tr>
+                <tr>
+                    <td>Dinner</td>
+                    <td>@Model.FinancialOverview?.TotalSalesDinner</td>
+                    <td>@Model.FinancialOverview?.TotalIncomeDinner.ToString("C", euroCulture)</td>
+                </tr>
+                <tr>
+                    <td colspan="2">Total Tips</td>
+                    <td>@Model.FinancialOverview?.TotalTips.ToString("C", euroCulture)</td>
+                </tr>
+                </tbody>
+            </table>
         }
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Show Overview</button>
-</form>
-
-<form id="customDateSection" method="post" action="@Url.Action("GetFinancialOverviewForBetweenDates")">
-    <div style="margin-top: 1rem; width: 400px;">
-        <label>Start Date</label>
-        <input asp-for="@Model.StartDate" type="date" class="form-control"/>
-        <label>End Date</label>
-        <input asp-for="@Model.EndDate" type="date" class="form-control"/>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Show Overview</button>
-</form>
-
-<hr/>
-@{
-    if (@Model.FinancialOverview != null)
-    {
-        <h3>Financial Overview</h3>
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Category</th>
-                <th>Sales</th>
-                <th>Income</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Drinks</td>
-                <td>@Model.FinancialOverview?.TotalSalesDrinks</td>
-                <td>@Model.FinancialOverview?.TotalIncomeDrinks.ToString("C", euroCulture)</td>
-            </tr>
-            <tr>
-                <td>Lunch</td>
-                <td>@Model.FinancialOverview?.TotalSalesLunch</td>
-                <td>@Model.FinancialOverview?.TotalIncomeLunch.ToString("C", euroCulture)</td>
-            </tr>
-            <tr>
-                <td>Dinner</td>
-                <td>@Model.FinancialOverview?.TotalSalesDinner</td>
-                <td>@Model.FinancialOverview?.TotalIncomeDinner.ToString("C", euroCulture)</td>
-            </tr>
-            <tr>
-                <td colspan="2">Total Tips</td>
-                <td>@Model.FinancialOverview?.TotalTips.ToString("C", euroCulture)</td>
-            </tr>
-            </tbody>
-        </table>
     }
-}
+</div>
 
 
 <script>
