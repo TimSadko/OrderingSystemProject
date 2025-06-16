@@ -41,6 +41,11 @@ public class FinancialOverviewController : Controller
 
     public IActionResult GetFinancialOverviewForPeriod(DatePeriod? selectedPeriod)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         var financialOverviewViewModel = new FinancialOverviewViewModel
         {
             SelectedPeriod = selectedPeriod,
@@ -62,6 +67,11 @@ public class FinancialOverviewController : Controller
 
     public IActionResult GetFinancialOverviewForBetweenDates(DateTime? startDate, DateTime? endDate)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         var financialOverviewViewModel = new FinancialOverviewViewModel
         {
             StartDate = startDate,
