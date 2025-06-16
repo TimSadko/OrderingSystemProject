@@ -20,6 +20,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
+                // Select all orders sort by time
                 string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders ORDER BY OrderTime";
                 SqlCommand com = new SqlCommand(query, conn);
 
@@ -30,7 +31,10 @@ namespace OrderingSystemProject.Repositories
 
                 while (reader.Read())
                 {
+                    // Parse order info from db
                     ord = ReadOrder(reader);
+
+                    // Edit order with add data
                     FillInOrder(ord);
                     orders.Add(ord);
                 }
@@ -43,8 +47,9 @@ namespace OrderingSystemProject.Repositories
         {
             using (var connection = new SqlConnection(_connection_string))
             {
+                // Insert new order into the Orders and retrieve OrderId
                 string query =
-                    "INSERT INTO Orders (TableId, OrderStatus, OrderTime) VALUES (@TableId, @OrderStatus, @OrderTime); SELECT SCOPE_IDENTITY()";
+                    "INSERT INTO Orders (TableId, OrderStatus, OrderTime) VALUES (@TableId, @OrderStatus, @OrderTime); SELECT SCOPE_IDENTITY()";//auto-generated pk
                 SqlCommand command = new SqlCommand(query, connection);
 
                 command.Parameters.AddWithValue("@TableId", order.TableId);
@@ -53,6 +58,7 @@ namespace OrderingSystemProject.Repositories
 
                 connection.Open();
 
+                // Execute the query and store OrderId
                 object result = command.ExecuteScalar();
                 order.OrderId = Convert.ToInt32(result);
             }
@@ -63,6 +69,7 @@ namespace OrderingSystemProject.Repositories
 
             using (SqlConnection conn = new SqlConnection(_connection_string))
             {
+                // fetch single order
                 string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderId = @OrderId";
                 SqlCommand com = new SqlCommand(query, conn);
                 

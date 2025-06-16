@@ -29,7 +29,7 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
-                if (tableId == null)
+                if (tableId == null)            // No table selected, redirect to restaurant overview.
                 {
                     return RedirectToAction("Overview", "Restaurant");
                 }
@@ -39,14 +39,12 @@ namespace OrderingSystemProject.Controllers
                     throw new Exception("Invalid Table ID");
                 }
 
-
+                // Build view model with current table, full menu and cart 
                 var model = new WaiterViewModel
                 {
                     Table = _tablesService.GetTableByNumber((int)tableId),
                     MenuItems = _menuItemService.GetAll(),
                     Cart = _menuItemService.GetCart(),
-                    //CardFilter = MenuManagementViewModel.CardFilterType.ALL;
-                    //CategoryFilter = MenuManagementViewModel.CategoryFilterType.ALL;
                 };
               
                 return View(model);
@@ -65,6 +63,7 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
+                // Add item to cart using service.
                 _menuItemService.AddItem(itemId);
                 var addedItem = _menuItemService.GetById(itemId);
 
@@ -174,6 +173,7 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
+                // Clear all items from cart
                 _menuItemService.CancelOrder();
 
                 TempData["SuccessMessage"] = $"Order was Cancelled!";
@@ -194,6 +194,7 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
+                // Load full cart and table info for review
                 var model = new WaiterViewModel
                 {
                     Table = _tablesService.GetTableByNumber(tableId),
@@ -218,11 +219,13 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
+                // Get current cart items
                 var orderedItems = _menuItemService.GetCart();
-                
+
+                // Create the order and persist it via service
                 var order = _orderService.CreateOrder(tableId, orderedItems);
 
-                // Cleaning Cart
+                // Cleaning cart after sending 
                 _menuItemService.CancelOrder();
 
                 TempData["SuccessMessage"] = $"Order №{order.OrderId} was successfully sent to the Kitchen!";
@@ -244,6 +247,7 @@ namespace OrderingSystemProject.Controllers
 
             try
             {
+                // Filter menu items based on category and card 
                 List<MenuItem> menuItems = _menuItemService.Filter(categoryFilterType, cardFilterType);
 
                 var model = new WaiterViewModel
@@ -264,11 +268,12 @@ namespace OrderingSystemProject.Controllers
             }
         }
 
+        // Checks logged-in user 
         private bool Authenticate()
         {
             var user_role = Authorization.GetUserRole(this.HttpContext);
 
-            if (user_role == Models.EmployeeType.Waiter) return true;
+            if (user_role != null && (user_role == EmployeeType.Waiter || user_role == EmployeeType.Manager)) return true;
 
             return false;
         }
