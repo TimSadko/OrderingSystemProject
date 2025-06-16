@@ -60,7 +60,7 @@ public class EmployeesController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(employee);
         }
     }
