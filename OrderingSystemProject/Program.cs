@@ -22,9 +22,9 @@ namespace OrderingSystemProject
             var _order_rep = new DbOrdersRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
-			builder.Services.AddSingleton<IOrdersService, OrdersService>();
+            builder.Services.AddSingleton<IOrderService, OrderService>();
 
-			var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
+            var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
             CommonRepository._menu_item_rep = _menu_item_rep;
 			builder.Services.AddSingleton<IMenuItemService, MenuItemService>();

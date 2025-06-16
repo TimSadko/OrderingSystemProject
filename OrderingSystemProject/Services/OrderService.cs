@@ -44,5 +44,30 @@ namespace OrderingSystemProject.Services
 
             return order;
         }
+
+        public List<Order> GetActiveOrders()
+        {
+            return _ordersRepo.GetActiveOrders();
+        }
+
+        public List<Order> GetActiveOrdersByTable(int tableId)
+        {
+            return _ordersRepo.GetActiveOrdersByTable(tableId);
+        }
+
+        public bool MarkOrderAsServed(int orderId, string itemType)
+        {
+            // get OrderItems of order
+            List<OrderItem> orderItems = _order_item_rep.GetOrderItems(orderId);
+
+            foreach (OrderItem item in orderItems)
+            {
+                if (((itemType == "food" && item.MenuItem.IsFood()) ||
+                     (itemType == "drink" && item.MenuItem.IsDrink())) && item.ItemStatus == OrderItemStatus.Ready)
+                    if (_order_item_rep.UpdateOrderItemStatus(item.Id, OrderItemStatus.Served))
+                        return true;
+            }
+            return false;
+        }
     }
 }
