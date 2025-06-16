@@ -1,44 +1,39 @@
-﻿using OrderingSystemProject.Models;
-using OrderingSystemProject.Models.Kitchen;
+﻿using OrderingSystemProject.Models.Kitchen;
+using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
-using System.Linq;
+using OrderingSystemProject.Models.Bar;
 
 namespace OrderingSystemProject.Services
 {
-	public class KitchenService : IKitchenServices
+    public class BarService : IBarService
 	{
-		public KitchenService() 
+		public List<BarOrder> GetBarOrders()
 		{
+			var list = CommonRepository._order_rep.GetOrdersBar(); // Get lists of orders for the repo
 
+			return list;
 		}
 
-		public List<KitchenOrder> GetCookOrders()
+		public List<BarOrder> GetBarOrdersReady(List<BarOrder> all)
 		{
-			var list = CommonRepository._order_rep.GetOrdersKitchen(); // Get lists of orders for the repo
+			var list = new List<BarOrder>();
 
-			return list; 
-		}
-
-		public List<KitchenOrder> GetCookOrdersReady(List<KitchenOrder> all)
-		{
-			var list = new List<KitchenOrder>();
-
-            for (int i = 0; i < all.Count; i++)
-            {
-                if(all[i].KitchenStatus == OrderStatus.ReadyForPickup)
+			for (int i = 0; i < all.Count; i++)
+			{
+				if (all[i].KitchenStatus == OrderStatus.ReadyForPickup)
 				{
 					list.Add(all[i]);
 					all.RemoveAt(i);
 					i--;
 				}
-            }
+			}
 
-            return list;
+			return list;
 		}
 
-		public List<KitchenOrder> GetDoneCookOrders()
+		public List<BarOrder> GetDoneBarOrders()
 		{
-			return CommonRepository._order_rep.GetDoneOrdersKitchen();
+			return CommonRepository._order_rep.GetDoneOrdersBar();
 		}
 
 		public void TakeItem(int _order_id, int _item_id)
@@ -46,7 +41,7 @@ namespace OrderingSystemProject.Services
 			var item = CommonRepository._order_item_rep.GetOrederItemById(_item_id); // Get order item from rep
 
 			if (item == null) throw new Exception("Invalid order item id"); // If it is null, throw exception
-		
+
 
 			if (item.ItemStatus != OrderItemStatus.NewItem) return; // If order item status is not new, return
 
@@ -60,6 +55,7 @@ namespace OrderingSystemProject.Services
 			var item = CommonRepository._order_item_rep.GetOrederItemById(_item_id); // Get order item from rep
 
 			if (item == null) throw new Exception("Invalid order item id"); // If it is null, throw exception
+
 
 			if (item.ItemStatus != OrderItemStatus.Preparing) return; // If order item status is not new, return
 
@@ -83,33 +79,33 @@ namespace OrderingSystemProject.Services
 
 			var order = CommonRepository._order_rep.GetById(_order_id); // Get order from rep by id
 
-			if(order.OrderStatus != OrderStatus.Preparing) CommonRepository._order_rep.UpdateOrderStatus(_order_id, OrderStatus.Preparing); // Update the status of order in db	
+			if (order.OrderStatus != OrderStatus.Preparing) CommonRepository._order_rep.UpdateOrderStatus(_order_id, OrderStatus.Preparing); // Update the status of order in db	
 		}
 
 		public void TakeOrder(int _order_id)
 		{
-			var order = new KitchenOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
+			var order = new BarOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
 
 			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
 
 			if (order.KitchenStatus != OrderStatus.New) return;
 
-            for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
-            {
-				if (order.Items[i].MenuItem.Card == ItemCard.DRINKS || order.Items[i].MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS) continue; // if item is drink, skip it
+			for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
+			{
+				if (order.Items[i].MenuItem.Card != ItemCard.DRINKS && order.Items[i].MenuItem.Card != ItemCard.ALCOHOLIC_DRINKS) continue; // if item is not drink, skip it
 
 				if (order.Items[i].ItemStatus == OrderItemStatus.NewItem) // if current item status is new
 				{
 					CommonRepository._order_item_rep.UpdateOrderItemStatus(order.Items[i].Id, OrderItemStatus.Preparing); // Change status of the item in db
 				}
-            }
+			}
 
 			CommonRepository._order_rep.UpdateOrderStatus(_order_id, OrderStatus.Preparing); // Update the status of order in db		
 		}
 
 		public void FinishOrder(int _order_id)
 		{
-			var order = new KitchenOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
+			var order = new BarOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
 
 			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
 
@@ -117,7 +113,7 @@ namespace OrderingSystemProject.Services
 
 			for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
 			{
-				if (order.Items[i].MenuItem.Card == ItemCard.DRINKS || order.Items[i].MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS) continue; // if item is drink, skip it
+				if (order.Items[i].MenuItem.Card != ItemCard.DRINKS && order.Items[i].MenuItem.Card != ItemCard.ALCOHOLIC_DRINKS) continue; // if item is not drink, skip it
 
 				if (order.Items[i].ItemStatus == OrderItemStatus.NewItem || order.Items[i].ItemStatus == OrderItemStatus.Preparing) // if current item status is new or preparing
 				{
@@ -130,7 +126,7 @@ namespace OrderingSystemProject.Services
 
 		public void ReturnOrder(int _order_id)
 		{
-			var order = new KitchenOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
+			var order = new BarOrder(CommonRepository._order_rep.GetById(_order_id)); // Get order from rep by id
 
 			if (order == null) throw new Exception("Invalid order id"); // if could not find order throw exception
 
@@ -138,7 +134,7 @@ namespace OrderingSystemProject.Services
 
 			for (int i = 0; i < order.Items.Count; i++) // Go throu list of order_item of the order
 			{
-				if (order.Items[i].MenuItem.Card == ItemCard.DRINKS || order.Items[i].MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS) continue; // if item is drink, skip it
+				if (order.Items[i].MenuItem.Card != ItemCard.DRINKS && order.Items[i].MenuItem.Card != ItemCard.ALCOHOLIC_DRINKS) continue; // if item is not drink, skip it
 
 				if (order.Items[i].ItemStatus == OrderItemStatus.Ready) // if current item status is new or preparing
 				{

@@ -1,0 +1,46 @@
+﻿@using OrderingSystemProject.Models.Bar
+@model BarViewModel
+
+@{
+	ViewData["Title"] = "Bar";
+}
+
+<partial name="_ErrorMessage" />
+
+<h1 class="KitchenOrderListListLabel">Running:</h1>
+
+<div class="KitchenOrderListsBreak"></div>
+
+<div class="KitchenOrdersList">
+	@{
+		if (Model.Orders != null)
+		{
+			foreach (var order in Model.Orders) // Go throu list of orders
+			{
+				<partial name="~/Views/Bar/_Order.cshtml" model="@order" />
+			}
+		}
+	}
+</div>
+
+<h1 class="KitchenOrderListListLabel">Ready to Pickup:</h1>
+
+<div class="KitchenOrderListsBreak"></div>
+
+<div class="KitchenOrdersList">
+	@{
+		if (Model.ReadyOrders != null)
+		{
+			foreach (var order in Model.ReadyOrders) // Go throu list of orders
+			{
+				<partial name="~/Views/Bar/_Order.cshtml" model="@order" />
+			}
+		}
+	}
+</div>
+
+<script>
+	setTimeout(function () {
+		window.location.reload(1);
+	}, 5000);
+</script>

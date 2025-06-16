@@ -32,55 +32,58 @@ else
 
 @if (Model.Order.Items != null && Model.Order.Items.Count > 0)
 {
-    <div class="table-scrollable-details">
-    <table class="table-bill">
-        <thead class="thead-bill">
-        <tr>
-            <th>Item Name</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Comment</th>
-            <th>Line Total</th>
-            <th>VAT</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Order.Items)
-        {
-            <tr>
-                <td>@item.MenuItem.Name</td>
-                <td>@item.Amount</td>
-                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
-                <td>@item.Comment</td>
-                <td>@item.LineTotal.ToString("C", euroCulture)</td>
-                @if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
+    <div class="table-bill">
+            <div class="labels-bill">
+                <div class="label-cells">
+                    <span class="name-cell">Item Name</span>
+                    <span class="quantity-cell">Quantity</span>
+                    <span class="unit-cell">Unit Price</span>
+                    <span class="comment-cell">Comment</span>
+                    <span class="line-total-cell">Line Total</span>
+                    <span class="vat-cell">VAT</span>
+                </div>
+            </div>
+        <div class="table-scrollable-details">
+            <table class="table-bill-info">
+                <tbody>
+                @foreach (var item in Model.Order.Items)
                 {
-                    <td>21%</td>
+                    <tr class="content-cells">
+                        <td class="name-cell">@item.MenuItem.Name</td>
+                        <td class="quantity-cell">@item.Amount</td>
+                        <td class="unit-cell">@item.MenuItem.Price.ToString("C", euroCulture)</td>
+                        <td class="comment-cell">@item.Comment</td>
+                        <td class="line-total-cell">@item.LineTotal.ToString("C", euroCulture)</td>
+                        <div class="vat-cell">
+                            @if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
+                            {
+                                <td>21%</td>
+                            }
+                            else
+                            {
+                                <td>9%</td>
+                            }
+                        </div>
+                    </tr>
                 }
-                else
-                {
-                    <td>9%</td>
-                }
-            </tr>
-        }
-        </tbody>
-        <tfoot>
-        <tr class="summary-row">
-            <td colspan="5" class="right-align bold">Subtotal:</td>
-            <td class="fw-bold">@Model.OrderSubtotal.ToString("C", euroCulture)</td>
-        </tr>
-        <tr class="summary-row">
-            <td colspan="5" class="right-align bold">VAT:</td>
-            <td class="fw-bold">@Model.Vat.ToString("C", euroCulture)</td>
-        </tr>
-        <tr class="summary-row">
-            <td colspan="5" class="right-align bold">Total:</td>
-            <td class="fw-bold">@Model.OrderTotal.ToString("C", euroCulture)</td>
-        </tr>
-        </tfoot>
-    </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <button class="button-pay" role="button"><a href="/Payment/Pay">Pay</a></button>
+    
+    <div class="summary-row">
+        <span colspan="5" class="right-align bold">Subtotal:</span>
+        <span class="fw-bold">@Model.OrderSubtotal.ToString("C", euroCulture)</span>
+    </div>
+    <div class="summary-row">
+        <span colspan="5" class="right-align bold">VAT:</span>
+        <span class="fw-bold">@Model.Vat.ToString("C", euroCulture)</span>
+    </div>
+    <div class="summary-row">
+        <span colspan="5" class="right-align bold">Total:</span>
+        <span class="fw-bold">@Model.OrderTotal.ToString("C", euroCulture)</span>
+    </div>
+    <button class="button-pay" role="button"><a href="/Payment/Pay/@Model.BillId">Pay</a></button>
 }
 else
 {
