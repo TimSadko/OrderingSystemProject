@@ -18,7 +18,6 @@
 	<div class="d-flex" style="height: 100vh; max-width: 1356px; margin: 0 auto; overflow: hidden;">
 
 		<div class="overflow-auto px-4 py-3" style="width: 864px;">
-			<h3 class="fw-bold mb-3">Menu</h3>
 
 			<form method="get" action="@Url.Action("Filter")">
 				<div class="form-group row">
@@ -48,14 +47,6 @@
 			</form>
 
 			<table class="table table-striped">
-				@*<thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Stock</th>
-                        <th>Price</th>
-                        <th></th>
-                    </tr>
-                </thead> *@
 				<tbody>
 					@foreach (var menuItem in Model.MenuItems)
 					{
@@ -75,6 +66,8 @@
 									@menuItem.Stock
 								}
 							</td>
+							<td>@menuItem.Card</td>
+							<td>@menuItem.Category</td>
 							<td>@menuItem.Price.ToString("C", euroCulture)</td>
 							<td>
 								@if (menuItem.Stock > 0)
@@ -82,7 +75,9 @@
 									<form method="post" asp-action="AddItem" asp-controller="Waiter">
 										<input type="hidden" name="itemId" value="@menuItem.MenuItemId" />
 										<input type="hidden" name="tableId" value="@Model.Table.TableId" />
-										<button type="submit" class="btn btn-sm btn-primary">Add to Order</button>
+										<button type="submit" class="btn btn-sm text-white" style="background-color: #961A29;">
+											Add to Order
+										</button>
 									</form>
 								}
 								else
@@ -97,9 +92,8 @@
 		</div>
 
 
-		<div class="d-flex flex-column border-start bg-light" style="width: 452px; margin-left: 25px; height: 100vh;">
-
-			<div class="bg-primary text-white px-4 py-3">
+		<div class="d-flex flex-column border-start" style="width: 452px; margin-left: 25px; height: 100vh; background-color: #F1EDE0;">
+			<div class="px-4 py-3" style="color: black; background-color: transparent;">
 				<h4 class="mb-0">Table №@Model.Table.TableNumber</h4>
 			</div>
 
@@ -115,8 +109,8 @@
 						{
 							<li class="list-group-item mb-3">
 								<div class="d-flex justify-content-between align-items-center">
-									<span class="badge bg-danger rounded-circle me-2"
-										  style="width: 28px; height: 28px; text-align:center; line-height: 20px;">
+									<span class="d-flex align-items-center justify-content-center bg-danger text-white rounded-circle me-2"
+										  style="width: 36px; height: 36px; font-weight: bold; font-size: 1rem; background-color: #961A29;">
 										@counter
 									</span>
 
@@ -164,7 +158,7 @@
 										   class="form-control form-control-sm me-2"
 										   placeholder="Add a comment..."
 										   value="@orderItem.Comment" />
-									<button type="submit" class="btn btn-sm btn-primary">Save</button>
+									<button type="submit" class="btn btn-sm btn-primary" style="background-color: #961A29;">Save</button>
 								</form>
 
 								@{
@@ -181,13 +175,13 @@
 			</div>
 
 			<div class="px-3 py-3 border-top bg-white">
-				<div class="d-flex justify-content-between gap-2">
+				<div class="d-flex justify-content-between gap-5">
 					<form method="post" asp-action="ClearOrder" asp-controller="Waiter" class="w-100">
 						<input type="hidden" name="tableId" value="@Model.Table.TableId" />
-						<button class="btn btn-danger w-100">Cancel Order</button>
+						<button class="btn btn-danger w-100" style="background-color: #213F65;">Cancel Order</button>
 					</form>
 
-					<a asp-action="ReviewOrder" asp-controller="Waiter" asp-route-tableId="@Model.Table.TableId" class="btn btn-primary w-100">
+					<a asp-action="ReviewOrder" asp-controller="Waiter" asp-route-tableId="@Model.Table.TableId" class="btn btn-primary w-100" style="background-color: #961A29;">
 						Review Full Order
 					</a>
 				</div>
