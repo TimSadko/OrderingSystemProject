@@ -20,23 +20,13 @@ namespace OrderingSystemProject.Controllers
             _menuItemService = menuItemService;
             _tablesService = tablesService;
             _orderService = orderService;
-
-            _waiterViewModel = new WaiterViewModel();
-            _waiterViewModel.MenuItems = CommonRepository._menu_item_rep.GetAll();
-            _waiterViewModel.Cart = new List<OrderItem>();
         }
-
-        //[HttpGet]
-        //public IActionResult Index()
-        //{
-        //    Console.WriteLine($"{_waiterViewModel.MenuItems}");
-        //    Console.WriteLine($"{_waiterViewModel.Cart.Count}");
-        //    return View(_waiterViewModel);
-        //}
 
         [HttpGet("Waiter/Index/{tableId}")]
         public IActionResult Index(int? tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 if (tableId == null)
@@ -54,7 +44,9 @@ namespace OrderingSystemProject.Controllers
                 {
                     Table = _tablesService.GetTableByNumber((int)tableId),
                     MenuItems = _menuItemService.GetAll(),
-                    Cart = _menuItemService.GetCart()
+                    Cart = _menuItemService.GetCart(),
+                    //CardFilter = MenuManagementViewModel.CardFilterType.ALL;
+                    //CategoryFilter = MenuManagementViewModel.CategoryFilterType.ALL;
                 };
               
                 return View(model);
@@ -69,6 +61,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult AddItem(int itemId, int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.AddItem(itemId);
@@ -88,6 +82,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult IncreaseQuantity(int itemId, int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.IncreaseQuantity(itemId);
@@ -108,6 +104,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult DecreaseQuantity(int itemId, int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.DecreaseQuantity(itemId);
@@ -129,6 +127,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult RemoveItem(int itemId, int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.RemoveItem(itemId);
@@ -149,6 +149,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult UpdateComment(int itemId, string comment, int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.UpdateComment(itemId, comment);
@@ -168,6 +170,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult ClearOrder(int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 _menuItemService.CancelOrder();
@@ -183,31 +187,11 @@ namespace OrderingSystemProject.Controllers
             }
         }
 
-        //[HttpGet("Waiter/AddItem/{itemId}")]
-        //public IActionResult AddItem(int itemId)
-        //{
-        //    try
-        //    {
-        //        // Add To item list
-        //        var orderItem = new OrderItem(-1, -1, itemId, 1, "", 0);
-        //        orderItem.MenuItem = CommonRepository._menu_item_rep.GetById(itemId);
-
-        //        _waiterViewModel.Cart.Add(orderItem);
-
-        //        return View("Index", _waiterViewModel);
-        //    }
-
-
-        //    catch (Exception e)
-        //    {
-        //        ViewData["Exception"] = $"Exception occured: {e.Message}";
-        //        return Index();
-        //    }
-        //}
-
         [HttpGet]
         public IActionResult ReviewOrder(int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 var model = new WaiterViewModel
@@ -230,6 +214,8 @@ namespace OrderingSystemProject.Controllers
         [HttpPost]
         public IActionResult SendToKitchen(int tableId)
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 var orderedItems = _menuItemService.GetCart();
@@ -251,24 +237,40 @@ namespace OrderingSystemProject.Controllers
         
         public IActionResult Filter(
             MenuManagementViewModel.CardFilterType cardFilterType,
-            MenuManagementViewModel.CategoryFilterType categoryFilterType
+            MenuManagementViewModel.CategoryFilterType categoryFilterType, int tableId
         )
         {
+            if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
             try
             {
                 List<MenuItem> menuItems = _menuItemService.Filter(categoryFilterType, cardFilterType);
-                var menuManagementViewMode = new MenuManagementViewModel(
-                    menuItems,
-                    cardFilterType,
-                    categoryFilterType
-                );
-                return View(nameof(Index), menuManagementViewMode);
+
+                var model = new WaiterViewModel
+                {
+                    CardFilter = cardFilterType,
+                    CategoryFilter = categoryFilterType,
+                    Table = _tablesService.GetTableByNumber((int)tableId),
+                    MenuItems = menuItems,
+                    Cart = _menuItemService.GetCart(),
+                };
+
+                return View(nameof(Index), model);
             }
             catch (Exception e)
             {
                 ViewData["Exception"] = $"Exception occured: {e.Message}";
                 return View();
             }
+        }
+
+        private bool Authenticate()
+        {
+            var user_role = Authorization.GetUserRole(this.HttpContext);
+
+            if (user_role == Models.EmployeeType.Waiter) return true;
+
+            return false;
         }
     }
 }
