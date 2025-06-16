@@ -1,104 +1,3 @@
-@*
-@model SplitByAmountViewModel
-@{
-    ViewData["Title"] = "Split Bill By Custom Amount";
-}
-
-<h2>Split Bill by Custom Amount</h2>
-
-@if (!string.IsNullOrEmpty(Model.ConfirmationMessage))
-{
-    <div class="alert alert-success">
-        @Model.ConfirmationMessage
-    </div>
-}
-
-<div>
-    <h4>Order Total: €@Model.Bill.OrderTotal</h4>
-    <h5>Remaining: 
-        @{
-            var paid = Model.ExistingPayments.Sum(p => p.PaymentAmount + p.TipAmount);
-            var remaining = Model.Bill.OrderTotal - paid;
-        }
-        €@remaining
-    </h5>
-</div>
-
-<hr />
-
-<div>
-    <h4>Add a New Payment</h4>
-    <form asp-action="SplitByAmount" method="post">
-        <input type="hidden" asp-for="NewPayment.BillId" value="@Model.Bill.BillId" />
-        
-        <div class="form-group">
-            <label asp-for="NewPayment.PaymentAmount">Amount to Pay (€)</label>
-            <input asp-for="NewPayment.PaymentAmount" class="form-control" />
-            <span asp-validation-for="NewPayment.PaymentAmount" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="NewPayment.TipAmount">Tip (€)</label>
-            <input asp-for="NewPayment.TipAmount" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label asp-for="NewPayment.PaymentType">Payment Method</label>
-            <select asp-for="NewPayment.PaymentType" class="form-control">
-                <option value="Cash">Cash</option>
-                <option value="Card">Card</option>
-                <option value="Tikkie">Tikkie</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="NewPayment.Feedback">Feedback (optional)</label>
-            <input asp-for="NewPayment.Feedback" class="form-control" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Submit Payment</button>
-    </form>
-</div>
-
-<hr />
-
-<div>
-    <h4>Payments Already Made</h4>
-    @if (Model.ExistingPayments.Count == 0)
-    {
-        <p>No payments have been made yet.</p>
-    }
-    else
-    {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Amount (€)</th>
-                    <th>Tip (€)</th>
-                    <th>Method</th>
-                    <th>Feedback</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var payment in Model.ExistingPayments)
-            {
-                <tr>
-                    <td>@payment.PaymentAmount</td>
-                    <td>@payment.TipAmount</td>
-                    <td>@payment.PaymentType</td>
-                    <td>@payment.Feedback</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-*@
-
 @model SplitByAmountViewModel
 @{
     var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
@@ -107,6 +6,8 @@
     decimal remaining = totalDue - totalPaid;
     bool isFullyPaid = totalPaid >= totalDue;
 }
+<partial name="_ErrorMessage" />
+<partial name="_SuccessMessage" />
 
 <h2>Split Bill by Custom Amount</h2>
 
@@ -212,10 +113,16 @@
 }
 @if (isFullyPaid)
 {
-    <form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
-        <input type="hidden" name="billId" value="@Model.Bill.BillId" />
-        <button type="submit" class="btn btn-primary mt-3">Finish Payment</button>
-    </form>
+    //<button class="button-pay" role="button"><a href="/Payment/FinishPaymentSplitByAmount/@Model.NewPayment.BillId">Pay</a></button>
+    //<a class="btn btn-success" href="/Payment/FinishPaymentSplitByAmount/@Model.NewPayment.BillId">
+        //Finish Payment
+    //</a>
+    <a class="btn btn-success"
+       asp-controller="Payment"
+       asp-action="FinishPaymentSplitByAmount"
+       asp-route-billId="@Model.NewPayment.BillId">
+        Finish Payment
+    </a>
 }
 
 

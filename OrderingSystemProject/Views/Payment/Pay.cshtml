@@ -9,6 +9,8 @@
     bool isFullyPaid = totalPaid >= totalDue;
     bool hasSplitByAmountPayments = payments.Any(p => p.IsFromSplitByAmount);
 }
+<partial name="_ErrorMessage" />
+<partial name="_SuccessMessage" />
 
 <h2>Pay Now</h2>
 

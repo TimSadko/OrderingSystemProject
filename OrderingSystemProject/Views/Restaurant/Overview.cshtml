@@ -66,13 +66,15 @@
                 <!-- Always show "Bill" if there's an order -->
                 @if (order != null)
                 {
-                    <a asp-controller="Payment" asp-action="Details" asp-route-orderId="@order.OrderId" asp-route-tableId="@table.TableId" class="bill-button-table">Bill</a>
+                    <a href="/Payment/Details/@order.OrderId" class="bill-button-table">Bill</a>
+                    //<a asp-controller="Payment" asp-action="Details" asp-route-orderId="@order.OrderId" class="bill-button-table">Bill</a>
                 }
 
                 <!-- Show "Select" only if the table is available -->
                 @if (table.Status == TableStatus.Available)
                 {
-                    <a asp-controller="Waiter" asp-action="Index" asp-route-tableId="@table.TableId" class="btn btn-primary mt-1">Select</a>
+                    <a href="/Waiter/Index/@table.TableId" class="bill-button-table">Select</a>
+                    //<a asp-controller="Waiter" asp-action="Index" asp-route-tableId="@table.TableId" class="btn btn-primary mt-1">Select</a>
                 }
                 <!-- Card body with Order info -->
                 <div class="card-body @cardColorClass" style="height: 150px;">

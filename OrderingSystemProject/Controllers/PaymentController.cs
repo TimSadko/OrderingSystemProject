@@ -19,6 +19,7 @@ public class PaymentController : Controller
     [HttpGet("Payment/Pay/{billId}")]
     public IActionResult Pay(int? billId)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var payment = _paymentService.GetNewPayment();
@@ -47,9 +48,7 @@ public class PaymentController : Controller
     [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
-        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
-        // check if user is logged in and has correct role
-        if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
 
         try
         {
@@ -72,13 +71,14 @@ public class PaymentController : Controller
     [HttpGet]
     public IActionResult SplitEqually(int billId)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var model = _paymentService.BuildSplitEquallyViewModel(billId);
 
             if (model == null)
             {
-                Console.WriteLine("Bill not found.");
+                TempData["ErrorMessage"] = "Bill not found.";
                 return RedirectToAction("Overview", "Restaurant");
             }
 
@@ -90,22 +90,25 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-    
     //Updated!
     [HttpPost]
     public IActionResult UpdateNumberOfPeople(SplitEquallyViewModel model)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             if (model.NumberOfPeople < 1)
             {
-                ModelState.AddModelError("NumberOfPeople", "Number of people must be at least 1");
+                //ModelState.AddModelError("NumberOfPeople", "Number of people must be at least 1");
+                TempData["ErrorMessage"] = "Number of people must be greater than 0.";
                 return View("SplitEqually", model);
             }
 
             var bill = _paymentService.GetCurrentBill();
             model.Bill = bill;
             _paymentService.InitializePaymentsForUpdate(model);
+            
+            TempData["SuccessMessage"] = "Number of people updated successfully!";
             return View("SplitEqually", model);
         }
         catch (Exception e)
@@ -115,10 +118,11 @@ public class PaymentController : Controller
         }
     }
 
-    //Updated
+    //CHANGE!!!
     [HttpPost]
     public IActionResult SplitEqually(SplitEquallyViewModel model)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var bill = _paymentService.GetCurrentBill();
@@ -128,9 +132,23 @@ public class PaymentController : Controller
                 TempData["ErrorMessage"] = "Could not find the current bill.";
                 return RedirectToAction("Overview", "Restaurant");
             }
-            
+
             model.Bill = bill;
-            
+
+            decimal perPersonShare = bill.OrderTotal / model.NumberOfPeople;
+
+            foreach (var payment in model.Payments)
+            {
+                if (payment.PaymentAmount > perPersonShare)
+                {
+                    payment.TipAmount = payment.PaymentAmount - perPersonShare;
+                }
+                else
+                {
+                    payment.TipAmount = 0;
+                }
+            }
+
             _paymentService.InsertSplitPayments(model.Payments);
 
             return RedirectToAction("Pay", new { billId = bill.BillId });
@@ -142,29 +160,11 @@ public class PaymentController : Controller
         }
     }
     
-    /*
-    private void InitializePayments(SplitEquallyViewModel model)
-    {
-        if (model.Payments == null || model.Payments.Count != model.NumberOfPeople)
-        {
-            model.Payments = new List<Payment>();
-            decimal perPersonAmount = model.Bill.OrderTotal / model.NumberOfPeople;
-            for (int i = 0; i < model.NumberOfPeople; i++)
-            {
-                model.Payments.Add(new Payment
-                {
-                    BillId = model.Bill.BillId,
-                    PaymentAmount = perPersonAmount
-                });
-            }
-        }
-    }
-    */
-    
     //Updated!
     [HttpGet("Payment/SplitByAmount/{billId}")]
     public IActionResult SplitByAmount(int billId)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var viewModel = _paymentService.BuildSplitByAmountViewModel(billId, TempData["ConfirmationMessage"] as string);
@@ -189,6 +189,7 @@ public class PaymentController : Controller
     [HttpPost]
     public IActionResult SplitByAmount(SplitByAmountViewModel model)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var payment = _paymentService.GetCurrentPayment();
@@ -219,7 +220,7 @@ public class PaymentController : Controller
             _paymentService.InsertPayment(model.NewPayment);
 
             TempData["ConfirmationMessage"] = $"Payment of €{model.NewPayment.PaymentAmount + model.NewPayment.TipAmount:0.00} submitted successfully!";
-            return RedirectToAction("Pay", new { billId = bill.BillId });
+            return RedirectToAction("SplitByAmount", new { billId = bill.BillId });
         }
         catch (Exception e)
         {
@@ -233,6 +234,7 @@ public class PaymentController : Controller
     [HttpPost]
     public IActionResult Pay(Payment payment)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             payment.Bill = _paymentService.GetBillForPaymentById(payment);
@@ -260,6 +262,7 @@ public class PaymentController : Controller
     [HttpGet]
     public IActionResult Confirmation(int id)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             var payment = _paymentService.GetById(id);
@@ -272,28 +275,10 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-
-    [HttpGet]
-    public IActionResult FinishPaymentSplitByAmount(int? billId)
-    {
-        var payment = _paymentService.GetCurrentPayment();
-        if (billId.HasValue)
-        {
-            var payments = _paymentService.GetPaymentsByBillId(billId.Value);
-            ViewBag.ExistingPayments = payments;
-        }
-        else
-        {
-            ViewBag.ExistingPayments = new List<Payment>();
-        }
-
-        return View(payment);
-    }
-    
-    //Updated!
     [HttpPost]
-    public IActionResult FinishPaymentForSplitByAmount(int billId)
+    public IActionResult ConfirmAndCloseTheOrder(int billId)
     {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
         try
         {
             _paymentService.CloseBillAndFreeTable(billId);
@@ -302,8 +287,76 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
+            TempData["ErrorMessage"] = e.Message;
             return RedirectToAction("Pay", new { billId });
         }
+    }
+
+    [HttpGet ("Payment/FinishPaymentSplitByAmount/{billId}")]
+    public IActionResult FinishPaymentSplitByAmount(int? billId)
+    {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
+        try
+        {
+            var latestPayment = _paymentService.GetCurrentPayment();
+            if (latestPayment != null)
+            {
+                billId = latestPayment.BillId;
+            }
+
+            if (!billId.HasValue)
+            {
+                return RedirectToAction("Overview", "Restaurant");
+            }
+
+            var payments = _paymentService.GetPaymentsByBillId(billId.Value);
+            var bill = _paymentService.GetBillById(billId.Value);
+
+            if (bill == null)
+            {
+                Console.WriteLine("Bill not found.");
+                return RedirectToAction("Overview", "Restaurant");
+            }
+
+            var viewModel = new SplitByAmountViewModel
+            {
+                Bill = bill,
+                ExistingPayments = payments,
+                NewPayment = new Payment { BillId = bill.BillId }
+            };
+
+            return View("FinishPaymentSplitByAmount", viewModel);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    //Updated!
+    [HttpPost]
+    public IActionResult FinishPaymentForSplitByAmount(int billId)
+    {
+        if (!Authenticate()) return RedirectToAction("Login", "Employees"); // check if user is logged in and has correct role
+        try
+        {
+            _paymentService.CloseBillAndFreeTable(billId);
+            return RedirectToAction("Overview", "Restaurant");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            TempData["ErrorMessage"] = e.Message;
+            return RedirectToAction("Pay", new { billId });
+        }
+    }
+    private bool Authenticate()
+    {
+        var user_role = Authorization.GetUserRole(this.HttpContext);
+
+        if (user_role != null && (user_role == EmployeeType.Waiter || user_role == EmployeeType.Manager)) return true;
+
+        return false;
     }
 }

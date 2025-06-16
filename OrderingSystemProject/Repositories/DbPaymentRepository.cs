@@ -49,7 +49,7 @@ public class DbPaymentRepository : IPaymentRepository
             cmd.Parameters.AddWithValue("@PaymentAmount", payment.PaymentAmount);
             cmd.Parameters.AddWithValue("@TipAmount", payment.TipAmount);
             cmd.Parameters.AddWithValue("@PaymentType", payment.PaymentType);
-            cmd.Parameters.AddWithValue("@Feedback", payment.Feedback ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Feedback", payment.Feedback == null ? "" : payment.Feedback);
 
             conn.Open();
             payment.PaymentId = (int)cmd.ExecuteScalar();
