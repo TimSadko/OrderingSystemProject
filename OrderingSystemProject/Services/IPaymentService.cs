@@ -8,7 +8,6 @@ public interface IPaymentService
     Payment? GetNewPayment();
     Payment? GetCurrentPayment();
     Bill? GetCurrentBill();
-    List<Payment> SplitEqually(SplitEquallyViewModel splitEquallyViewModel);
     Payment InsertUpdatedPayment(Payment payment);
     Bill GetBillForPaymentById(Payment payment);
     decimal GetPaymentAmount(Payment payment);

@@ -13,8 +13,7 @@ public class PaymentController : Controller
     {
         _paymentService = paymentService;
     }
-
-    //Updated!
+    
     [HttpGet("Payment/Pay/{billId}")]
     public IActionResult Pay(int? billId)
     {
@@ -44,7 +43,6 @@ public class PaymentController : Controller
         }
     }
     
-    //checked!!
     [HttpGet ("Payment/Details/{id}")]
     public IActionResult Details(int id)
     {
@@ -67,7 +65,6 @@ public class PaymentController : Controller
         }
     }
     
-    //Updated!
     [HttpGet]
     public IActionResult SplitEqually(int billId)
     {
@@ -90,7 +87,7 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-    //Updated!
+
     [HttpPost]
     public IActionResult UpdateNumberOfPeople(SplitEquallyViewModel model)
     {
@@ -118,8 +115,7 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-
-    //Updated!
+    
     [HttpPost]
     public IActionResult SplitEqually(SplitEquallyViewModel model)
     {
@@ -151,7 +147,6 @@ public class PaymentController : Controller
         }
     }
     
-    //Updated!
     [HttpGet("Payment/SplitByAmount/{billId}")]
     public IActionResult SplitByAmount(int billId)
     {
@@ -174,8 +169,7 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-
-    //Updated!
+    
     [HttpPost]
     public IActionResult SplitByAmount(SplitByAmountViewModel model)
     {
@@ -225,7 +219,6 @@ public class PaymentController : Controller
         }
     }
     
-    //Updated!
     [HttpPost]
     public IActionResult Pay(Payment payment)
     {
@@ -253,7 +246,6 @@ public class PaymentController : Controller
         }
     }
     
-    //Updated!
     [HttpGet]
     public IActionResult Confirmation(int id)
     {
@@ -269,6 +261,7 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
+    
     [HttpPost]
     public IActionResult ConfirmAndCloseTheOrder(int billId)
     {
@@ -327,7 +320,6 @@ public class PaymentController : Controller
         }
     }
     
-    //Updated!
     [HttpPost]
     public IActionResult FinishPaymentForSplitByAmount(int billId)
     {
@@ -343,6 +335,7 @@ public class PaymentController : Controller
             return RedirectToAction("Pay", new { billId });
         }
     }
+    
     [HttpPost]
     public IActionResult FinishPaymentForSplitEqually(int billId)
     {
