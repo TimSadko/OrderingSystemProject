@@ -55,10 +55,27 @@ a:hover {
     cursor:pointer;
 }
 
+.ChapeauLogolink {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ChapeauLogo{
+    height: 38px;
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 /*
 Generic items
 */
-
 .container-background {
     background-color: #F1EDE0;
     font-family: "Montserrat", sans-serif;

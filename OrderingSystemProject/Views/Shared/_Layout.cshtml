@@ -10,12 +10,16 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OrderingSystemProject.styles.css" asp-append-version="true" />
+    <link runat="server" rel="icon" type="image/x-icon" href="~/favicon.ico">
+    <link runat="server" rel="shortcut icon" type="image/x-icon" href="~/favicon.ico">
 </head>
 <body>
 <header>
     <nav class="custom-navbar">
         <div class="navbar-container">
-            <a class="navbar-brand-link" asp-area="" asp-controller="Home" asp-action="Index">OrderingSystemProject</a>
+            <a class="ChapeauLogolink" asp-area="" asp-controller="Home" asp-action="Index">
+                <img class="ChapeauLogo" src="~/css/images/chapau_logo.png" />
+            </a>
 
             <button class="navbar-toggle" type="button" onclick="toggleNavbar()" aria-label="Toggle navigation">
                 <span class="navbar-toggle-icon"></span>
@@ -55,14 +59,14 @@
                         }  
                         default: // Deafault links
                         {
-                            <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            @* <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Payment" asp-action="Details" asp-route-id="1">Details</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Waiter" asp-action="Index">Waiter</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Kitchen</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
-                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li> *@
                             break;
                         }
                     }                 
