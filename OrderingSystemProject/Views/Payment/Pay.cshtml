@@ -135,32 +135,32 @@
     </div>
 
     <button type="submit" class="btn btn-success">Submit Payment</button>
+    
+    <!-- Split Payment Options -->
+    <div class="mt-4">
+        <h4>Want to split the bill?</h4>
+        <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
+            Split Equally
+        </a>
+        <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+            Split by Custom Amounts
+        </a>
+    </div>
     }
 </form>
-<!-- Split Payment Options -->
-<div class="mt-4">
-    <h4>Want to split the bill?</h4>
-    <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
-        Split Equally
-    </a>
-    <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
-        Split by Custom Amounts
-    </a>
-</div>
 
 @if (isFullyPaid)
 {
-    <form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
+    <form asp-action="FinishPaymentForSplitEqually" asp-controller="Payment" method="post">
         <input type="hidden" name="billId" value="@Model.Bill.BillId" />
         <button type="submit" class="btn btn-primary mt-3">Finish Payment</button>
     </form>
 }
-else if (hasSplitByAmountPayments)
+else if(hasSplitByAmountPayments)
 {
-    <form asp-action="SplitByAmount" asp-controller="Payment" method="get">
-        <input type="hidden" name="billId" value="@Model.Bill.BillId" />
-        <button type="submit" class="btn btn-warning mt-3">Continue Payment</button>
-    </form>
+    <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+        Continue Splitting By Amount
+    </a>
 }
 
 <!-- Basic JavaScript to update the payment amount automatically when the user presses the desired tip amount.  -->
