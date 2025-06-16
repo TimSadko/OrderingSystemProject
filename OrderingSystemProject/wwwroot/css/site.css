@@ -440,13 +440,30 @@ Generic items
 }
 
 /* Payment list with orders */
+.main-container-pay{
+    height: 1440px;
+    width: 1080px;
+}
 .bill-container {
+    display: inline-block;
     background-color: #fdf7ef; /* beige paper-like */
     border: 1px solid #4CAF50;
     border-radius: 10px;
     padding: 20px;
     height: 754px;
     width: 425px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+.options-pay-container{
+    display: inline-block;
+    padding: 20px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+.split-container{
+    display: inline;
+    padding: 20px;
     margin: auto;
     font-family: 'Segoe UI', sans-serif;
 }

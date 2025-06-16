@@ -83,7 +83,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>#</th>
+                <th>Payment Number</th>
                 <th>Amount</th>
                 <th>Tip</th>
                 <th>Payment Type</th>
@@ -91,10 +91,13 @@
             </tr>
         </thead>
         <tbody>
+        
+        @{ int i = 1; }
+        
         @foreach (var payment in Model.ExistingPayments)
         {
             <tr>
-                <td>@payment.PaymentId</td>
+                <td>@(i++)</td>
                 <td>@payment.PaymentAmount.ToString("C", euroCulture)</td>
                 <td>@payment.TipAmount.ToString("C", euroCulture)</td>
                 <td>@payment.PaymentType</td>

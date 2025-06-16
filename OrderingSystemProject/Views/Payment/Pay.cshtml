@@ -14,27 +14,28 @@
 
 <h2>Pay Now</h2>
 
-<form asp-action="Pay" method="post">
-    @Html.HiddenFor(m => m.BillId)
-    <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal" />
-    
-    @if (Model.Bill.Order.Items.Count > 0)
-    {
-        <div class="bill-container">
-            <div class="table-scrollable">
-                <table class="table bill-table mb-4">
-                    <tbody>
-                    @foreach (var item in Model.Bill.Order.Items)
-                    {
-                        <tr>
-                            <td class="item-name">@item.MenuItem.Name</td>
-                            <td class="text-center">@item.Amount</td>
-                            <td class="text-end">@item.LineTotal.ToString("C", euroCulture)</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
+<div class="main-container-pay">
+    <form asp-action="Pay" method="post">
+        @Html.HiddenFor(m => m.BillId)
+        <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal" />
+
+        @if (Model.Bill.Order.Items.Count > 0)
+        {
+            <div class="bill-container">
+                <div class="table-scrollable">
+                    <table class="table bill-table mb-4">
+                        <tbody>
+                        @foreach (var item in Model.Bill.Order.Items)
+                        {
+                            <tr>
+                                <td class="item-name">@item.MenuItem.Name</td>
+                                <td class="text-center">@item.Amount</td>
+                                <td class="text-end">@item.LineTotal.ToString("C", euroCulture)</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="bill-summary">
                     <div class="summary-row-payment">
@@ -50,103 +51,110 @@
                         <span class="value fw-bold">@Model.Bill.OrderTotal.ToString("C", euroCulture)</span>
                     </div>
                 </div>
-            @if (payments.Any())
-            {
-                <p class="text-center mt-4">Payments already made:</p>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Payment Number</th>
-                        <th>Amount Paid</th>
-                        <th>Tip</th>
-                        <th>Payment Type</th>
-                        <th>Feedback</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var pay in payments)
-                    {
+                @if (payments.Any())
+                {
+                    <p class="text-center mt-4">Payments already made:</p>
+                    <table class="table table-bordered">
+                        <thead>
                         <tr>
-                            <td>@pay.PaymentId</td>
-                            <td>@pay.PaymentAmount.ToString("C", euroCulture)</td>
-                            <td>@pay.TipAmount.ToString("C", euroCulture)</td>
-                            <td>@pay.PaymentType</td>
-                            <td>@pay.Feedback</td>
+                            <th>Payment Number</th>
+                            <th>Amount Paid</th>
+                            <th>Tip</th>
+                            <th>Payment Type</th>
+                            <th>Feedback</th>
                         </tr>
-                    }
-                    </tbody>
-                </table>
-            }
-            else
+                        </thead>
+                        <tbody>
+                        
+                        @{ int i = 1; }
+
+                        @foreach (var pay in payments)
+                        {
+                            <tr>
+                                <td>@(i++)</td>
+                                <td>@pay.PaymentAmount.ToString("C", euroCulture)</td>
+                                <td>@pay.TipAmount.ToString("C", euroCulture)</td>
+                                <td>@pay.PaymentType</td>
+                                <td>@pay.Feedback</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No payments have been made yet.</p>
+                }
+            </div>
+        }
+        <div class="options-pay-container">
+            @if (payments.Count <= 0)
             {
-                <p>No payments have been made yet.</p>
+                <!-- Tip selection with JavaScript to update total -->
+                <div class="form-group py-2">
+                    <label>Tip:</label><br />
+                    <div class="glass-radio-group tip">
+                        <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
+                        <label for="tip20">20%</label>
+
+                        <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
+                        <label for="tip10">10%</label>
+
+                        <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)">
+                        <label for="tip0">Not Today</label>
+
+                        <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
+                        <label for="tipCustom">Custom Tip</label>
+
+                        <div class="glass-glider"></div>
+                    </div>
+                </div>
+
+                <div id="customTipContainer" class="glass-custom-input hidden">
+                    <label for="customTipValue">Enter custom tip (€):</label>
+                    <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
+                </div>
+                <span asp-validation-for="CustomTipAmount" class="text-danger"></span>
+
+                <p><strong>Final Payment Total:</strong> <span id="totalDisplay">€@Model.PaymentAmount</span></p>
+                <input type="hidden" id="PaymentAmount" name="PaymentAmount" value="@Model.PaymentAmount" />
+
+                <div class="glass-radio-group payment">
+                    @Html.RadioButtonFor(m => m.PaymentType, PaymentType.Cash, new { id = "pay-cash" })
+                    <label for="pay-cash">Cash</label>
+
+                    @Html.RadioButtonFor(m => m.PaymentType, PaymentType.CreditCard, new { id = "pay-credit" })
+                    <label for="pay-credit">Credit Card</label>
+
+                    @Html.RadioButtonFor(m => m.PaymentType, PaymentType.DebitCard, new { id = "pay-debit" })
+                    <label for="pay-debit">Debit Card</label>
+
+                    <div class="glass-glider"></div>
+                </div>
+
+                <!-- Feedback textarea (fixed) -->
+                <div class="form-group py-2">
+                    <label>Feedback:</label><br />
+                    <textarea asp-for="Feedback" rows="5" cols="50" placeholder="The food was wonderful!"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">Submit Payment</button>
             }
         </div>
-    }
-    
-    @if (payments.Count <= 0)
-    {
-        <!-- Tip selection with JavaScript to update total -->
-    <div class="form-group py-2">
-        <label>Tip:</label><br />
-        <div class="glass-radio-group tip">
-            <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
-            <label for="tip20">20%</label>
-
-            <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
-            <label for="tip10">10%</label>
-
-            <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)">
-            <label for="tip0">Not Today</label>
-
-            <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
-            <label for="tipCustom">Custom Tip</label>
-
-            <div class="glass-glider"></div>
+        <div class="split-container">
+            <div class="mt-4">
+                <h4>Want to split the bill?</h4>
+                <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
+                    Split Equally
+                </a>
+                <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+                    Split by Custom Amounts
+                </a>
+            </div>
         </div>
-    </div>
-
-    <div id="customTipContainer" class="glass-custom-input hidden">
-        <label for="customTipValue">Enter custom tip (€):</label>
-        <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
-    </div>
-    <span asp-validation-for="CustomTipAmount" class="text-danger"></span>
-
-    <p><strong>Final Payment Total:</strong> <span id="totalDisplay">€@Model.PaymentAmount</span></p>
-    <input type="hidden" id="PaymentAmount" name="PaymentAmount" value="@Model.PaymentAmount" />
-    
-    <div class="glass-radio-group payment">
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.Cash, new { id = "pay-cash" })
-        <label for="pay-cash">Cash</label>
-        
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.CreditCard, new { id = "pay-credit" })
-        <label for="pay-credit">Credit Card</label>
-        
-        @Html.RadioButtonFor(m => m.PaymentType, PaymentType.DebitCard, new { id = "pay-debit" })
-        <label for="pay-debit">Debit Card</label>
-
-        <div class="glass-glider"></div>
-    </div>
-
-    <!-- Feedback textarea (fixed) -->
-    <div class="form-group py-2">
-        <label>Feedback:</label><br />
-        <textarea asp-for="Feedback" rows="5" cols="50" placeholder="The food was wonderful!"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-success">Submit Payment</button>
-    }
-</form>
-
-<div class="mt-4">
-    <h4>Want to split the bill?</h4>
-    <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
-        Split Equally
-    </a>
-    <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
-        Split by Custom Amounts
-    </a>
+    </form>
 </div>
+
 
 @if (isFullyPaid)
 {
