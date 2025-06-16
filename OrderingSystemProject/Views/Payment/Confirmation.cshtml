@@ -10,4 +10,7 @@
     <p><strong>Your Feedback:</strong> @Model.Feedback</p>
 }
 
-<a href="/Restaurant/Overview" class="btn btn-primary mt-3">Back to Home</a>
+<form asp-action="ConfirmAndCloseTheOrder" asp-controller="Payment" method="post">
+    <input type="hidden" name="billId" value="@Model.Bill.BillId" />
+    <button type="submit" class="btn btn-success">Close the order</button>
+</form>

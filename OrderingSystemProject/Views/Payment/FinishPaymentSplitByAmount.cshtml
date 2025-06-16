@@ -1,7 +1,6 @@
-@model Payment
+@model SplitByAmountViewModel
 @{
     var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
-    var payments = ViewBag.ExistingPayments as List<OrderingSystemProject.Models.Payment> ?? new List<OrderingSystemProject.Models.Payment>();
 }
 <h2>✅ Thank you for your payments!</h2>
 
@@ -17,7 +16,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var payment in payments)
+    @foreach (var payment in Model.ExistingPayments)
     {
         <tr>
             <td>@payment.PaymentId</td>
@@ -31,9 +30,6 @@
 </table>
 
 <form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
-    @Html.HiddenFor(m => m.BillId)
+    <input type="hidden" name="billId" value="@Model.Bill.BillId" />
     <button type="submit" class="btn btn-success">Close the order</button>
 </form>
-
-
-<a href="/Restaurant/Overview" class="btn btn-primary mt-3">Back to Home</a>

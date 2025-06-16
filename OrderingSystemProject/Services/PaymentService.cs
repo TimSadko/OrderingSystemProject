@@ -127,6 +127,10 @@ public class PaymentService : IPaymentService
         var order = bill.Order;
         if (order != null)
         {
+            foreach (var orderItem in order.Items)
+            {
+                CommonRepository._order_item_rep.UpdateOrderItemStatus(orderItem.Id, OrderItemStatus.Served);
+            }
             CommonRepository._order_rep.UpdateOrderStatus(order.OrderId, OrderStatus.Completed);
         }
 
@@ -136,11 +140,8 @@ public class PaymentService : IPaymentService
         {
             CommonRepository._tables_rep.UpdateTableStatus(order.TableId,TableStatus.Available);
         }
-
-        // (Optional) Mark bill as closed if you add such a flag later
-        // bill.IsClosed = true;
-        //_commonRepository.Bills.UpdateBill(bill);
     }
+    
     //GET SplitEqually
     public SplitEquallyViewModel BuildSplitEquallyViewModel(int billId)
     {
@@ -185,7 +186,8 @@ public class PaymentService : IPaymentService
                     BillId = model.Bill.BillId,
                     PaymentAmount = perPersonAmount,
                     PaymentType = PaymentType.Cash,
-                    TipAmount = 0
+                    TipAmount = 0,
+                    Feedback = ""
                 });
             }
         }
