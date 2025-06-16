@@ -16,7 +16,6 @@ namespace OrderingSystemProject.Models
         public decimal TipAmount{ get; set; }
         
         [Required(ErrorMessage = "Please select a tip amount.")]
-        //public decimal SelectedTipOption { get; set; }
         public string SelectedTipOption { get; set; }
         
         //enables only if the option custom is selected in the radio button selection

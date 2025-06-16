@@ -1,8 +1,12 @@
 @model Payment
-
+@{
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+}
+<partial name="_ErrorMessage" />
+<partial name="_SuccessMessage" />
 <h2>✅ Thank you for your payment!</h2>
 
-<p><strong>Paid:</strong> €@Model.PaymentAmount (Tip: €@Model.TipAmount)</p>
+<p><strong>Paid:</strong>@Model.PaymentAmount.ToString("C", euroCulture) (Tip: €@Model.TipAmount.ToString("C",euroCulture))</p>
 <p><strong>Method:</strong> @Model.PaymentType</p>
 
 @if (!string.IsNullOrWhiteSpace(Model.Feedback))
@@ -10,4 +14,7 @@
     <p><strong>Your Feedback:</strong> @Model.Feedback</p>
 }
 
-<a href="/Restaurant/Overview" class="btn btn-primary mt-3">Back to Home</a>
+<form asp-action="ConfirmAndCloseTheOrder" asp-controller="Payment" method="post">
+    <input type="hidden" name="billId" value="@Model.Bill.BillId" />
+    <button type="submit" class="btn btn-success">Close the order</button>
+</form>

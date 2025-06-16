@@ -10,14 +10,8 @@
         <button class="primary-button">Create New</button>
     </a>
     <p>Number of employees: @Model.Count()</p>
-
-    @{
-        if (TempData["EmployeeOperationConfirmMessage"] != null)
-        {
-            <div class="alert alert-success" role="alert">@TempData["EmployeeOperationConfirmMessage"]</div>
-        }
-    }
-
+    
+    <partial name="_SuccessMessage"/>
     <partial name="_ErrorMessage"/>
 
     <table class="table">
@@ -38,16 +32,7 @@
                     <td>@employee.EmployeeType</td>
 
                     @{
-                        var status = "";
-                        if (employee.IsActive)
-                        {
-                            status = "Active";
-                        }
-                        else
-                        {
-                            status = "Deactivated";
-                        }
-
+                        var status = employee.IsActive ? "Active" : "Deactivated";
                         <td>@status</td>
                     }
 

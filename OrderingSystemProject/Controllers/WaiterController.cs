@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
-using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
 using OrderingSystemProject.ViewModels;
-using System.Reflection;
 
 namespace OrderingSystemProject.Controllers
 {
@@ -239,8 +237,9 @@ namespace OrderingSystemProject.Controllers
         }
         
         public IActionResult Filter(
-            MenuManagementViewModel.CardFilterType cardFilterType,
-            MenuManagementViewModel.CategoryFilterType categoryFilterType, int tableId
+            CardFilterType cardFilterType,
+            CategoryFilterType categoryFilterType, 
+            int tableId
         )
         {
             if (!Authenticate()) return RedirectToAction("Login", "Employees");

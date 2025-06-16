@@ -1,4 +1,3 @@
-@using OrderingSystemProject.ViewModels
 @model OrderingSystemProject.ViewModels.MenuManagementViewModel
 
 @{
@@ -17,14 +16,9 @@
         <button class="primary-button">Create New</button>
     </a>
     <p>Number of menu items: @Model.MenuItems.Count</p>
-    @{
-        if (TempData["MenuItemOperationConfirmMessage"] != null)
-        {
-            <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
-        }
-    }
-
+    
     <partial name="_ErrorMessage"/>
+    <partial name="_SuccessMessage"/>
 
     <form method="get" action="@Url.Action("Filter")">
         <div class="form-group row">
@@ -34,7 +28,7 @@
                         id="cardFilterType"
                         name="cardFilterType"
                         asp-for="@Model.CardFilter"
-                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CardFilterType>()">
+                        asp-items="@Html.GetEnumSelectList<CardFilterType>()">
                 </select>
             </div>
             <div class="form-group col-md-5 form-control-lg">
@@ -43,7 +37,7 @@
                         id="categoryFilterType"
                         name="categoryFilterType"
                         asp-for="@Model.CategoryFilter"
-                        asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CategoryFilterType>()">
+                        asp-items="@Html.GetEnumSelectList<CategoryFilterType>()">
                 </select>
             </div>
             <div class="form-group col-md-1 form-control-lg mt-xl-auto">
@@ -91,16 +85,7 @@
                         }
                     </td>
                     @{
-                        var status = "";
-                        if (menuItem.IsActive)
-                        {
-                            status = "Active";
-                        }
-                        else
-                        {
-                            status = "Deactivated";
-                        }
-
+                        var status = menuItem.IsActive ? "Active" : "Deactivated";
                         <td>@status</td>
                     }
                     <td class="d-inline-flex">

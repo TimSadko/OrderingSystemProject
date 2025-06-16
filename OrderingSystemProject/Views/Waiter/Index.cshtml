@@ -1,5 +1,4 @@
-﻿@using OrderingSystemProject.ViewModels
-@model OrderingSystemProject.ViewModels.WaiterViewModel
+﻿@model OrderingSystemProject.ViewModels.WaiterViewModel
 
 @{
 	ViewData["Title"] = "Waiter Menu";
@@ -28,7 +27,7 @@
 								id="cardFilterType"
 								name="cardFilterType"
 								asp-for="@Model.CardFilter"
-								asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CardFilterType>()">
+								asp-items="@Html.GetEnumSelectList<CardFilterType>()">
 						</select>
 					</div>
 					<div class="form-group col-md-5 form-control-lg">
@@ -37,7 +36,7 @@
 								id="categoryFilterType"
 								name="categoryFilterType"
 								asp-for="@Model.CategoryFilter"
-								asp-items="@Html.GetEnumSelectList<MenuManagementViewModel.CategoryFilterType>()">
+								asp-items="@Html.GetEnumSelectList<CategoryFilterType>()">
 						</select>
 					</div>
 					<div class="form-group col-md-2 form-control-lg mt-auto">

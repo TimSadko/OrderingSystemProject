@@ -23,18 +23,36 @@ public class MenuItemController : Controller
             return RedirectToAction("Login", "Employees");
         }
 
-        List<MenuItem> menuItems = _menuItemService.GetAll();
-        var menuManagementViewMode = new MenuManagementViewModel(
-            menuItems,
-            MenuManagementViewModel.CardFilterType.ALL,
-            MenuManagementViewModel.CategoryFilterType.ALL
-        );
-        return View(menuManagementViewMode);
+        try
+        {
+            List<MenuItem> menuItems = _menuItemService.GetAll();
+            var menuManagementViewModel = new MenuManagementViewModel(
+                menuItems,
+                CardFilterType.ALL,
+                CategoryFilterType.ALL
+            );
+            return View(menuManagementViewModel);
+        }
+        catch (Exception e)
+        {
+            TempData["Exception"] = $"Exception occured: {e.Message}";
+            var menuManagementViewModel = new MenuManagementViewModel(
+                new List<MenuItem>(),
+                CardFilterType.ALL,
+                CategoryFilterType.ALL
+            );
+            return View(menuManagementViewModel);
+        }
     }
 
     [HttpGet]
     public IActionResult Create()
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         return View();
     }
 
@@ -44,7 +62,7 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Add(menuItem);
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been added!";
+            TempData["SuccessMessage"] = "Menu item has been added!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -57,24 +75,40 @@ public class MenuItemController : Controller
     [HttpGet("MenuItem/Delete/{menuItemId}")]
     public ActionResult Delete(int? menuItemId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         if (menuItemId == null)
         {
             return NotFound();
         }
 
-        MenuItem? menuItem = _menuItemService.GetById((int)menuItemId);
-        return View(menuItem);
+        try
+        {
+            MenuItem? menuItem = _menuItemService.GetById((int)menuItemId);
+            return View(menuItem);
+        }
+        catch (Exception e)
+        {
+            TempData["Exception"] = $"Exception occured: {e.Message}";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
     public ActionResult Delete(MenuItem menuItem)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _menuItemService.Delete(menuItem);
-            
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been removed!";
-            
+            TempData["SuccessMessage"] = "Menu item has been removed!";
             return RedirectToAction("Index");
         }
         catch (Exception e)
@@ -87,48 +121,65 @@ public class MenuItemController : Controller
     [HttpGet("MenuItem/Edit/{menuItemId}")]
     public IActionResult Edit(int? menuItemId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         if (menuItemId == null)
         {
             return NotFound();
         }
 
-        var menuItem = _menuItemService.GetById((int)menuItemId);
-        return View(menuItem);
+        try
+        {
+            var menuItem = _menuItemService.GetById((int)menuItemId);
+            return View(menuItem);
+        }
+        catch (Exception e)
+        {
+            TempData["Exception"] = $"Exception occured: {e.Message}";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
     public IActionResult Edit(MenuItem menuItem)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _menuItemService.Update(menuItem);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been updated!";
-
+            TempData["SuccessMessage"] = "Menu item has been updated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return View(menuItem);
         }
     }
 
-    public IActionResult Filter(
-        MenuManagementViewModel.CardFilterType cardFilterType,
-        MenuManagementViewModel.CategoryFilterType categoryFilterType
-    )
+    public IActionResult Filter(CardFilterType cardFilterType, CategoryFilterType categoryFilterType)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             List<MenuItem> menuItems = _menuItemService.Filter(categoryFilterType, cardFilterType);
-            var menuManagementViewMode = new MenuManagementViewModel(
+            var menuManagementViewModel = new MenuManagementViewModel(
                 menuItems,
                 cardFilterType,
                 categoryFilterType
             );
-            return View(nameof(Index), menuManagementViewMode);
+            return View(nameof(Index), menuManagementViewModel);
         }
         catch (Exception e)
         {
@@ -140,18 +191,20 @@ public class MenuItemController : Controller
     [HttpPost]
     public IActionResult Activate(int menuItemId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _menuItemService.Activate(menuItemId);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been activated!";
-
+            TempData["SuccessMessage"] = "Menu item has been activated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }
@@ -159,18 +212,20 @@ public class MenuItemController : Controller
     [HttpPost]
     public IActionResult Deactivate(int menuItemId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _menuItemService.Deactivate(menuItemId);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been deactivated!";
-
+            TempData["SuccessMessage"] = "Menu item has been deactivated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }

@@ -55,10 +55,27 @@ a:hover {
     cursor:pointer;
 }
 
+.ChapeauLogolink {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ChapeauLogo{
+    height: 38px;
+
+    margin-top: 0;
+    margin-bottom: 0;
+
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 /*
 Generic items
 */
-
 .container-background {
     background-color: #F1EDE0;
     font-family: "Montserrat", sans-serif;
@@ -309,8 +326,6 @@ Generic items
 
 /* Button Pay */
 .button-pay {
-    display: flex;
-    flex-direction: column;
     width: 515px;
     height: 81px;
     background: #951A28;
@@ -423,13 +438,30 @@ Generic items
 }
 
 /* Payment list with orders */
+.main-container-pay{
+    height: 1440px;
+    width: 1080px;
+}
 .bill-container {
+    display: inline-block;
     background-color: #fdf7ef; /* beige paper-like */
     border: 1px solid #4CAF50;
     border-radius: 10px;
     padding: 20px;
     height: 754px;
     width: 425px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+.options-pay-container{
+    display: inline-block;
+    padding: 20px;
+    margin: auto;
+    font-family: 'Segoe UI', sans-serif;
+}
+.split-container{
+    display: inline;
+    padding: 20px;
     margin: auto;
     font-family: 'Segoe UI', sans-serif;
 }

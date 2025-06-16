@@ -1,15 +1,5 @@
 @model OrderingSystemProject.Models.Bill
 
-
-<body class="bill_frame_bg">
-<h2 class="bill_table">Bill</h2>
-
-<h3 class="bill_table">Table @Model.Order.TableId</h3>
-
-<h2>Order Bill</h2>
-
-<partial name="_ErrorMessage" />
-
 @{
     var euroCulture = (System.Globalization.CultureInfo)System.Globalization.CultureInfo.InvariantCulture.Clone();
     euroCulture.NumberFormat.CurrencySymbol = "€";
@@ -17,76 +7,71 @@
     euroCulture.NumberFormat.CurrencyGroupSeparator = ",";
 }
 
-@if (Model != null)
-{
-    <p><strong>Order ID:</strong> @Model.OrderId</p>
-    <p><strong>Table:</strong> @Model.Order.TableId</p>
-    <p><strong>Order Time:</strong> @Model.Order.OrderTime</p>
-}
-else
-{
-    <p class="text-danger">Order not found.</p>
-}
+<body class="bill_frame_bg">
+    <div class="container p-4">
+        <h2 class="text-center mb-3 bill_table">Bill Summary</h2>
+        <h4 class="text-center mb-4 bill_table">Table @Model?.Order?.TableId</h4>
 
-<hr class="my-4"/>
+        <partial name="_ErrorMessage" />
 
-@if (Model.Order.Items != null && Model.Order.Items.Count > 0)
-{
-    <div class="table-bill">
-            <div class="labels-bill">
-                <div class="label-cells">
-                    <span class="name-cell">Item Name</span>
-                    <span class="quantity-cell">Quantity</span>
-                    <span class="unit-cell">Unit Price</span>
-                    <span class="comment-cell">Comment</span>
-                    <span class="line-total-cell">Line Total</span>
-                    <span class="vat-cell">VAT</span>
-                </div>
+        @if (Model != null)
+        {
+            <div class="mb-4">
+                <p><strong>Order Time:</strong> @Model.Order.OrderTime</p>
             </div>
-        <div class="table-scrollable-details">
-            <table class="table-bill-info">
-                <tbody>
-                @foreach (var item in Model.Order.Items)
-                {
-                    <tr class="content-cells">
-                        <td class="name-cell">@item.MenuItem.Name</td>
-                        <td class="quantity-cell">@item.Amount</td>
-                        <td class="unit-cell">@item.MenuItem.Price.ToString("C", euroCulture)</td>
-                        <td class="comment-cell">@item.Comment</td>
-                        <td class="line-total-cell">@item.LineTotal.ToString("C", euroCulture)</td>
-                        <div class="vat-cell">
-                            @if (item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS)
-                            {
-                                <td>21%</td>
-                            }
-                            else
-                            {
-                                <td>9%</td>
-                            }
-                        </div>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+        }
+        else
+        {
+            <p class="text-danger">Order not found.</p>
+        }
+
+        <hr class="my-4" />
+
+        @if (Model?.Order?.Items != null && Model.Order.Items.Count > 0)
+        {
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered table-striped table-hover text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Comment</th>
+                            <th>Line Total</th>
+                            <th>VAT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Order.Items)
+                        {
+                            <tr>
+                                <td>@item.MenuItem.Name</td>
+                                <td>@item.Amount</td>
+                                <td>@item.MenuItem.Price.ToString("C", euroCulture)</td>
+                                <td>@item.Comment</td>
+                                <td>@item.LineTotal.ToString("C", euroCulture)</td>
+                                <td>
+                                    @(item.MenuItem.Card == ItemCard.ALCOHOLIC_DRINKS ? "21%" : "9%")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex flex-column align-items-center text-center">
+                <p><strong>Subtotal:</strong> @Model.OrderSubtotal.ToString("C", euroCulture)</p>
+                <p><strong>VAT:</strong> @Model.Vat.ToString("C", euroCulture)</p>
+                <p><strong>Total:</strong> @Model.OrderTotal.ToString("C", euroCulture)</p>
+            </div>
+
+            <div class="text-center mt-4">
+                <a class="btn btn-success btn-lg" href="/Payment/Pay/@Model.BillId" role="button">Proceed to Payment</a>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No items in this order.</p>
+        }
     </div>
-    
-    <div class="summary-row">
-        <span colspan="5" class="right-align bold">Subtotal:</span>
-        <span class="fw-bold">@Model.OrderSubtotal.ToString("C", euroCulture)</span>
-    </div>
-    <div class="summary-row">
-        <span colspan="5" class="right-align bold">VAT:</span>
-        <span class="fw-bold">@Model.Vat.ToString("C", euroCulture)</span>
-    </div>
-    <div class="summary-row">
-        <span colspan="5" class="right-align bold">Total:</span>
-        <span class="fw-bold">@Model.OrderTotal.ToString("C", euroCulture)</span>
-    </div>
-    <button class="button-pay" role="button"><a href="/Payment/Pay/@Model.BillId">Pay</a></button>
-}
-else
-{
-    <p>No items in this order.</p>
-}
 </body>
