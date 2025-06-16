@@ -69,7 +69,30 @@ namespace OrderingSystemProject.Repositories
             return item;
 		}
 
-		public List<OrderItem>? GetOrderItem(int orderId)
+        public void Add(OrderItem orderItem)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "INSERT INTO OrderItems (OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus) VALUES (@OrderItemId, @OrderId, @MenuItemId, @Amount, @Comment, @ItemStatus); SELECT SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@OrderItemId", orderItem.Id);
+                command.Parameters.AddWithValue("@OrderId", orderItem.OrderId);
+                command.Parameters.AddWithValue("@MenuItemId", orderItem.MenuItemId);
+                command.Parameters.AddWithValue("@Amount", orderItem.Amount);
+                command.Parameters.AddWithValue("@Comment", orderItem.Comment);
+                command.Parameters.AddWithValue("@ItemStatus", orderItem.ItemStatus);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Order item creation failed!");
+                }
+            }
+        }
+        public List<OrderItem>? GetOrderItem(int orderId)
         {
             List<OrderItem> orderItems = new List<OrderItem>();
 
@@ -147,7 +170,36 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId NOT IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2) ORDER BY MenuItemId";
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId NOT IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2 OR [Card] = 3) ORDER BY MenuItemId";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@order_id", order_id);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				OrderItem itm;
+
+				while (reader.Read())
+				{
+					itm = ReadItem(reader);
+					FillInItem(itm);
+
+					orderItems.Add(itm);
+				}
+				reader.Close();
+			}
+
+			return orderItems;
+		}
+
+		public List<OrderItem> GetOrderItemsDrinksOnly(int order_id)
+		{
+			List<OrderItem> orderItems = new List<OrderItem>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus From OrderItems WHERE OrderId = @order_id AND MenuItemId IN (SELECT MenuItemId FROM MenuItems WHERE [Card] = 2 OR [Card] = 3) ORDER BY MenuItemId";
 				SqlCommand com = new SqlCommand(query, conn);
 
 				com.Parameters.AddWithValue("@order_id", order_id);

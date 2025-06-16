@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Bar;
 using OrderingSystemProject.Models.Kitchen;
 
 namespace OrderingSystemProject.Repositories
@@ -38,7 +39,27 @@ namespace OrderingSystemProject.Repositories
 
             return orders;
         }
-        
+        public void Add(Order order)
+        {
+            using (var connection = new SqlConnection(_connection_string))
+            {
+                string query =
+                    "INSERT INTO Orders (OrderId, TableId, OrderStatus, OrderTime) VALUES (@OrderId, @TableId, @OrderStatus, @OrderTime); SELECT SCOPE_IDENTITY()";
+                SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@OrderId", order.OrderId);
+                command.Parameters.AddWithValue("@TableId", order.TableId);
+                command.Parameters.AddWithValue("@OrderStatus", order.OrderStatus);
+                command.Parameters.AddWithValue("@OrderTime", order.OrderTime);
+
+                connection.Open();
+
+                if (command.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Order creation failed!");
+                }
+            }
+        }
         public Order? GetById(int id)
         {
             Order? order = null;
@@ -149,6 +170,11 @@ namespace OrderingSystemProject.Repositories
 			return new KitchenOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
 		}
 
+		private BarOrder ReadBarOrder(SqlDataReader reader)
+		{
+			return new BarOrder((int)reader["OrderId"], (int)reader["TableId"], (OrderStatus)(int)reader["OrderStatus"], (DateTime)reader["OrderTime"]);
+		}
+
 		private void FillInOrder(Order order)
         {
             order.Items = CommonRepository._order_item_rep.GetOrderItems(order.OrderId); // Get order items of current iteration order
@@ -158,6 +184,12 @@ namespace OrderingSystemProject.Repositories
 		private void FillInKitchenOrder(KitchenOrder order)
 		{
 			order.SetItems(CommonRepository._order_item_rep.GetOrderItemsNoDrinks(order.OrderId)); // Get order items of current iteration order
+			order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
+		}
+
+		private void FillInBarOrder(BarOrder order)
+		{
+			order.SetItems(CommonRepository._order_item_rep.GetOrderItemsDrinksOnly(order.OrderId)); // Get order items of current iteration order
 			order.Table = CommonRepository._tables_rep.GetTableById(order.TableId); // Get table of current iteration order
 		}
 
@@ -214,6 +246,76 @@ namespace OrderingSystemProject.Repositories
 				{
 					ord = ReadKitchenOrder(reader);
 					FillInKitchenOrder(ord);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+			for (int i = 0; i < orders.Count; i++)
+			{
+				if (orders[i].Items.Count == 0)
+				{
+					orders.RemoveAt(i);
+					i--;
+				}
+			}
+
+			return orders;
+		}
+
+		public List<BarOrder> GetOrdersBar()
+		{
+			List<BarOrder> orders = new List<BarOrder>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 0 OR OrderStatus = 1 OR OrderStatus = 2 ORDER BY OrderTime DESC";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				BarOrder ord;
+
+				while (reader.Read())
+				{
+					ord = ReadBarOrder(reader);
+					FillInBarOrder(ord);
+					orders.Add(ord);
+				}
+				reader.Close();
+			}
+
+			for (int i = 0; i < orders.Count; i++)
+			{
+				if (orders[i].Items.Count == 0)
+				{
+					orders.RemoveAt(i);
+					i--;
+				}
+			}
+
+			return orders;
+		}
+
+		public List<BarOrder> GetDoneOrdersBar()
+		{
+			List<BarOrder> orders = new List<BarOrder>();
+
+			using (SqlConnection conn = new SqlConnection(_connection_string))
+			{
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4 ORDER BY OrderTime DESC";
+				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Connection.Open();
+				SqlDataReader reader = com.ExecuteReader();
+
+				BarOrder ord;
+
+				while (reader.Read())
+				{
+					ord = ReadBarOrder(reader);
+					FillInBarOrder(ord);
 					orders.Add(ord);
 				}
 				reader.Close();

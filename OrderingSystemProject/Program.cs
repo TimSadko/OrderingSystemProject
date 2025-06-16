@@ -22,11 +22,12 @@ namespace OrderingSystemProject
             var _order_rep = new DbOrdersRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrdersRepository>(_order_rep);
             CommonRepository._order_rep = _order_rep;
+			builder.Services.AddSingleton<IOrdersService, OrdersService>();
 
-            var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
+			var _menu_item_rep = new DbMenuItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IMenuItemsRepository>(_menu_item_rep);
             CommonRepository._menu_item_rep = _menu_item_rep;
-			      builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
+			builder.Services.AddSingleton<IMenuItemService, MenuItemService>();
 
             var _order_item_rep = new DbOrderItemsRepository(builder.Configuration);
             builder.Services.AddSingleton<IOrderItemsRepository>(_order_item_rep);
@@ -46,10 +47,15 @@ namespace OrderingSystemProject
             CommonRepository._tables_rep = _tables_rep;
             builder.Services.AddSingleton<ITablesService, TablesService>();
             
-            builder.Services.AddSingleton<IOrdersService, OrdersService>();
+            var dbFinancialOverviewRepository = new DbFinancialOverviewRepository(builder.Configuration);
+            builder.Services.AddSingleton<IFinancialOverviewRepository>(dbFinancialOverviewRepository);
+            builder.Services.AddSingleton<IFinancialOverviewService, FinancialOverviewService>();
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+			builder.Services.AddSingleton<IKitchenServices, KitchenService>();
+			builder.Services.AddSingleton<IBarService, BarService>();
+
+			// Add services to the container.
+			builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(options => // Configure sessions
             {
@@ -59,7 +65,7 @@ namespace OrderingSystemProject
             });
 
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

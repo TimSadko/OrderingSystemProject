@@ -21,21 +21,21 @@ public class RestaurantController : Controller
     {
         return View();
     }
-    
+
     [HttpGet]
     public IActionResult Overview()
     {
-       EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
-       
-       // check if user is logged in and has correct role
+        EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+
+        // check if user is logged in and has correct role
         if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
-       
+
         try
         {
             // get all tables with and with no order
             List<Table> tables = _tablesService.GetAllTables();
             List<Order> activeOrders = _ordersService.GetActiveOrders();
-            
+
             Dictionary<int, Order> ordersDictionary = new Dictionary<int, Order>();
             foreach (Order order in activeOrders)
             {
@@ -43,7 +43,7 @@ public class RestaurantController : Controller
             }
             // create view model
             RestaurantOverviewViewModel viewModel = new RestaurantOverviewViewModel(tables, ordersDictionary);
-            
+
             // return view with view model
             return View(viewModel);
         }
@@ -54,13 +54,75 @@ public class RestaurantController : Controller
             return View(new RestaurantOverviewViewModel());
         }
     }
+    //[HttpGet]
+    //public IActionResult Overview()
+    //{
+    //    EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
+
+    //    if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager)
+    //        return RedirectToAction("Login", "Employees");
+
+    //    try
+    //    {
+    //        // get all tables
+    //        List<Table> tables = _tablesService.GetAllTables();
+
+    //        // get active orders
+    //        List<Order> activeOrders = _ordersService.GetActiveOrders();
+
+    //        // групуємо замовлення по tableId і беремо останнє (найновіше) для кожного
+    //        Dictionary<int, Order> ordersDictionary = activeOrders
+    //            .Where(o => o.TableId > 0)
+    //            .GroupBy(o => o.TableId)
+    //            .ToDictionary(g => g.Key, g => g.OrderByDescending(o => o.OrderTime).First());
+
+    //        // створюємо модель
+    //        var viewModel = new RestaurantOverviewViewModel(tables, ordersDictionary);
+    //        return View(viewModel);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        ViewData["Exception"] = "An error occurred. Please try again." + ex.Message;
+    //        return View(new RestaurantOverviewViewModel());
+    //    }
+    //}
 
     [HttpPost]
     public IActionResult Overview(Table table)
     {
         return View();
     }
-    
+
+    //[HttpPost("UpdateTableStatus")]
+    //public IActionResult UpdateTableStatus(int tableId, TableStatus status)
+    //{
+    //    try
+    //    {
+    //        if (tableId <= 0)
+    //        {
+    //            TempData["ErrorMessage"] = "Invalid table selection";
+    //            return RedirectToAction(nameof(Overview));
+    //        }
+
+    //        bool success = _tablesService.UpdateTableStatus(tableId, status);
+
+    //        if (success)
+    //        {
+    //            TempData["SuccessMessage"] = $"Table {tableId} status updated to {status}";
+    //        }
+    //        else
+    //        {
+    //            TempData["ErrorMessage"] = $"Failed to update table {tableId} status";
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
+    //    }
+
+    //    return RedirectToAction(nameof(Overview));
+    //}
+
     [HttpGet]
     public IActionResult RefreshOverview()
     {

@@ -12,6 +12,8 @@ public class MenuManagementViewModel
         [Display(Name = "Dinner")] DINNER = 1,
 
         [Display(Name = "Drinks")] DRINKS = 2,
+        
+        [Display(Name = "Alcoholic Drinks")] ALCOHOLIC_DRINKS = 3,
 
         [Display(Name = "All")] ALL = -1
     }
@@ -21,10 +23,8 @@ public class MenuManagementViewModel
         [Display(Name = "Starters")] STARTERS = 0,
 
         [Display(Name = "Mains")] MAINS = 1,
-
-        [Display(Name = "Entremets")] ENTREMENTS = 2,
-
-        [Display(Name = "Deserts")] DESERTS = 3,
+        
+        [Display(Name = "Deserts")] DESERTS = 2,
 
         [Display(Name = "All")] ALL = -1
     }

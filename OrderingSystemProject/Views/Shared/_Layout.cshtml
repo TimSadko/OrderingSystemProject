@@ -27,18 +27,32 @@
                     {
                         case "Kitchen": // Nav links for Kitchen
                         {
-                            <li>Last Upadate: @ViewData["LastUpdate"]</li>
+                            <li>Last Upadate: @TempData["LastUpdate"]</li>
                             <a class="" asp-controller="Kitchen" asp-action="Index">Refresh</a>
                             <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Done">Completed Orders</a></li>
                             break;
                         }
                         case "Kitchen - Done Orders": // Nav links for Kitchen
                         {
-                            <li>Last Upadate: @ViewData["LastUpdate"]</li>
+                            <li>Last Upadate: @TempData["LastUpdate"]</li>
                             <a class="" asp-controller="Kitchen" asp-action="Done">Refresh</a>
                             <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Current Orders</a></li>
                             break;    
-                        }                    
+                        }     
+                        case "Bar": // Nav links for Bar
+                        {
+                            <li>Last Upadate: @TempData["LastUpdate"]</li>
+                            <a class="" asp-controller="Bar" asp-action="Index">Refresh</a>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Bar" asp-action="Done">Completed Orders</a></li>
+                            break;
+                        }
+                        case "Bar - Done Orders": // Nav links for Bar
+                        {
+                            <li>Last Upadate: @TempData["LastUpdate"]</li>
+                            <a class="" asp-controller="Bar" asp-action="Done">Refresh</a>
+                            <li><a class="navbar-link" asp-area="" asp-controller="Bar" asp-action="Index">Current Orders</a></li>
+                            break;    
+                        }  
                         default: // Deafault links
                         {
                             <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
@@ -48,6 +62,7 @@
                             <li><a class="navbar-link" asp-area="" asp-controller="Waiter" asp-action="Index">Waiter</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Kitchen" asp-action="Index">Kitchen</a></li>
                             <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li>
                             break;
                         }
                     }                 

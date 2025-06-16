@@ -4,9 +4,11 @@
     ViewData["Title"] = "Staff Management";
 }
 
-<div class="text-center">
+<div class="text-center container-background">
     <h1 class="display-4">Staff Management</h1>
-    <a href="/Employees/Create">Create New</a>
+    <a href="/Employees/Create">
+        <button class="primary-button">Create New</button>
+    </a>
     <p>Number of employees: @Model.Count()</p>
 
     @{
@@ -55,10 +57,10 @@
                             {
                                 <form method="post"
                                       action="@Url.Action("Deactivate", new { employeeId = employee.EmployeeId })">
-                                    <button type="submit" class="m-1 btn btn-primary">Deactivate</button>
+                                    <button type="submit" class="m-1 btn btn-secondary">Deactivate</button>
                                 </form>
                                 <a href="/Employees/Edit/@employee.EmployeeId">
-                                    <button class="m-1 btn btn-primary">Edit</button>
+                                    <button class="m-1 btn btn-refresh">Edit</button>
                                 </a>
                             }
                             else

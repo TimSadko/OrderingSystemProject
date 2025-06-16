@@ -1,4 +1,5 @@
 ﻿using OrderingSystemProject.Models;
+using OrderingSystemProject.Models.Bar;
 using OrderingSystemProject.Models.Kitchen;
 
 namespace OrderingSystemProject.Repositories
@@ -7,11 +8,16 @@ namespace OrderingSystemProject.Repositories
     {
 		Order? GetById(int id);
 
-		List<Order> GetAll();
+        List<Order> GetAll();
+        void Add(Order order);
 
-		List<KitchenOrder> GetOrdersKitchen();
+        List<KitchenOrder> GetOrdersKitchen();
 
 		List<KitchenOrder> GetDoneOrdersKitchen();
+
+		List<BarOrder> GetOrdersBar();
+
+		List<BarOrder> GetDoneOrdersBar();
 
 		bool UpdateOrderStatus(int _order_id, OrderStatus _new_status);
 		
