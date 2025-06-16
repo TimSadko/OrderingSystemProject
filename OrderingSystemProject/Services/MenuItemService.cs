@@ -148,6 +148,7 @@ public class MenuItemService : IMenuItemService
     {
         return new List<OrderItem>(cart);
     }
+    
     public void Update(MenuItem item)
     {
         _menuItemRepository.Update(item);
@@ -193,43 +194,22 @@ public class MenuItemService : IMenuItemService
 
         return _menuItemRepository.FilterByCategoryAndCard(itemCategoryType, itemCardType);
     }
-
-
+    
     private ItemCard? GetCardType(MenuManagementViewModel.CardFilterType cardFilterType)
     {
-        ItemCard? itemCard = null;
-        if (cardFilterType == MenuManagementViewModel.CardFilterType.DINNER)
+        if (Enum.TryParse<ItemCard>(cardFilterType.ToString(), out var itemCard))
         {
-            itemCard = ItemCard.DINNER;
+            return itemCard;
         }
-        else if (cardFilterType == MenuManagementViewModel.CardFilterType.DRINKS)
-        {
-            itemCard = ItemCard.DRINKS;
-        }
-        else if (cardFilterType == MenuManagementViewModel.CardFilterType.LUNCH)
-        {
-            itemCard = ItemCard.LUNCH;
-        }
-
-        return itemCard;
+        return null;
     }
 
     private ItemCategory? GetCategoryType(MenuManagementViewModel.CategoryFilterType categoryFilterType)
     {
-        ItemCategory? itemCategory = null;
-        if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.DESERTS)
+        if (Enum.TryParse<ItemCategory>(categoryFilterType.ToString(), out var itemCategory))
         {
-            itemCategory = ItemCategory.DESERTS;
+            return itemCategory;
         }
-        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.MAINS)
-        {
-            itemCategory = ItemCategory.MAINS;
-        }
-        else if (categoryFilterType == MenuManagementViewModel.CategoryFilterType.STARTERS)
-        {
-            itemCategory = ItemCategory.STARTERS;
-        }
-
-        return itemCategory;
+        return null;
     }
 }
