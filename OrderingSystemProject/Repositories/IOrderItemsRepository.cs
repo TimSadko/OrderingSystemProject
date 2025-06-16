@@ -12,7 +12,9 @@ namespace OrderingSystemProject.Repositories
         public void Add(OrderItem orderItem);
         List<OrderItem> GetOrderItems(int order_id);
         List<OrderItem> GetOrderItemsNoDrinks(int order_id);
+        List<OrderItem> GetOrderItemsDrinksOnly(int order_id);
 
-        bool UpdateOrderItemStatus(int _order_item_id, OrderItemStatus _new_status);
+
+		bool UpdateOrderItemStatus(int _order_item_id, OrderItemStatus _new_status);
 	}
 }

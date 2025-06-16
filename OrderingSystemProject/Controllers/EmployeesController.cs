@@ -204,7 +204,7 @@ public class EmployeesController : Controller
             case EmployeeType.Waiter:
                 return RedirectToAction("Overview", "Restaurant");
             case EmployeeType.Bartender:
-                return RedirectToAction("Privacy", "Home");
+                return RedirectToAction("Index", "Bar");
             case EmployeeType.Cook:
                 return RedirectToAction("Index", "Kitchen");
             case EmployeeType.Manager:

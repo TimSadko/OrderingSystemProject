@@ -99,15 +99,15 @@ public class DbFinancialOverviewRepository : IFinancialOverviewRepository
         try
         {
             return new FinancialOverview
-            {
-                TotalSalesDrinks = (int)reader["TotalSalesDrinks"],
-                TotalSalesLunch = (int)reader["TotalSalesLunch"],
-                TotalSalesDinner = (int)reader["TotalSalesDinner"],
-                TotalIncomeDrinks = (decimal)reader["TotalIncomeDrinks"],
-                TotalIncomeLunch = (decimal)reader["TotalIncomeLunch"],
-                TotalIncomeDinner = (decimal)reader["TotalIncomeDinner"],
-                TotalTips = (decimal)reader["TotalTips"]
-            };
+            (
+                (int)reader["TotalSalesDrinks"],
+                (int)reader["TotalSalesLunch"],
+                (int)reader["TotalSalesDinner"],
+                (decimal)reader["TotalIncomeDrinks"],
+                (decimal)reader["TotalIncomeLunch"],
+                (decimal)reader["TotalIncomeDinner"],
+                (decimal)reader["TotalTips"]
+            );
         }
         catch (Exception e)
         {

@@ -25,6 +25,7 @@ namespace OrderingSystemProject.Models
         [Required(ErrorMessage = "Please choose a payment type.")] 
         public PaymentType PaymentType { get; set; }
         public decimal PaymentAmount{ get; set; }
+        public bool IsFromSplitByAmount { get; set; }
         
         [StringLength(250, ErrorMessage = "Feedback cannot be longer than 250 characters.")]
         public string Feedback { get; set; }

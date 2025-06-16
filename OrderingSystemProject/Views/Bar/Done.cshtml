@@ -1,0 +1,29 @@
+﻿@model OrderingSystemProject.Models.Bar.BarViewModel
+
+@{
+	ViewData["Title"] = "Bar - Done Orders";
+}
+
+<partial name="_ErrorMessage" />
+
+<h1 class="KitchenOrderListListLabel">Completed Orders:</h1>
+
+<div class="KitchenOrderListsBreak"></div>
+
+<div class="KitchenOrdersList">
+	@{
+		if (Model.Orders != null)
+		{
+			foreach (var order in Model.Orders) // Go throu list of orders
+			{
+				<partial name="~/Views/Bar/_Order.cshtml" model="@order" />
+			}
+		}
+	}
+</div>
+
+<script>
+	setTimeout(function () {
+		window.location.reload(1);
+	}, 5000);
+</script>

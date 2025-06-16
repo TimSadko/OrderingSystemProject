@@ -15,33 +15,30 @@ public class PaymentController : Controller
         _paymentService = paymentService;
     }
 
-    [HttpGet("Payment/Pay")]
-    public IActionResult Pay()
+    //Updated!
+    [HttpGet("Payment/Pay/{billId}")]
+    public IActionResult Pay(int? billId)
     {
         try
         {
             var payment = _paymentService.GetNewPayment();
 
-            // If billId is passed, load payments for that bill
-            
-            //Only needed when there are multiple payment from splitting part.
-            /*
             if (billId.HasValue)
             {
-                var payments = CommonRepository._payment_rep.GetPaymentsByBillId(billId.Value);
+                var payments = _paymentService.GetPaymentsByBillId(billId.Value);
                 ViewBag.ExistingPayments = payments;
             }
             else
             {
                 ViewBag.ExistingPayments = new List<Payment>();
             }
-            */
+
             return View(payment);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
+            ViewData["ErrorMessage"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -57,65 +54,35 @@ public class PaymentController : Controller
         try
         {
             var bill = _paymentService.GetNewBill(id);
+            if (bill == null)
+            {
+                TempData["ErrorMessage"] = "Bill not found.";
+                return RedirectToAction("Overview", "Restaurant");
+            }
             return View(bill);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while loading bill details.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
     
-    /*
-     Before changes!!
-      */
+    //Updated!
     [HttpGet]
-    public IActionResult SplitEqually(int id)
+    public IActionResult SplitEqually(int billId)
     {
         try
         {
-            /*
-            var bill = _paymentService.GetNewBill(id);
-            if (bill == null)
-                return RedirectToAction("Overview", "Restaurant");
-            
-            var model = new SplitEquallyViewModel
-            {
-                Bill = bill,
-                Payments = new List<Payment>(),
-                NumberOfPeople = 2
-            };
-            return View("SplitEqually", model);
-            */
-            
-            var bill = _paymentService.GetNewBill(id);
-            if (bill == null)
-                return RedirectToAction("Overview", "Restaurant");
+            var model = _paymentService.BuildSplitEquallyViewModel(billId);
 
-            int numberOfPeople = 2;
-            decimal perPersonAmount = bill.OrderTotal / numberOfPeople;
-
-            var payments = new List<Payment>();
-            for (int i = 0; i < numberOfPeople; i++)
+            if (model == null)
             {
-                payments.Add(new Payment
-                {
-                    BillId = bill.BillId,
-                    PaymentAmount = perPersonAmount
-                });
+                Console.WriteLine("Bill not found.");
+                return RedirectToAction("Overview", "Restaurant");
             }
 
-            var model = new SplitEquallyViewModel
-            {
-                Bill = bill,
-                NumberOfPeople = numberOfPeople,
-                Payments = payments
-            };
-
             return View("SplitEqually", model);
-
-            //return View("SplitEqually", new SplitEquallyViewModel { Bill = bill });
         }
         catch (Exception e)
         {
@@ -123,53 +90,23 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-
-    //Checked!!
+    
+    //Updated!
     [HttpPost]
-    public IActionResult SplitEqually(SplitEquallyViewModel model)
+    public IActionResult UpdateNumberOfPeople(SplitEquallyViewModel model)
     {
         try
         {
-            /*
             if (model.NumberOfPeople < 1)
             {
-                Console.WriteLine("Number of people is less than 1");
-                return View(model);
-            }
-
-            // Re-fetch the bill with full details
-            
-            var bill = _paymentService.GetCurrentBill();
-            var payments = _paymentService.SplitEqually(model);
-            
-            foreach (var payment in model.Payments)
-            {
-                _paymentService.InsertPayment(payment); // Save to repo
-            }
-
-            return RedirectToAction("Pay", new { billId = model.Bill.BillId });
-            */
-            
-            if (model.NumberOfPeople < 1)
-            {
-                Console.WriteLine("Number of people is less than 1");
-                return View(model);
+                ModelState.AddModelError("NumberOfPeople", "Number of people must be at least 1");
+                return View("SplitEqually", model);
             }
 
             var bill = _paymentService.GetCurrentBill();
             model.Bill = bill;
-
-            var payments = _paymentService.SplitEqually(model);
-
-            foreach (var payment in payments)
-            {
-                _paymentService.InsertPayment(payment);
-            }
-
-            return RedirectToAction("Pay", new { billId = bill.BillId });
-            
-            //return RedirectToAction("Pay");
-            //return View("SplitEqually", new SplitEquallyViewModel { Bill = bill, Payments = payments });
+            _paymentService.InitializePaymentsForUpdate(model);
+            return View("SplitEqually", model);
         }
         catch (Exception e)
         {
@@ -177,93 +114,122 @@ public class PaymentController : Controller
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-    
-    /*
+
+    //Updated
     [HttpPost]
     public IActionResult SplitEqually(SplitEquallyViewModel model)
     {
         try
         {
-            if (model.NumberOfPeople < 1)
-            {
-                ModelState.AddModelError(nameof(model.NumberOfPeople), "Number of people must be at least 1.");
-                var bill2 = _paymentService.GetCurrentBill();
-                model.Bill = bill2;
-                return View(model);
-            }
-
             var bill = _paymentService.GetCurrentBill();
-            var payments = _paymentService.SplitEqually(model);
 
-            var perPersonAmount = (bill.OrderTotal + model.TotalTip) / model.NumberOfPeople;
-
-            return View("SplitEqually", new SplitEquallyViewModel
+            if (bill == null)
             {
-                Bill = bill,
-                Payments = payments,
-                NumberOfPeople = model.NumberOfPeople,
-                TotalTip = model.TotalTip,
-                PerPersonAmount = perPersonAmount
-            });
+                TempData["ErrorMessage"] = "Could not find the current bill.";
+                return RedirectToAction("Overview", "Restaurant");
+            }
+            
+            model.Bill = bill;
+            
+            _paymentService.InsertSplitPayments(model.Payments);
+
+            return RedirectToAction("Pay", new { billId = bill.BillId });
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
+            TempData["ErrorMessage"] = ex.Message;
             return RedirectToAction("Overview", "Restaurant");
+        }
+    }
+    
+    /*
+    private void InitializePayments(SplitEquallyViewModel model)
+    {
+        if (model.Payments == null || model.Payments.Count != model.NumberOfPeople)
+        {
+            model.Payments = new List<Payment>();
+            decimal perPersonAmount = model.Bill.OrderTotal / model.NumberOfPeople;
+            for (int i = 0; i < model.NumberOfPeople; i++)
+            {
+                model.Payments.Add(new Payment
+                {
+                    BillId = model.Bill.BillId,
+                    PaymentAmount = perPersonAmount
+                });
+            }
         }
     }
     */
     
-    //!!!Needs Change!!!
-    [HttpGet("Payment/ProcessSplitPayment/{billId}")]
-    public IActionResult ProcessSplitPayment(int billId)
+    //Updated!
+    [HttpGet("Payment/SplitByAmount/{billId}")]
+    public IActionResult SplitByAmount(int billId)
     {
-        var bill = CommonRepository._bill_rep.GetById(billId);
-        if (bill == null)
-            return RedirectToAction("Overview", "Restaurant");
-
-        var payments = CommonRepository._payment_rep.GetPaymentsByBillId(billId);
-        var totalPaid = payments.Sum(p => p.PaymentAmount);
-        var remainingAmount = bill.OrderTotal - totalPaid;
-
-        //if (remainingAmount <= 0)
-            //return RedirectToAction("Confirmation", new { id = payments.Last().PaymentId });
-
-        var newPayment = new Payment
+        try
         {
-            BillId = billId,
-            Bill = bill,
-            PaymentAmount = remainingAmount
-        };
+            var viewModel = _paymentService.BuildSplitByAmountViewModel(billId, TempData["ConfirmationMessage"] as string);
 
-        ViewBag.Remaining = remainingAmount;
-        return View("ProcessSplitPayment", newPayment);
+            if (viewModel == null)
+            {
+                Console.WriteLine("Bill not found.");
+                return RedirectToAction("Overview", "Restaurant");
+            }
+
+            return View("SplitByAmount", viewModel);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            ViewData["ErrorMessage"] = e.Message;
+            return RedirectToAction("Overview", "Restaurant");
+        }
     }
 
-    //!!!Needs Change!!!
-    [HttpPost("Payment/ProcessSplitPayment")]
-    public IActionResult ProcessSplitPayment(Payment userPayment)
+    //Updated!
+    [HttpPost]
+    public IActionResult SplitByAmount(SplitByAmountViewModel model)
     {
-        userPayment.Bill = CommonRepository._bill_rep.GetById(userPayment.BillId);
-
-        if (userPayment.Bill == null)
-            return RedirectToAction("Overview", "Restaurant");
-
-        // Save individual payment to DB
-        CommonRepository._payment_rep.InsertPayment(userPayment);
-
-        var payments = CommonRepository._payment_rep.GetPaymentsByBillId(userPayment.BillId);
-        var totalPaid = payments.Sum(p => p.PaymentAmount);
-
-        if (totalPaid >= userPayment.Bill.OrderTotal)
+        try
         {
-            return RedirectToAction("Confirmation", new { id = userPayment.PaymentId });
-        }
+            var payment = _paymentService.GetCurrentPayment();
+            if (payment != null)
+            {
+                model.NewPayment.BillId = payment.BillId;
+            }
 
-        return RedirectToAction("ProcessSplitPayment", new { billId = userPayment.BillId });
+            var bill = _paymentService.GetValidatedBillForPayment(model.NewPayment);
+            
+            if (bill == null)
+            {
+                TempData["ErrorMessage"] = "Bill not found.";
+                return RedirectToAction("Overview", "Restaurant");
+            }
+
+            _paymentService.CalculateTip(model.NewPayment, Request.Form["SelectedTipOption"], Request.Form["CustomTipAmount"]);
+
+            if (!_paymentService.ValidatePayment(model.NewPayment, out var validationError))
+            {
+                ModelState.AddModelError("NewPayment.PaymentAmount", validationError);
+                model.Bill = bill;
+                model.ExistingPayments = _paymentService.GetPaymentsByBillId(bill.BillId);
+                return View("SplitByAmount", model);
+            }
+
+            _paymentService.PreparePaymentForSplit(model.NewPayment, bill);
+            _paymentService.InsertPayment(model.NewPayment);
+
+            TempData["ConfirmationMessage"] = $"Payment of €{model.NewPayment.PaymentAmount + model.NewPayment.TipAmount:0.00} submitted successfully!";
+            return RedirectToAction("Pay", new { billId = bill.BillId });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            TempData["ErrorMessage"] = "An error occurred while processing the payment.";
+            return RedirectToAction("Overview", "Restaurant");
+        }
     }
     
-    //Checked!!
+    //Updated!
     [HttpPost]
     public IActionResult Pay(Payment payment)
     {
@@ -285,55 +251,52 @@ public class PaymentController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
-            throw;
+            TempData["ErrorMessage"] = e.Message;
+            return RedirectToAction("Overview", "Restaurant");
         }
     }
     
-    //Checked!!
+    //Updated!
     [HttpGet]
     public IActionResult Confirmation(int id)
     {
         try
         {
-            var payment = CommonRepository._payment_rep.GetById(id);
+            var payment = _paymentService.GetById(id);
             return View(payment);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
+            TempData["ErrorMessage"] = e.Message;
             return RedirectToAction("Overview", "Restaurant");
         }
     }
-    
-    //confirm for split payments
-    [HttpPost]
-    public IActionResult ConfirmSplitPayments(SplitEquallyViewModel model)
-    {
-        try
-        {
-            foreach (var payment in model.Payments)
-            {
-                _paymentService.InsertPayment(payment); // Save to repo
-            }
 
-            return RedirectToAction("Pay", new { billId = model.Bill.BillId });
-        }
-        catch (Exception e)
+    [HttpGet]
+    public IActionResult FinishPaymentSplitByAmount(int? billId)
+    {
+        var payment = _paymentService.GetCurrentPayment();
+        if (billId.HasValue)
         {
-            Console.WriteLine(e.Message);
-            ViewData["Exception"] = e.Message;
-            return RedirectToAction("Overview", "Restaurant");
+            var payments = _paymentService.GetPaymentsByBillId(billId.Value);
+            ViewBag.ExistingPayments = payments;
         }
+        else
+        {
+            ViewBag.ExistingPayments = new List<Payment>();
+        }
+
+        return View(payment);
     }
     
+    //Updated!
     [HttpPost]
-    public IActionResult FinishPayment(int billId)
+    public IActionResult FinishPaymentForSplitByAmount(int billId)
     {
         try
         {
-            //_paymentService.CloseBillAndFreeTable(billId);
+            _paymentService.CloseBillAndFreeTable(billId);
             return RedirectToAction("Overview", "Restaurant");
         }
         catch (Exception e)
