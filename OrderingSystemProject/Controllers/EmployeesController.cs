@@ -21,19 +21,37 @@ public class EmployeesController : Controller
             return RedirectToAction("Login", "Employees");
         }
 
-        List<Employee> employees = _employeesService.GetAllEmployees();
-        return View(employees);
+        try
+        {
+            List<Employee> employees = _employeesService.GetAllEmployees();
+            return View(employees);
+        }
+        catch (Exception e)
+        {
+            TempData["Exception"] = $"Exception occured: {e.Message}";
+            return View(new List<Employee>());
+        }
     }
 
     [HttpGet]
     public IActionResult Create()
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         return View();
     }
 
     [HttpPost]
     public IActionResult Create(Employee employee)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _employeesService.Create(employee);
@@ -42,7 +60,7 @@ public class EmployeesController : Controller
         }
         catch (Exception e)
         {
-            ViewBag.ErrorMessage = $"Exception occured: {e.Message}";
+            ViewData["Exception"] = $"Exception occured: {e.Message}";
             return View(employee);
         }
     }
@@ -51,18 +69,37 @@ public class EmployeesController : Controller
     [HttpGet]
     public IActionResult Edit(int? id)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         if (id == null)
         {
             return NotFound();
         }
-        var employee = _employeesService.GetById((int)id);
-        employee.Password = "";
-        return View(employee);
+
+        try
+        {
+            var employee = _employeesService.GetById((int)id);
+            employee.Password = "";
+            return View(employee);
+        }
+        catch (Exception e)
+        {
+            TempData["Exception"] = $"Exception occured: {e.Message}";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
     public IActionResult Edit(Employee employee)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _employeesService.Update(employee);
@@ -79,6 +116,11 @@ public class EmployeesController : Controller
     [HttpPost]
     public IActionResult Activate(int employeeId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _employeesService.Activate(employeeId);
@@ -95,6 +137,11 @@ public class EmployeesController : Controller
     [HttpPost]
     public IActionResult Deactivate(int employeeId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _employeesService.Deactivate(employeeId);
@@ -104,7 +151,6 @@ public class EmployeesController : Controller
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }
@@ -112,6 +158,11 @@ public class EmployeesController : Controller
     [HttpPost]
     public IActionResult Delete(int employeeId)
     {
+        if (IsUnauthorisedUser())
+        {
+            return RedirectToAction("Login", "Employees");
+        }
+
         try
         {
             _employeesService.Delete(employeeId);

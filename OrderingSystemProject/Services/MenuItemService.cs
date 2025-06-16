@@ -28,7 +28,7 @@ public class MenuItemService : IMenuItemService
         _menuItemRepository.Add(item);
     }
 
-    //my COOOOOOOOOOOOOOOODDDDDDDDDDDDDDEEEEEEEEEEEEEEE
+    //my New COOOOOOOOOOOOOOOODDDDDDDDDDDDDDEEEEEEEEEEEEEEE
 
     public void AddItem(int itemId)
     {
@@ -39,7 +39,7 @@ public class MenuItemService : IMenuItemService
             throw new Exception("Menu item not found.");
         }
 
-        // Checker
+        // Checker: If item already exists in cart, increase its amount
         foreach (var item in cart)
         {
             if (item.MenuItemId == itemId)
@@ -64,6 +64,7 @@ public class MenuItemService : IMenuItemService
     {
         OrderItem orderItem = null;
 
+        // Find item in cart
         foreach (var item in cart)
         {
             if (item.MenuItemId == itemId)
@@ -73,6 +74,7 @@ public class MenuItemService : IMenuItemService
             }
         }
 
+        // Update comment if found
         if (orderItem != null)
         {
             orderItem.Comment = comment;
@@ -86,6 +88,7 @@ public class MenuItemService : IMenuItemService
 
     public void IncreaseQuantity(int itemId)
     {
+        // Find item in cart and increase its amount
         foreach (var item in cart)
         {
             if (item.MenuItemId == itemId)
@@ -100,12 +103,14 @@ public class MenuItemService : IMenuItemService
     {
         OrderItem decrQ = null;
 
+        // Find item in cart and decrease its amount
         foreach (var item in cart)
         {
             if (item.MenuItemId == itemId)
             {
                 item.Amount--;
 
+                // Mark for removal if amount becomes 0 or less
                 if (item.Amount <= 0)
                 {
                     decrQ = item;
@@ -115,6 +120,7 @@ public class MenuItemService : IMenuItemService
             }
         }
 
+        // Remove item from cart if its quantity is 0
         if (decrQ != null)
         {
             cart.Remove(decrQ);
@@ -123,6 +129,7 @@ public class MenuItemService : IMenuItemService
 
     public void RemoveItem(int itemId)
     {
+        // Find and remove item from cart by index
         for (int i = 0; i < cart.Count; i++)
         {
             if (cart[i].MenuItemId == itemId)
@@ -135,6 +142,7 @@ public class MenuItemService : IMenuItemService
 
     public void CancelOrder()
     {
+        // Clear the entire cart by removing items one by one
         while (cart.Count > 0)
         {
             cart.RemoveAt(0); // Removing 1st element

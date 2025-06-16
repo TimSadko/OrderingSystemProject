@@ -44,6 +44,13 @@ public class EmployeesService : IEmployeesService
 
     public void Create(Employee employee)
     {
+        Employee? existingEmployee = _employeesRepository.GetEmployeeByLogin(employee.UserName);
+
+        if (existingEmployee != null)
+        {
+            throw new Exception("Employee already exists!");
+        }
+        
         _employeesRepository.Create(employee);
     }
 
@@ -54,6 +61,13 @@ public class EmployeesService : IEmployeesService
 
     public void Update(Employee employee)
     {
+        Employee? existingEmployee = _employeesRepository.GetEmployeeByLogin(employee.UserName);
+
+        if (existingEmployee != null && existingEmployee.EmployeeId != employee.EmployeeId)
+        {
+            throw new Exception("Username is already taken!");
+        }
+        
         _employeesRepository.Update(employee);
     }
 

@@ -39,8 +39,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            ViewData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while loading pay details.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -115,7 +114,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            TempData["ErrorMessage"] = "An error occurred while updating the number of people.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -136,24 +135,7 @@ public class PaymentController : Controller
             }
 
             model.Bill = bill;
-
-            //
-            /*
-            decimal perPersonShare = bill.OrderTotal / model.NumberOfPeople;
-
-            foreach (var payment in model.Payments)
-            {
-                if (payment.PaymentAmount > perPersonShare)
-                {
-                    payment.TipAmount = payment.PaymentAmount - perPersonShare;
-                }
-                else
-                {
-                    payment.TipAmount = 0;
-                }
-            }
-            */
-            //
+            
             //calculates the tip amount based on the number of people.
             _paymentService.CalculateEqualSplitPayments(bill, model.NumberOfPeople, model.Payments);
 
@@ -164,7 +146,7 @@ public class PaymentController : Controller
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = ex.Message;
+            TempData["ErrorMessage"] = "An error occurred while splitting. Please try again.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -180,7 +162,7 @@ public class PaymentController : Controller
 
             if (viewModel == null)
             {
-                Console.WriteLine("Bill not found.");
+                TempData["ErrorMessage"] = "An error occurred while loading bill details.";
                 return RedirectToAction("Overview", "Restaurant");
             }
 
@@ -188,8 +170,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            ViewData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while splitting. Please try again.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -239,8 +220,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = "An error occurred while processing the payment.";
+            TempData["ErrorMessage"] = "An error occurred while splitting. Please try again.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -256,6 +236,7 @@ public class PaymentController : Controller
 
             if (payment.Bill == null)
             {
+                TempData["ErrorMessage"] = "An error occurred while populating the bill.";
                 throw new Exception("Bill not found for given BillId.");
             }
             
@@ -267,8 +248,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while submitting the payment. Please try again.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -285,8 +265,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while submitting the payment. Please try again.";
             return RedirectToAction("Overview", "Restaurant");
         }
     }
@@ -301,8 +280,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while closing the order. Please try again.";
             return RedirectToAction("Pay", new { billId });
         }
     }
@@ -329,7 +307,7 @@ public class PaymentController : Controller
 
             if (bill == null)
             {
-                Console.WriteLine("Bill not found.");
+                TempData["ErrorMessage"] = "Bill not found.";
                 return RedirectToAction("Overview", "Restaurant");
             }
 
@@ -344,8 +322,8 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            TempData["ErrorMessage"] = "An error occurred while finishing the payment. Please try again.";
+            return RedirectToAction("Pay", new { billId });
         }
     }
     
@@ -361,8 +339,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while finishing the payment. Please try again.";
             return RedirectToAction("Pay", new { billId });
         }
     }
@@ -377,8 +354,7 @@ public class PaymentController : Controller
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            TempData["ErrorMessage"] = e.Message;
+            TempData["ErrorMessage"] = "An error occurred while finishing the payment. Please try again.";
             return RedirectToAction("Pay", new { billId });
         }
     }

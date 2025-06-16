@@ -1,8 +1,12 @@
 @model Payment
-
+@{
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+}
+<partial name="_ErrorMessage" />
+<partial name="_SuccessMessage" />
 <h2>✅ Thank you for your payment!</h2>
 
-<p><strong>Paid:</strong> €@Model.PaymentAmount (Tip: €@Model.TipAmount)</p>
+<p><strong>Paid:</strong>@Model.PaymentAmount.ToString("C", euroCulture) (Tip: €@Model.TipAmount.ToString("C",euroCulture))</p>
 <p><strong>Method:</strong> @Model.PaymentType</p>
 
 @if (!string.IsNullOrWhiteSpace(Model.Feedback))
