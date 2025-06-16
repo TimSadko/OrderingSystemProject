@@ -11,8 +11,4 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Bar\" />
-  </ItemGroup>
-
 </Project>

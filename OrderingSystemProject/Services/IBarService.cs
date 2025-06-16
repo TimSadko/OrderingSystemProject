@@ -16,6 +16,12 @@ namespace OrderingSystemProject.Services
 
 		void ReturnItem(int _order_id, int _item_id);
 
+		void TakeCat(int _order_id, int _cat);
+
+		void FinishCat(int _order_id, int _cat);
+
+		void ReturnCat(int _order_id, int _cat);
+
 		void TakeOrder(int _order_id);
 
 		void FinishOrder(int _order_id);

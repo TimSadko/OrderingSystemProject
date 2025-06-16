@@ -52,41 +52,6 @@
 		</div>
 	</div>
 
-	@{
-		
-		if (Model.ItemsNormal.Count > 0)
-		{
-			<div class="KitchenOrderSubcategory">
-				<div class="KitchenOrderSubcategoryLabel">Normal:</div>
-				<div class="KitchenOrderItemBreak"></div>
-
-				@foreach (var item in Model.ItemsNormal) // Go throu list of order_itmes of current order
-				{
-					<partial name="~/Views/Bar/_OrderItem.cshtml" model="@(new OrderItemViewModel(item, Model))" />
-
-					@if (item != Model.ItemsNormal[Model.ItemsNormal.Count - 1]) // if this item is not the last, add item break;
-					{
-						<div class="KitchenOrderItemBreakDotted"></div>
-					}
-				}
-			</div>
-		}
-		if (Model.ItemsAlcoholic.Count > 0)
-		{
-			<div class="KitchenOrderSubcategory">
-				<div class="KitchenOrderSubcategoryLabel">Alcoholic:</div>
-				<div class="KitchenOrderItemBreak"></div>
-
-				@foreach (var item in Model.ItemsAlcoholic) // Go throu list of order_itmes of current order
-				{
-					<partial name="~/Views/Bar/_OrderItem.cshtml" model="@(new OrderItemViewModel(item, Model))" />
-
-					@if (item != Model.ItemsAlcoholic[Model.ItemsAlcoholic.Count - 1]) // if this item is not the last, add item break;
-					{
-						<div class="KitchenOrderItemBreakDotted"></div>
-					}
-				}
-			</div>	
-		}
-	}
+	<partial name="~/Views/Bar/_OrderSubcategory.cshtml" model="@(new OrderSubCatViewModel(Model.ItemsNormal, Model, ItemCard.DRINKS, "Normal"))" />
+	<partial name="~/Views/Bar/_OrderSubcategory.cshtml" model="@(new OrderSubCatViewModel(Model.ItemsAlcoholic, Model, ItemCard.ALCOHOLIC_DRINKS, "Alcoholic"))" />	
 </div>

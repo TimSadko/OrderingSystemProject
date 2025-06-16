@@ -165,23 +165,23 @@ Generic items
     position: relative;
 }
 
-    .navbar-toggle-icon::before,
-    .navbar-toggle-icon::after {
-        content: "";
-        width: 25px;
-        height: 3px;
-        background-color: #333;
-        position: absolute;
-        left: 0;
-    }
+.navbar-toggle-icon::before,
+.navbar-toggle-icon::after {
+    content: "";
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    position: absolute;
+    left: 0;
+}
 
-    .navbar-toggle-icon::before {
-        top: -8px;
-    }
+.navbar-toggle-icon::before {
+    top: -8px;
+}
 
-    .navbar-toggle-icon::after {
-        top: 8px;
-    }
+.navbar-toggle-icon::after {
+    top: 8px;
+}
 
 .navbar-links {
     width: 100%;
@@ -190,9 +190,9 @@ Generic items
     margin-top: 1rem;
 }
 
-    .navbar-links.show {
-        display: flex;
-    }
+.navbar-links.show {
+    display: flex;
+}
 
 .navbar-menu {
     list-style: none;
@@ -202,9 +202,9 @@ Generic items
     flex-direction: column;
 }
 
-    .navbar-menu li {
-        margin-bottom: 0.5rem;
-    }
+.navbar-menu li {
+    margin-bottom: 0.5rem;
+}
 
 .navbar-link {
     color: #222;
@@ -212,9 +212,9 @@ Generic items
     padding: 0.5rem;
 }
 
-    .navbar-link:hover {
-        text-decoration: underline;
-    }
+.navbar-link:hover {
+    text-decoration: underline;
+}
 
 .logout-container {
     margin-top: 0.5rem;
@@ -235,9 +235,9 @@ Generic items
     gap: 1rem;
 }
 
-    .navbar-menu li {
-        margin-bottom: 0;
-    }
+.navbar-menu li {
+    margin-bottom: 0;
+}
 
 .logout-container {
     margin-top: 0;
@@ -598,6 +598,11 @@ Generic items
     margin-right: 3px;
 }
 
+.KitchenCategoryLine {
+    display: flex;
+    /*justify-content: space-between;*/
+}
+
 .KitchenOrderButton {
     display: inline;
 
@@ -730,13 +735,55 @@ Generic items
 
     padding: 0;
 }
-   
+ 
 .KitchenButtonText {
     display: flex;
 
     font-size: 18px;
 
     color: #585858;
+
+    text-align: center;
+    vertical-align: middle;
+
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    
+    justify-self: center;
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    margin-top: 0;
+    margin-bottom: 3px;
+}
+
+.KitchenCatActionButton {
+    display: inline;
+
+    height: 22px;
+
+    /*border: 1.5px solid #363636;*/
+    border-radius: 5px;  
+
+    text-decoration: none;
+
+    align-self: center; 
+
+    margin-right: 5px;
+    margin-top: 3px;
+
+    margin-bottom: 3px;
+
+    padding: 0;
+}
+
+.KitchenCatButtonText {
+    display: flex;
+
+    font-size: 18px;
+
+    color: #999999;
 
     text-align: center;
     vertical-align: middle;
@@ -823,7 +870,7 @@ Generic items
 
     text-align: center;
 
-    width: 100%;
+    margin-left: 39%;
 }
 
 /*//// Kitchen and Bar*/

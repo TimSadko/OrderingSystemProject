@@ -231,8 +231,11 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4 ORDER BY OrderTime DESC";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE (OrderStatus = 3 OR OrderStatus = 4) AND OrderTime BETWEEN @TimeYes AND @TimeNow ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@TimeNow", DateTime.Now);
+				com.Parameters.AddWithValue("@TimeYes", DateTime.Now.AddDays(-1));
 
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();
@@ -301,8 +304,11 @@ namespace OrderingSystemProject.Repositories
 
 			using (SqlConnection conn = new SqlConnection(_connection_string))
 			{
-				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE OrderStatus = 3 OR OrderStatus = 4 ORDER BY OrderTime DESC";
+				string query = "SELECT OrderId, TableId, OrderStatus, OrderTime From Orders WHERE (OrderStatus = 3 OR OrderStatus = 4) AND OrderTime BETWEEN @TimeYes AND @TimeNow ORDER BY OrderTime DESC";
 				SqlCommand com = new SqlCommand(query, conn);
+
+				com.Parameters.AddWithValue("@TimeNow", DateTime.Now);
+				com.Parameters.AddWithValue("@TimeYes", DateTime.Now.AddDays(-1));
 
 				com.Connection.Open();
 				SqlDataReader reader = com.ExecuteReader();

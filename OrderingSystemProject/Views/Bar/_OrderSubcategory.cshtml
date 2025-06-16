@@ -1,0 +1,48 @@
+﻿@using OrderingSystemProject.Models.Bar
+@model OrderingSystemProject.Models.Bar.OrderSubCatViewModel
+
+@if (Model.Subcat.Count > 0)
+{
+	<div class="KitchenOrderSubcategory">
+		<div class="KitchenCategoryLine">
+			<div class="KitchenOrderSubcategoryLabel">@(Model.CatName):</div>
+			@{
+				switch (Model.CatStatus)
+				{
+					case OrderItemStatus.NewItem:
+						{
+							<a class="KitchenCatActionButton KitchenOrdrButtonTake" href="/Bar/TakeCat/@Model.Order.OrderId/@((int)Model.CatType)">
+								<div class="KitchenCatButtonText">Take</div>
+							</a>
+							break;
+						}
+					case OrderItemStatus.Preparing:
+						{
+							<a class="KitchenCatActionButton KitchenOrdrButtonFinish" href="/Bar/FinishCat/@Model.Order.OrderId/@((int)Model.CatType)">
+								<div class="KitchenCatButtonText">Finish</div>
+							</a>
+							break;
+						}
+					case OrderItemStatus.Ready:
+						{
+							<a class="KitchenCatActionButton KitchenOrdrButtonReturn" href="/Bar/ReturnCat/@Model.Order.OrderId/@((int)Model.CatType)">
+								<div class="KitchenCatButtonText">Return</div>
+							</a>
+							break;
+						}
+				}
+			}
+		</div>
+		<div class="KitchenOrderItemBreak"></div>
+
+		@foreach (var item in Model.Subcat) // Go throu list of order_itmes of current order
+		{
+			<partial name="~/Views/Bar/_OrderItem.cshtml" model="@(new OrderItemViewModel(item, Model.Order))" />
+
+			@if (item != Model.Subcat[Model.Subcat.Count - 1]) // if this item is not the last, add item break;
+			{
+				<div class="KitchenOrderItemBreakDotted"></div>
+			}
+		}
+	</div>
+}

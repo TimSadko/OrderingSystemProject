@@ -47,6 +47,7 @@ namespace OrderingSystemProject.Models.Kitchen
 			get
 			{
 				if (_order_status == OrderStatus.New) return OrderStatus.New;
+				if (_order_status == OrderStatus.Served || _order_status == OrderStatus.Completed) return OrderStatus.Completed;
 
 				int _new = 0, _prep = 0, _red = 0, _serv = 0;
 

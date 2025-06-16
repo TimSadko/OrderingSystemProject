@@ -52,58 +52,7 @@
 		</div>
 	</div>
 
-	@{
-		
-		if (Model.ItemStarters.Count > 0)
-		{
-			<div class="KitchenOrderSubcategory">
-				<div class="KitchenOrderSubcategoryLabel">Starters:</div>
-				<div class="KitchenOrderItemBreak"></div>
-
-				@foreach (var item in Model.ItemStarters) // Go throu list of order_itmes of current order
-				{
-				<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
-
-					@if (item != Model.ItemStarters[Model.ItemStarters.Count - 1]) // if this item is not the last, add item break;
-					{
-						<div class="KitchenOrderItemBreakDotted"></div>
-					}
-				}
-			</div>
-		}
-		if (Model.ItemMains.Count > 0)
-		{
-			<div class="KitchenOrderSubcategory">
-				<div class="KitchenOrderSubcategoryLabel">Mains:</div>
-				<div class="KitchenOrderItemBreak"></div>
-
-				@foreach (var item in Model.ItemMains) // Go throu list of order_itmes of current order
-				{
-					<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
-
-					@if (item != Model.ItemMains[Model.ItemMains.Count - 1]) // if this item is not the last, add item break;
-					{
-						<div class="KitchenOrderItemBreakDotted"></div>
-					}
-				}
-			</div>	
-		}
-		if (Model.ItemDeserts.Count > 0)
-		{
-			<div class="KitchenOrderSubcategory">
-				<div class="KitchenOrderSubcategoryLabel">Deserts:</div>
-				<div class="KitchenOrderItemBreak"></div>
-
-				@foreach (var item in Model.ItemDeserts) // Go throu list of order_itmes of current order
-				{
-					<partial name="~/Views/Kitchen/_OrderItem.cshtml" model="@(new OrderItemVieModel(item, Model))" />
-
-					@if (item != Model.ItemDeserts[Model.ItemDeserts.Count - 1]) // if this item is not the last, add item break;
-					{
-						<div class="KitchenOrderItemBreakDotted"></div>
-					}
-				}
-			</div>			
-		}
-	}
+	<partial name="~/Views/Kitchen/_OrderSubcategory.cshtml" model="@(new OrderSubCatViewModel(Model.ItemStarters, Model, ItemCategory.STARTERS, "Starters"))"></partial>
+	<partial name="~/Views/Kitchen/_OrderSubcategory.cshtml" model="@(new OrderSubCatViewModel(Model.ItemMains, Model, ItemCategory.MAINS, "Mains"))"></partial>
+	<partial name="~/Views/Kitchen/_OrderSubcategory.cshtml" model="@(new OrderSubCatViewModel(Model.ItemDeserts, Model, ItemCategory.DESERTS, "Deserts"))"></partial>
 </div>

@@ -166,6 +166,57 @@ namespace OrderingSystemProject.Controllers
 			return View();
 		}
 
+		[HttpGet("Bar/TakeCat/{_order_id}/{cat}")]
+		public IActionResult TakeCat(int _order_id, int cat)
+		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
+			try
+			{
+				_serv.TakeCat(_order_id, cat);
+			}
+			catch (Exception ex)
+			{
+				TempData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Bar/FinishCat/{_order_id}/{cat}")]
+		public IActionResult FinishCat(int _order_id, int cat)
+		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
+			try
+			{
+				_serv.FinishCat(_order_id, cat);
+			}
+			catch (Exception ex)
+			{
+				TempData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet("Bar/ReturnCat/{_order_id}/{cat}")]
+		public IActionResult ReturnCat(int _order_id, int cat)
+		{
+			if (!Authenticate()) return RedirectToAction("Login", "Employees");
+
+			try
+			{
+				_serv.ReturnCat(_order_id, cat);
+			}
+			catch (Exception ex)
+			{
+				TempData["Exception"] = ex;
+			}
+
+			return RedirectToAction("Index");
+		}
+
 		private bool Authenticate()
 		{
 			var user_role = Authorization.GetUserRole(this.HttpContext);
