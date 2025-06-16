@@ -22,7 +22,7 @@
 
     <div class="form-group mb-3">
         <label for="PaymentAmount">Enter amount to pay (€):</label>
-        <input asp-for="NewPayment.PaymentAmount" class="form-control" step="0.01" min="0.01" />
+        <input type="number" asp-for="NewPayment.PaymentAmount" class="form-control" step="0.01" min="0.01" />
         <span asp-validation-for="NewPayment.PaymentAmount" class="text-danger"></span>
     </div>
 
