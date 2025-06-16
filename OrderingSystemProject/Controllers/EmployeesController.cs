@@ -19,7 +19,7 @@ public class EmployeesController : Controller
     {
         EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
         // check if user is logged in and has correct role
-        if (userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
+        //if (userRole != EmployeeType.Manager) return RedirectToAction("Login", "Employees");
 
         List<Employee> employees = _employeesService.GetAllEmployees();
         return View(employees);
@@ -137,7 +137,6 @@ public class EmployeesController : Controller
 
             return RedirectToAction(nameof(Index));
         }
-        
     }
 
     [HttpGet]
