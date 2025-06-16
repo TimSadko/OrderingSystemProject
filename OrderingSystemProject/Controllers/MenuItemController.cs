@@ -26,8 +26,8 @@ public class MenuItemController : Controller
         List<MenuItem> menuItems = _menuItemService.GetAll();
         var menuManagementViewMode = new MenuManagementViewModel(
             menuItems,
-            MenuManagementViewModel.CardFilterType.ALL,
-            MenuManagementViewModel.CategoryFilterType.ALL
+            CardFilterType.ALL,
+            CategoryFilterType.ALL
         );
         return View(menuManagementViewMode);
     }
@@ -109,10 +109,7 @@ public class MenuItemController : Controller
         }
     }
 
-    public IActionResult Filter(
-        MenuManagementViewModel.CardFilterType cardFilterType,
-        MenuManagementViewModel.CategoryFilterType categoryFilterType
-    )
+    public IActionResult Filter(CardFilterType cardFilterType, CategoryFilterType categoryFilterType)
     {
         try
         {

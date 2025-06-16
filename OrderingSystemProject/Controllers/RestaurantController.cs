@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using OrderingSystemProject.Models;
-using OrderingSystemProject.Repositories;
 using OrderingSystemProject.Services;
 using OrderingSystemProject.Utilities;
 using OrderingSystemProject.ViewModels;
@@ -10,9 +9,9 @@ namespace OrderingSystemProject.Controllers;
 public class RestaurantController : Controller
 {
     private readonly ITablesService _tablesService;
-    private readonly IOrdersService _ordersService;
+    private readonly IOrderService _ordersService;
 
-    public RestaurantController(ITablesService tablesService, IOrdersService ordersService)
+    public RestaurantController(ITablesService tablesService, IOrderService ordersService)
     {
         _tablesService = tablesService;
         _ordersService = ordersService;

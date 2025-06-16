@@ -1,6 +1,5 @@
 using OrderingSystemProject.Models;
 using OrderingSystemProject.Repositories;
-using OrderingSystemProject.ViewModels;
 
 namespace OrderingSystemProject.Services;
 
@@ -8,6 +7,7 @@ public class MenuItemService : IMenuItemService
 {
     private IMenuItemsRepository _menuItemRepository;
     List<OrderItem> cart = new List<OrderItem>();
+
     public MenuItemService(IMenuItemsRepository menuItemRepository)
     {
         _menuItemRepository = menuItemRepository;
@@ -44,7 +44,7 @@ public class MenuItemService : IMenuItemService
         {
             if (item.MenuItemId == itemId)
             {
-                item.Amount++; 
+                item.Amount++;
                 return;
             }
         }
@@ -148,7 +148,7 @@ public class MenuItemService : IMenuItemService
     {
         return new List<OrderItem>(cart);
     }
-    
+
     public void Update(MenuItem item)
     {
         _menuItemRepository.Update(item);
@@ -169,9 +169,7 @@ public class MenuItemService : IMenuItemService
         _menuItemRepository.Deactivate(menuItemId);
     }
 
-    public List<MenuItem> Filter(
-        MenuManagementViewModel.CategoryFilterType category,
-        MenuManagementViewModel.CardFilterType card
+    public List<MenuItem> Filter(CategoryFilterType category, CardFilterType card
     )
     {
         var itemCardType = GetCardType(card);
@@ -194,22 +192,24 @@ public class MenuItemService : IMenuItemService
 
         return _menuItemRepository.FilterByCategoryAndCard(itemCategoryType, itemCardType);
     }
-    
-    private ItemCard? GetCardType(MenuManagementViewModel.CardFilterType cardFilterType)
+
+    private ItemCard? GetCardType(CardFilterType cardFilterType)
     {
         if (Enum.TryParse<ItemCard>(cardFilterType.ToString(), out var itemCard))
         {
             return itemCard;
         }
+
         return null;
     }
 
-    private ItemCategory? GetCategoryType(MenuManagementViewModel.CategoryFilterType categoryFilterType)
+    private ItemCategory? GetCategoryType(CategoryFilterType categoryFilterType)
     {
         if (Enum.TryParse<ItemCategory>(categoryFilterType.ToString(), out var itemCategory))
         {
             return itemCategory;
         }
+
         return null;
     }
 }

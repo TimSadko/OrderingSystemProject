@@ -1,6 +1,4 @@
 ﻿using OrderingSystemProject.Models;
-using System.Collections.Generic;
-using static OrderingSystemProject.ViewModels.MenuManagementViewModel;
 
 namespace OrderingSystemProject.ViewModels
 {
