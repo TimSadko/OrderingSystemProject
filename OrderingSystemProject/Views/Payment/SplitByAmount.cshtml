@@ -11,13 +11,6 @@
 
 <h2>Split Bill by Custom Amount</h2>
 
-@if (!string.IsNullOrEmpty(Model.ConfirmationMessage))
-{
-    <div class="alert alert-success">
-        @Model.ConfirmationMessage
-    </div>
-}
-
 <div class="bill-info mb-4">
     <p><strong>Total Bill:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
     <p><strong>Already Paid:</strong> @totalPaid.ToString("C", euroCulture)</p>
@@ -113,10 +106,6 @@
 }
 @if (isFullyPaid)
 {
-    //<button class="button-pay" role="button"><a href="/Payment/FinishPaymentSplitByAmount/@Model.NewPayment.BillId">Pay</a></button>
-    //<a class="btn btn-success" href="/Payment/FinishPaymentSplitByAmount/@Model.NewPayment.BillId">
-        //Finish Payment
-    //</a>
     <a class="btn btn-success"
        asp-controller="Payment"
        asp-action="FinishPaymentSplitByAmount"
@@ -125,8 +114,7 @@
     </a>
 }
 
-
-<a asp-action="Pay" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary mt-3">Back to Pay View</a>
+    <a asp-action="Pay" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary mt-3">Back to Pay View</a>
 
 @section Scripts {
 <script>

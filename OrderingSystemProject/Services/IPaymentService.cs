@@ -23,9 +23,10 @@ public interface IPaymentService
     void InitializePaymentsForUpdate(SplitEquallyViewModel splitEquallyViewModel);
     //POST SplitEqually
     void InsertSplitPayments(List<Payment> payments);
+    void CalculateEqualSplitPayments(Bill bill, int numberOfPeople, List<Payment> payments);
     
     //GET SplitByAmount
-    SplitByAmountViewModel BuildSplitByAmountViewModel(int billId, string confirmationMessage = null);
+    SplitByAmountViewModel BuildSplitByAmountViewModel(int billId);
     
     //POST SplitByAmount
     Bill GetValidatedBillForPayment(Payment payment);
