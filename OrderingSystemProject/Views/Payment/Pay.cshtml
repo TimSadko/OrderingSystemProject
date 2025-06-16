@@ -135,19 +135,18 @@
     </div>
 
     <button type="submit" class="btn btn-success">Submit Payment</button>
-    
-    <!-- Split Payment Options -->
-    <div class="mt-4">
-        <h4>Want to split the bill?</h4>
-        <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
-            Split Equally
-        </a>
-        <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
-            Split by Custom Amounts
-        </a>
-    </div>
     }
 </form>
+
+<div class="mt-4">
+    <h4>Want to split the bill?</h4>
+    <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
+        Split Equally
+    </a>
+    <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+        Split by Custom Amounts
+    </a>
+</div>
 
 @if (isFullyPaid)
 {
