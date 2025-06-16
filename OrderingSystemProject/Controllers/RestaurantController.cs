@@ -59,37 +59,7 @@ public class RestaurantController : Controller
     {
         return View();
     }
-
-    //[HttpPost("UpdateTableStatus")]
-    //public IActionResult UpdateTableStatus(int tableId, TableStatus status)
-    //{
-    //    try
-    //    {
-    //        if (tableId <= 0)
-    //        {
-    //            TempData["ErrorMessage"] = "Invalid table selection";
-    //            return RedirectToAction(nameof(Overview));
-    //        }
-
-    //        bool success = _tablesService.UpdateTableStatus(tableId, status);
-
-    //        if (success)
-    //        {
-    //            TempData["SuccessMessage"] = $"Table {tableId} status updated to {status}";
-    //        }
-    //        else
-    //        {
-    //            TempData["ErrorMessage"] = $"Failed to update table {tableId} status";
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
-    //    }
-
-    //    return RedirectToAction(nameof(Overview));
-    //}
-
+    
     [HttpGet]
     public IActionResult RefreshOverview()
     {
@@ -104,7 +74,7 @@ public class RestaurantController : Controller
         catch (Exception ex)
         {
             // set error message
-            ViewData["Exception"] = "Error refreshing tables: " + ex.Message;
+            TempData["Exception"] = "Error refreshing tables: " + ex.Message;
             return RedirectToAction("Overview");
         }
     }
