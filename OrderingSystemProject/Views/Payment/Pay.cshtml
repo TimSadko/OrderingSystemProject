@@ -7,6 +7,7 @@
     decimal totalPaid = payments.Sum(p => p.PaymentAmount);
     decimal totalDue = Model.Bill.OrderTotal;
     bool isFullyPaid = totalPaid >= totalDue;
+    bool hasSplitByAmountPayments = payments.Any(p => p.IsFromSplitByAmount);
 }
 
 <h2>Pay Now</h2>
@@ -14,43 +15,6 @@
 <form asp-action="Pay" method="post">
     @Html.HiddenFor(m => m.BillId)
     <input type="hidden" name="OrderTotal" value="@Model.Bill.OrderTotal" />
-
-    <!-- The data that is retreived from the Bill -->
-    @*
-    <hr class="my-4"/>
-
-    @if (Model.Bill.Order.Items.Count > 0)
-    {
-        <table class="table-bill">
-            <thead class="thead-bill">
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Bill.Order.Items)
-            {
-                <tr>
-                    <td>@item.MenuItem.Name</td>
-                    <td>@item.Amount</td>
-                    <td>@item.LineTotal.ToString("C", euroCulture)</td>
-                </tr>
-            }
-            </tbody>
-            <tfoot>
-            <tr class="summary-row-payment">
-                <td colspan="5" class="left-align bold">Subtotal:</td>
-                <td class="right-align bold">@Model.Bill.OrderSubtotal.ToString("C", euroCulture)</td>
-            </tr>
-            <tr class="summary-row-payment">
-                <td colspan="5" class="right-align bold">VAT:</td>
-                <td class="fw-bold">@Model.Bill.Vat.ToString("C", euroCulture)</td>
-            </tr>
-            <tr class="summary-row-payment">
-                <td colspan="5" class="right-align bold">Total:</td>
-                <td class="fw-bold">@Model.Bill.OrderTotal.ToString("C", euroCulture)</td>
-            </tr>
-            </tfoot>
-        </table>
-    }
-    *@
     
     @if (Model.Bill.Order.Items.Count > 0)
     {
@@ -84,12 +48,43 @@
                         <span class="value fw-bold">@Model.Bill.OrderTotal.ToString("C", euroCulture)</span>
                     </div>
                 </div>
-
-                <p class="text-center mt-4">No payment have been made yet.</p>
+            @if (payments.Any())
+            {
+                <p class="text-center mt-4">Payments already made:</p>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Payment Number</th>
+                        <th>Amount Paid</th>
+                        <th>Tip</th>
+                        <th>Payment Type</th>
+                        <th>Feedback</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var pay in payments)
+                    {
+                        <tr>
+                            <td>@pay.PaymentId</td>
+                            <td>@pay.PaymentAmount.ToString("C", euroCulture)</td>
+                            <td>@pay.TipAmount.ToString("C", euroCulture)</td>
+                            <td>@pay.PaymentType</td>
+                            <td>@pay.Feedback</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>No payments have been made yet.</p>
+            }
         </div>
     }
     
-    <!-- Tip selection with JavaScript to update total -->
+    @if (payments.Count <= 0)
+    {
+        <!-- Tip selection with JavaScript to update total -->
     <div class="form-group py-2">
         <label>Tip:</label><br />
         <div class="glass-radio-group tip">
@@ -138,6 +133,7 @@
     </div>
 
     <button type="submit" class="btn btn-success">Submit Payment</button>
+    }
 </form>
 <!-- Split Payment Options -->
 <div class="mt-4">
@@ -145,48 +141,23 @@
     <a asp-action="SplitEqually" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary me-2">
         Split Equally
     </a>
-    <a asp-action="ProcessSplitPayment" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
+    <a asp-action="SplitByAmount" asp-route-billId="@Model.Bill.BillId" class="btn btn-outline-secondary">
         Split by Custom Amounts
     </a>
 </div>
 
-@if (payments.Any())
-{
-    <h4>Payments already made:</h4>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Payment ID</th>
-            <th>Amount Paid</th>
-            <th>Tip</th>
-            <th>Payment Type</th>
-            <th>Feedback</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var pay in payments)
-        {
-            <tr>
-                <td>@pay.PaymentId</td>
-                <td>@pay.PaymentAmount.ToString("C", euroCulture)</td>
-                <td>@pay.TipAmount.ToString("C", euroCulture)</td>
-                <td>@pay.PaymentType</td>
-                <td>@pay.Feedback</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No payments have been made yet.</p>
-}
-
 @if (isFullyPaid)
 {
-    <form asp-action="FinishPayment" asp-controller="Payment" method="post">
+    <form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
         <input type="hidden" name="billId" value="@Model.Bill.BillId" />
         <button type="submit" class="btn btn-primary mt-3">Finish Payment</button>
+    </form>
+}
+else if (hasSplitByAmountPayments)
+{
+    <form asp-action="SplitByAmount" asp-controller="Payment" method="get">
+        <input type="hidden" name="billId" value="@Model.Bill.BillId" />
+        <button type="submit" class="btn btn-warning mt-3">Continue Payment</button>
     </form>
 }
 

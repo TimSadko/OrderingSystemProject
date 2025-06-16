@@ -3,41 +3,23 @@
     var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
 }
 
-<h2>Split the Bill Equally</h2>
+<partial name="_ErrorMessage" />
 
+<h2>Split the Bill Equally</h2>
 <p><strong>Total:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
 
-@*
-<form asp-action="SplitEqually" asp-controller="Payment" method="post">
+<form asp-action="UpdateNumberOfPeople" asp-controller="Payment" method="post">
     @Html.HiddenFor(m => m.Bill.BillId)
-
     <div class="form-group">
         <label>Number of People:</label>
-        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1", @oninput = "updateSplitPreview()" })
-        @Html.ValidationMessageFor(m => m.NumberOfPeople)
+        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1" })
+        <button type="submit" class="btn btn-secondary mt-2">Update Number of People</button>
     </div>
-
-    <div class="form-group">
-        <label>Extra Tip (total):</label>
-        @Html.TextBoxFor(m => m.TotalTip, new { @class = "form-control", @type = "number", @step = "0.01", @oninput = "updateSplitPreview()" })
-    </div>
-
-    <p id="perPersonDisplay" class="text-info mt-2"></p>
-
-    <button type="submit" class="btn btn-primary">Split & Pay</button>
 </form>
-*@
-
 
 <h2>Split and Pay</h2>
 <form asp-action="SplitEqually" asp-controller="Payment" method="post">
     @Html.HiddenFor(m => m.Bill.BillId)
-
-    <div class="form-group">
-        <label>Number of People:</label>
-        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1", @oninput = "updateSplitPreview()" })
-        @Html.ValidationMessageFor(m => m.NumberOfPeople)
-    </div>
     
     @for (int i = 0; i < Model.NumberOfPeople; i++)
     {
@@ -48,6 +30,7 @@
             <input type="hidden" name="Payments[@i].PaymentAmount" value="@Model.Payments[i].PaymentAmount" />
             <input type="hidden" name="Payments[@i].BillId" value="@Model.Bill.BillId" />
 
+            @*
             <div class="glass-radio-group payment">
                 @Html.RadioButtonFor(m => m.Payments[i].PaymentType, PaymentType.Cash, new { id = "pay-cash" })
                 <label for="pay-cash">Cash</label>
@@ -60,29 +43,43 @@
 
                 <div class="glass-glider"></div>
             </div>
+            *@
+
+            <div class="glass-radio-group payment">
+                <input type="radio" id="pay-cash-@i" name="Payments[@i].PaymentType" value="Cash" onclick="handlePaymentSelection(this)" checked />
+                <label for="pay-cash-@i">Cash</label>
+
+                <input type="radio" id="pay-credit-@i" name="Payments[@i].PaymentType" value="CreditCard" onclick="handlePaymentSelection(this)" />
+                <label for="pay-credit-@i">Credit Card</label>
+
+                <input type="radio" id="pay-debit-@i" name="Payments[@i].PaymentType" value="DebitCard" onclick="handlePaymentSelection(this)" />
+                <label for="pay-debit-@i">Debit Card</label>
+
+                <div class="glass-glider"></div>
+            </div>
 
             <div class="form-group py-2">
                 <label>Tip:</label><br />
                 <div class="glass-radio-group tip">
-                    <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
-                    <label for="tip20">20%</label>
+                    <input type="radio" id="tip20-@i" name="Payments[@i].SelectedTipOption" value="0.2" onclick="handleTipSelection(this)" checked>
+                    <label for="tip20-@i">20%</label>
 
-                    <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
-                    <label for="tip10">10%</label>
+                    <input type="radio" id="tip10-@i" name="Payments[@i].SelectedTipOption" value="0.1" onclick="handleTipSelection(this)">
+                    <label for="tip10-@i">10%</label>
 
-                    <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)">
-                    <label for="tip0">Not Today</label>
+                    <input type="radio" id="tip0-@i" name="Payments[@i].SelectedTipOption" value="0" onclick="handleTipSelection(this)">
+                    <label for="tip0-@i">Not Today</label>
 
-                    <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
-                    <label for="tipCustom">Custom Tip</label>
+                    <input type="radio" id="tipCustom-@i" name="Payments[@i].SelectedTipOption" value="custom" onclick="handleTipSelection(this)">
+                    <label for="tipCustom-@i">Custom Tip</label>
 
                     <div class="glass-glider"></div>
                 </div>
             </div>
 
-            <div id="customTipContainer" class="glass-custom-input hidden">
-                <label for="customTipValue">Enter custom tip (€):</label>
-                <input type="number" name="CustomTipAmount" id="customTipValue" step="0.01" min="0" oninput="applyCustomTip()" />
+            <div id="customTipContainer-@i" class="glass-custom-input hidden">
+                <label for="customTipValue-@i">Enter custom tip (€):</label>
+                <input type="number" name="Payments[@i].CustomTipAmount" id="customTipValue-@i" step="0.01" min="0" oninput="applyCustomTip()" />
             </div>
             <span asp-validation-for="Payments[i].CustomTipAmount" class="text-danger"></span>
 
@@ -120,25 +117,59 @@
     function handleTipSelection(radio) {
         const selectedValue = radio.value;
 
-        if (selectedValue === "custom") {
-            document.getElementById("customTipContainer").style.display = "block";
-            applyCustomTip(); // In case there's already a value typed
-        } else {
-            document.getElementById("customTipContainer").style.display = "none";
-            document.getElementById("customTipValue").value = "";
+        const i = radio.id.split("-").pop(); // get the person index
+        const container = document.getElementById(`customTipContainer-${i}`);
+        const input = document.getElementById(`customTipValue-${i}`);
+        const glider = radio.closest('.glass-radio-group').querySelector('.glass-glider');
 
-            const tipPercent = parseFloat(selectedValue);
-            if (!isNaN(tipPercent)) {
-                const tipAmount = orderTotal * tipPercent;
-                //updateTotalDisplay(tipAmount);
-            }
+        // Update glider position based on selected radio
+        const radios = Array.from(radio.closest('.glass-radio-group').querySelectorAll('input[type="radio"]'));
+        const index = radios.indexOf(radio);
+        if (glider && index !== -1) {
+            glider.style.transform = `translateX(${index * 100}%)`;
+        }
+
+        // Show/hide custom tip input
+        if (selectedValue === "custom") {
+            container.classList.remove("hidden");
+            applyCustomTip(i); // In case there's already a value typed
+        } else {
+            container.classList.add("hidden");
+            input.value = ""; // Clear the input when switching away
         }
     }
 
-    function applyCustomTip() {
-        const customTip = parseFloat(document.getElementById("customTipValue").value) || 0;
-        //updateTotalDisplay(customTip);
+    function handlePaymentSelection(radio) {
+        const group = radio.closest('.glass-radio-group');
+        const radios = Array.from(group.querySelectorAll('input[type="radio"]'));
+        const glider = group.querySelector('.glass-glider');
+        const index = radios.indexOf(radio);
+
+        if (glider && index !== -1) {
+            glider.style.transform = `translateX(${index * 100}%)`;
+        }
     }
 
-    document.addEventListener("DOMContentLoaded", updateSplitPreview);
+    function applyCustomTip(personIndex) {
+        const input = document.getElementById(`customTipValue-${personIndex}`);
+        const customTip = parseFloat(input.value) || 0;
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        updateSplitPreview();
+        
+        const totalPeople = @Model.NumberOfPeople;
+
+        for (let i = 0; i < totalPeople; i++) {
+            const selectedTipRadio = document.querySelector(`input[name="Payments[${i}].SelectedTipOption"]:checked`);
+            if (selectedTipRadio) {
+                handleTipSelection(selectedTipRadio);
+            }
+
+            const selectedPaymentRadio = document.querySelector(`input[name="Payments[${i}].PaymentType"]:checked`);
+            if (selectedPaymentRadio) {
+                handlePaymentSelection(selectedPaymentRadio);
+            }
+        }
+    });
 </script>

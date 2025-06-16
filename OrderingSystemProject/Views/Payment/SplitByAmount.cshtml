@@ -1,0 +1,245 @@
+@*
+@model SplitByAmountViewModel
+@{
+    ViewData["Title"] = "Split Bill By Custom Amount";
+}
+
+<h2>Split Bill by Custom Amount</h2>
+
+@if (!string.IsNullOrEmpty(Model.ConfirmationMessage))
+{
+    <div class="alert alert-success">
+        @Model.ConfirmationMessage
+    </div>
+}
+
+<div>
+    <h4>Order Total: €@Model.Bill.OrderTotal</h4>
+    <h5>Remaining: 
+        @{
+            var paid = Model.ExistingPayments.Sum(p => p.PaymentAmount + p.TipAmount);
+            var remaining = Model.Bill.OrderTotal - paid;
+        }
+        €@remaining
+    </h5>
+</div>
+
+<hr />
+
+<div>
+    <h4>Add a New Payment</h4>
+    <form asp-action="SplitByAmount" method="post">
+        <input type="hidden" asp-for="NewPayment.BillId" value="@Model.Bill.BillId" />
+        
+        <div class="form-group">
+            <label asp-for="NewPayment.PaymentAmount">Amount to Pay (€)</label>
+            <input asp-for="NewPayment.PaymentAmount" class="form-control" />
+            <span asp-validation-for="NewPayment.PaymentAmount" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NewPayment.TipAmount">Tip (€)</label>
+            <input asp-for="NewPayment.TipAmount" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NewPayment.PaymentType">Payment Method</label>
+            <select asp-for="NewPayment.PaymentType" class="form-control">
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="Tikkie">Tikkie</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="NewPayment.Feedback">Feedback (optional)</label>
+            <input asp-for="NewPayment.Feedback" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+    </form>
+</div>
+
+<hr />
+
+<div>
+    <h4>Payments Already Made</h4>
+    @if (Model.ExistingPayments.Count == 0)
+    {
+        <p>No payments have been made yet.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Amount (€)</th>
+                    <th>Tip (€)</th>
+                    <th>Method</th>
+                    <th>Feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var payment in Model.ExistingPayments)
+            {
+                <tr>
+                    <td>@payment.PaymentAmount</td>
+                    <td>@payment.TipAmount</td>
+                    <td>@payment.PaymentType</td>
+                    <td>@payment.Feedback</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+*@
+
+@model SplitByAmountViewModel
+@{
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+    decimal totalPaid = Model.ExistingPayments.Sum(p => p.PaymentAmount);
+    decimal totalDue = Model.Bill.OrderTotal;
+    decimal remaining = totalDue - totalPaid;
+    bool isFullyPaid = totalPaid >= totalDue;
+}
+
+<h2>Split Bill by Custom Amount</h2>
+
+@if (!string.IsNullOrEmpty(Model.ConfirmationMessage))
+{
+    <div class="alert alert-success">
+        @Model.ConfirmationMessage
+    </div>
+}
+
+<div class="bill-info mb-4">
+    <p><strong>Total Bill:</strong> @Model.Bill.OrderTotal.ToString("C", euroCulture)</p>
+    <p><strong>Already Paid:</strong> @totalPaid.ToString("C", euroCulture)</p>
+    <p><strong>Remaining:</strong> @remaining.ToString("C", euroCulture)</p>
+</div>
+
+<form asp-action="SplitByAmount" method="post">
+    @Html.HiddenFor(m => m.NewPayment.BillId)
+
+    <div class="form-group mb-3">
+        <label for="PaymentAmount">Enter amount to pay (€):</label>
+        <input asp-for="NewPayment.PaymentAmount" class="form-control" step="0.01" min="0.01" />
+        <span asp-validation-for="NewPayment.PaymentAmount" class="text-danger"></span>
+    </div>
+
+    <!-- Tip Selection -->
+    <div class="form-group mb-3">
+        <label>Tip:</label><br />
+        <div class="glass-radio-group tip">
+            <input type="radio" id="tip20" name="SelectedTipOption" value="0.2" checked onclick="handleTipSelection(this)" />
+            <label for="tip20">20%</label>
+
+            <input type="radio" id="tip10" name="SelectedTipOption" value="0.1" onclick="handleTipSelection(this)" />
+            <label for="tip10">10%</label>
+
+            <input type="radio" id="tip0" name="SelectedTipOption" value="0" onclick="handleTipSelection(this)" />
+            <label for="tip0">No Tip</label>
+
+            <input type="radio" id="tipCustom" name="SelectedTipOption" value="custom" onclick="handleTipSelection(this)" />
+            <label for="tipCustom">Custom</label>
+
+            <div class="glass-glider"></div>
+        </div>
+
+        <div id="customTipContainer" class="glass-custom-input hidden mt-2">
+            <label for="customTipValue">Custom Tip (€):</label>
+            <input type="number" id="customTipValue" name="CustomTipAmount" class="form-control" step="0.01" min="0" oninput="applyCustomTip()" />
+        </div>
+    </div>
+
+    <!-- Payment Method -->
+    <div class="form-group mb-3">
+        <label>Payment Type:</label><br />
+        <div class="glass-radio-group payment">
+            @Html.RadioButtonFor(m => m.NewPayment.PaymentType, PaymentType.Cash, new { id = "cash" })
+            <label for="cash">Cash</label>
+
+            @Html.RadioButtonFor(m => m.NewPayment.PaymentType, PaymentType.CreditCard, new { id = "credit" })
+            <label for="credit">Credit Card</label>
+
+            @Html.RadioButtonFor(m => m.NewPayment.PaymentType, PaymentType.DebitCard, new { id = "debit" })
+            <label for="debit">Debit Card</label>
+
+            <div class="glass-glider"></div>
+        </div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="form-group mb-3">
+        <label>Feedback:</label>
+        <textarea asp-for="NewPayment.Feedback" class="form-control" rows="4" placeholder="The service was great!"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit Payment</button>
+</form>
+
+@if (Model.ExistingPayments.Any())
+{
+    <h4 class="mt-5">Payments Made</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Amount</th>
+                <th>Tip</th>
+                <th>Payment Type</th>
+                <th>Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var payment in Model.ExistingPayments)
+        {
+            <tr>
+                <td>@payment.PaymentId</td>
+                <td>@payment.PaymentAmount.ToString("C", euroCulture)</td>
+                <td>@payment.TipAmount.ToString("C", euroCulture)</td>
+                <td>@payment.PaymentType</td>
+                <td>@payment.Feedback</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+@if (isFullyPaid)
+{
+    <form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
+        <input type="hidden" name="billId" value="@Model.Bill.BillId" />
+        <button type="submit" class="btn btn-primary mt-3">Finish Payment</button>
+    </form>
+}
+
+
+<a asp-action="Pay" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary mt-3">Back to Pay View</a>
+
+@section Scripts {
+<script>
+    function handleTipSelection(radio) {
+        const customContainer = document.getElementById("customTipContainer");
+        if (radio.value === "custom") {
+            customContainer.style.display = "block";
+        } else {
+            customContainer.style.display = "none";
+            document.getElementById("customTipValue").value = "";
+        }
+    }
+
+    function applyCustomTip() {
+        // This could be expanded to show live total, if needed
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const selected = document.querySelector('input[name="SelectedTipOption"]:checked');
+        if (selected) handleTipSelection(selected);
+    });
+</script>
+}

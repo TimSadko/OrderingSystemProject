@@ -1,0 +1,39 @@
+@model Payment
+@{
+    var euroCulture = System.Globalization.CultureInfo.CreateSpecificCulture("nl-NL");
+    var payments = ViewBag.ExistingPayments as List<OrderingSystemProject.Models.Payment> ?? new List<OrderingSystemProject.Models.Payment>();
+}
+<h2>✅ Thank you for your payments!</h2>
+
+<h4 class="mt-5">Payments Made</h4>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Amount</th>
+        <th>Tip</th>
+        <th>Payment Type</th>
+        <th>Feedback</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var payment in payments)
+    {
+        <tr>
+            <td>@payment.PaymentId</td>
+            <td>@payment.PaymentAmount.ToString("C", euroCulture)</td>
+            <td>@payment.TipAmount.ToString("C", euroCulture)</td>
+            <td>@payment.PaymentType</td>
+            <td>@payment.Feedback</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<form asp-action="FinishPaymentForSplitByAmount" asp-controller="Payment" method="post">
+    @Html.HiddenFor(m => m.BillId)
+    <button type="submit" class="btn btn-success">Close the order</button>
+</form>
+
+
+<a href="/Restaurant/Overview" class="btn btn-primary mt-3">Back to Home</a>

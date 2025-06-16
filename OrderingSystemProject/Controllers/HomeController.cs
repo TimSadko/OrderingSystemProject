@@ -17,6 +17,7 @@ namespace OrderingSystemProject.Controllers
         {
             // Redirect to login page
             return RedirectToAction("Login", "Employees");
+            //return RedirectToAction("Index", "Employees");
         }
 
         public IActionResult Privacy()
