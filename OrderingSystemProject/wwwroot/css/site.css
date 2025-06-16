@@ -326,8 +326,6 @@ Generic items
 
 /* Button Pay */
 .button-pay {
-    display: flex;
-    flex-direction: column;
     width: 515px;
     height: 81px;
     background: #951A28;

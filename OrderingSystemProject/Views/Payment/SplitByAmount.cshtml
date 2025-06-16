@@ -132,7 +132,8 @@
     }
 
     function applyCustomTip() {
-        // This could be expanded to show live total, if needed
+        const input = document.getElementById(`customTipValue-${personIndex}`);
+        const customTip = parseFloat(input.value) || 0;
     }
 
     document.addEventListener("DOMContentLoaded", function () {

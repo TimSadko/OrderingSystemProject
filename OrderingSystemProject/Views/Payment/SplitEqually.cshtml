@@ -15,14 +15,9 @@
         <label>Number of People:</label>
         <input type="number" min="1" step="1" value="@Model.NumberOfPeople" asp-for="NumberOfPeople" class="form-control" />
         <button type="submit" class="btn btn-secondary mt-2">Update Number of People</button>
-        @* 
-        @Html.TextBoxFor(m => m.NumberOfPeople, new { @class = "form-control", @type = "number", @min = "1" })
-        <button type="submit" class="btn btn-secondary mt-2">Update Number of People</button>
-        *@
     </div>
 </form>
 
-<h2>Split and Pay</h2>
 <form asp-action="SplitEqually" asp-controller="Payment" method="post">
     @Html.HiddenFor(m => m.Bill.BillId)
     <input type="hidden" asp-for="NumberOfPeople" />
@@ -30,13 +25,11 @@
     {
         <div class="card my-3 p-3">
             <h4>Payment @((i + 1))</h4>
-
-            @*<p><strong>Amount to Pay:</strong> @Model.Payments[i].PaymentAmount.ToString("C", euroCulture)</p>*@
+            
             <div class="form-group">
                 <label for="paymentAmount-@i">Amount to Pay (€)</label>
                 <input type="number" name="Payments[@i].PaymentAmount" id="paymentAmount-@i" step="0.01" min="@(Model.Bill.OrderTotal / Model.NumberOfPeople)" class="form-control" value="@Model.Payments[i].PaymentAmount" />
             </div>
-            @*<input type="hidden" name="Payments[@i].PaymentAmount" value="@Model.Payments[i].PaymentAmount" />*@
             <input type="hidden" name="Payments[@i].BillId" value="@Model.Bill.BillId" />
 
             <div class="glass-radio-group payment">
@@ -61,6 +54,8 @@
 
     <button type="submit" class="btn btn-primary">Split and Pay</button>
 </form>
+
+<a asp-action="Pay" asp-route-id="@Model.Bill.BillId" class="btn btn-outline-primary mt-3">Back to Pay View</a>
 
 <script>
     function updateSplitPreview() {
