@@ -1,5 +1,4 @@
 using OrderingSystemProject.Models;
-using OrderingSystemProject.ViewModels;
 
 namespace OrderingSystemProject.Services;
 
@@ -24,7 +23,6 @@ public interface IMenuItemService
     void Delete(MenuItem item);
     void Activate(int menuItemId);
     void Deactivate(int menuItemId);
-    List<MenuItem> Filter(MenuManagementViewModel.CategoryFilterType category,
-        MenuManagementViewModel.CardFilterType card);
+    List<MenuItem> Filter(CategoryFilterType category, CardFilterType card);
 
 }
