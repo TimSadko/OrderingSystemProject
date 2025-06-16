@@ -56,7 +56,28 @@
                             <a class="" asp-controller="Bar" asp-action="Done">Refresh</a>
                             <li><a class="navbar-link" asp-area="" asp-controller="Bar" asp-action="Index">Current Orders</a></li>
                             break;    
-                        }  
+                        }
+                        case "Staff Management": // Nav links for Manager
+                        {
+                            <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li>
+                            break;
+                        } 
+                        case "Manage Menu Items": // Nav links for Manager
+                        {
+                            <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li>
+                            break;
+                        } 
+                        case "Financial Overview": // Nav links for Manager
+                        {
+                            <li><a class="navbar-link" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Menu Items</a></li>
+                            <li><a class="navbar-link" asp-area="" asp-controller="FinancialOverview" asp-action="Index">Financial Overview</a></li>
+                            break;
+                        } 
                         default: // Deafault links
                         {
                             @* <li><a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
