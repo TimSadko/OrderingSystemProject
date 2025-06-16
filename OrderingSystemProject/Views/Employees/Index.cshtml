@@ -32,16 +32,7 @@
                     <td>@employee.EmployeeType</td>
 
                     @{
-                        var status = "";
-                        if (employee.IsActive)
-                        {
-                            status = "Active";
-                        }
-                        else
-                        {
-                            status = "Deactivated";
-                        }
-
+                        var status = employee.IsActive ? "Active" : "Deactivated";
                         <td>@status</td>
                     }
 
