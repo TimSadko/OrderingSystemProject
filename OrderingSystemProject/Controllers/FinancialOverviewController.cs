@@ -50,9 +50,7 @@ public class FinancialOverviewController : Controller
         {
             financialOverviewViewModel.FinancialOverview =
                 _financialOverviewService.GetFinancialOverviewForPeriod(selectedPeriod);
-
             TempData["SuccessMessage"] = GetSuccessMessageForPeriodSelection((DatePeriod)selectedPeriod!);
-
             return View(nameof(Index), financialOverviewViewModel);
         }
         catch (Exception e)
@@ -74,9 +72,7 @@ public class FinancialOverviewController : Controller
         {
             financialOverviewViewModel.FinancialOverview =
                 _financialOverviewService.GetFinancialOverviewForBetweenDates(startDate, endDate);
-
             TempData["SuccessMessage"] = GetSuccessMessageForBetweenDates((DateTime)startDate!, (DateTime)endDate!);
-
             return View(nameof(Index), financialOverviewViewModel);
         }
         catch (Exception e)

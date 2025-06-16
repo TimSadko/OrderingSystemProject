@@ -37,7 +37,7 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Create(employee);
-            TempData["EmployeeOperationConfirmMessage"] = "Staff has been added!";
+            TempData["SuccessMessage"] = "Staff has been added!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -55,7 +55,6 @@ public class EmployeesController : Controller
         {
             return NotFound();
         }
-
         var employee = _employeesService.GetById((int)id);
         employee.Password = "";
         return View(employee);
@@ -67,15 +66,12 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Update(employee);
-
-            TempData["EmployeeOperationConfirmMessage"] = "Staff has been updated!";
-
+            TempData["SuccessMessage"] = "Staff has been updated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return View(employee);
         }
     }
@@ -86,15 +82,12 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Activate(employeeId);
-
-            TempData["EmployeeOperationConfirmMessage"] = "Staff has been activated!";
-
+            TempData["SuccessMessage"] = "Staff has been activated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }
@@ -105,9 +98,7 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Deactivate(employeeId);
-
-            TempData["EmployeeOperationConfirmMessage"] = "Staff has been deactivated!";
-
+            TempData["SuccessMessage"] = "Staff has been deactivated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -124,15 +115,12 @@ public class EmployeesController : Controller
         try
         {
             _employeesService.Delete(employeeId);
-
-            TempData["EmployeeOperationConfirmMessage"] = "Staff has been removed!";
-
+            TempData["SuccessMessage"] = "Staff has been removed!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }

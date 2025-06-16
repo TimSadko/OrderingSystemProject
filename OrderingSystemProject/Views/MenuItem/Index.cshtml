@@ -17,14 +17,9 @@
         <button class="primary-button">Create New</button>
     </a>
     <p>Number of menu items: @Model.MenuItems.Count</p>
-    @{
-        if (TempData["MenuItemOperationConfirmMessage"] != null)
-        {
-            <div class="alert alert-success" role="alert">@TempData["MenuItemOperationConfirmMessage"]</div>
-        }
-    }
-
+    
     <partial name="_ErrorMessage"/>
+    <partial name="_SuccessMessage"/>
 
     <form method="get" action="@Url.Action("Filter")">
         <div class="form-group row">

@@ -44,7 +44,7 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Add(menuItem);
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been added!";
+            TempData["SuccessMessage"] = "Menu item has been added!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
@@ -72,9 +72,7 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Delete(menuItem);
-            
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been removed!";
-            
+            TempData["SuccessMessage"] = "Menu item has been removed!";
             return RedirectToAction("Index");
         }
         catch (Exception e)
@@ -91,7 +89,6 @@ public class MenuItemController : Controller
         {
             return NotFound();
         }
-
         var menuItem = _menuItemService.GetById((int)menuItemId);
         return View(menuItem);
     }
@@ -102,15 +99,12 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Update(menuItem);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been updated!";
-
+            TempData["SuccessMessage"] = "Menu item has been updated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return View(menuItem);
         }
     }
@@ -143,15 +137,12 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Activate(menuItemId);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been activated!";
-
+            TempData["SuccessMessage"] = "Menu item has been activated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }
@@ -162,15 +153,12 @@ public class MenuItemController : Controller
         try
         {
             _menuItemService.Deactivate(menuItemId);
-
-            TempData["MenuItemOperationConfirmMessage"] = "Menu item has been deactivated!";
-
+            TempData["SuccessMessage"] = "Menu item has been deactivated!";
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
             ViewData["Exception"] = $"Exception occured: {e.Message}";
-
             return RedirectToAction(nameof(Index));
         }
     }
