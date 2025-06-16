@@ -61,7 +61,7 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Exception"] = ex.Message;
+                ViewData["Exception"] = ex.Message;
                 return RedirectToAction("Overview", "Restaurant");
             }
         }
@@ -79,7 +79,7 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception e)
             {
-                TempData["Exception"] = $"Error with adding item to the Order: {e.Message}";
+                ViewData["Exception"] = $"Error with adding item to the Order: {e.Message}";
                 return RedirectToAction("Index", new { tableId });
             }
         }
@@ -244,7 +244,7 @@ namespace OrderingSystemProject.Controllers
             }
             catch (Exception e)
             {
-                TempData["Exception"] = $"Order Error: {e.Message}";
+                TempData["ErrorMessage"] = $"Order Error: {e.Message}";
                 return RedirectToAction("ReviewOrder", new { tableId });
             }
         }
