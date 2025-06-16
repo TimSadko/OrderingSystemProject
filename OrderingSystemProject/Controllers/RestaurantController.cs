@@ -54,38 +54,6 @@ public class RestaurantController : Controller
             return View(new RestaurantOverviewViewModel());
         }
     }
-    //[HttpGet]
-    //public IActionResult Overview()
-    //{
-    //    EmployeeType? userRole = Authorization.GetUserRole(HttpContext);
-
-    //    if (userRole != EmployeeType.Waiter && userRole != EmployeeType.Manager)
-    //        return RedirectToAction("Login", "Employees");
-
-    //    try
-    //    {
-    //        // get all tables
-    //        List<Table> tables = _tablesService.GetAllTables();
-
-    //        // get active orders
-    //        List<Order> activeOrders = _ordersService.GetActiveOrders();
-
-    //        // групуємо замовлення по tableId і беремо останнє (найновіше) для кожного
-    //        Dictionary<int, Order> ordersDictionary = activeOrders
-    //            .Where(o => o.TableId > 0)
-    //            .GroupBy(o => o.TableId)
-    //            .ToDictionary(g => g.Key, g => g.OrderByDescending(o => o.OrderTime).First());
-
-    //        // створюємо модель
-    //        var viewModel = new RestaurantOverviewViewModel(tables, ordersDictionary);
-    //        return View(viewModel);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        ViewData["Exception"] = "An error occurred. Please try again." + ex.Message;
-    //        return View(new RestaurantOverviewViewModel());
-    //    }
-    //}
 
     [HttpPost]
     public IActionResult Overview(Table table)

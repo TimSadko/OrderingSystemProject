@@ -44,20 +44,17 @@ namespace OrderingSystemProject.Repositories
             using (var connection = new SqlConnection(_connection_string))
             {
                 string query =
-                    "INSERT INTO Orders (OrderId, TableId, OrderStatus, OrderTime) VALUES (@OrderId, @TableId, @OrderStatus, @OrderTime); SELECT SCOPE_IDENTITY()";
+                    "INSERT INTO Orders (TableId, OrderStatus, OrderTime) VALUES (@TableId, @OrderStatus, @OrderTime); SELECT SCOPE_IDENTITY()";
                 SqlCommand command = new SqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("@OrderId", order.OrderId);
                 command.Parameters.AddWithValue("@TableId", order.TableId);
                 command.Parameters.AddWithValue("@OrderStatus", order.OrderStatus);
                 command.Parameters.AddWithValue("@OrderTime", order.OrderTime);
 
                 connection.Open();
 
-                if (command.ExecuteNonQuery() == 0)
-                {
-                    throw new Exception("Order creation failed!");
-                }
+                object result = command.ExecuteScalar();
+                order.OrderId = Convert.ToInt32(result);
             }
         }
         public Order? GetById(int id)

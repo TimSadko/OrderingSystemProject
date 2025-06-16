@@ -74,10 +74,9 @@ namespace OrderingSystemProject.Repositories
             using (var connection = new SqlConnection(_connection_string))
             {
                 string query =
-                    "INSERT INTO OrderItems (OrderItemId, OrderId, MenuItemId, Amount, Comment, ItemStatus) VALUES (@OrderItemId, @OrderId, @MenuItemId, @Amount, @Comment, @ItemStatus); SELECT SCOPE_IDENTITY()";
+                    "INSERT INTO OrderItems (OrderId, MenuItemId, Amount, Comment, ItemStatus) VALUES (@OrderId, @MenuItemId, @Amount, @Comment, @ItemStatus); SELECT SCOPE_IDENTITY()";
                 SqlCommand command = new SqlCommand(query, connection);
 
-                command.Parameters.AddWithValue("@OrderItemId", orderItem.Id);
                 command.Parameters.AddWithValue("@OrderId", orderItem.OrderId);
                 command.Parameters.AddWithValue("@MenuItemId", orderItem.MenuItemId);
                 command.Parameters.AddWithValue("@Amount", orderItem.Amount);

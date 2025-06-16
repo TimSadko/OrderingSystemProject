@@ -5,11 +5,13 @@
     </div>
 }
 
-@if (TempData["Exception"] != null)
+@if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger">
-        @TempData["Exception"]
-    </div>
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+else if (TempData["Exception"] != null)
+{
+    <div class="alert alert-danger">@TempData["Exception"]</div>
 }
 
 
