@@ -28,7 +28,7 @@
             
             <div class="form-group">
                 <label for="paymentAmount-@i">Amount to Pay (€)</label>
-                <input type="number" name="Payments[@i].PaymentAmount" id="paymentAmount-@i" step="0.01" min="@(Model.Bill.OrderTotal / Model.NumberOfPeople)" class="form-control" value="@Model.Payments[i].PaymentAmount" />
+                <input type="number" name="Payments[@i].PaymentAmount" id="paymentAmount-@i" step="0.01" min="@(Math.Round(Model.Bill.OrderTotal / Model.NumberOfPeople,2))" class="form-control" value="@Model.Payments[i].PaymentAmount" />
             </div>
             <input type="hidden" name="Payments[@i].BillId" value="@Model.Bill.BillId" />
 
