@@ -8,7 +8,6 @@ namespace OrderingSystemProject.Repositories
         List<OrderItem> GetAll();
         OrderItem? GetOrederItemById(int order_item_id);
 
-		List<OrderItem>? GetOrderItem(int orderId);
         public void Add(OrderItem orderItem);
         List<OrderItem> GetOrderItems(int order_id);
         List<OrderItem> GetOrderItemsNoDrinks(int order_id);

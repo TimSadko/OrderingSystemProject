@@ -24,7 +24,5 @@ namespace OrderingSystemProject.Repositories
 		List<Order> GetActiveOrders();
       
 		List<Order> GetActiveOrdersByTable(int tableId);
-      
-		List<OrderItem> GetItemsForOrder(int orderId);
     }
 }

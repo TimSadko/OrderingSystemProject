@@ -31,7 +31,7 @@ public class PaymentService : IPaymentService
         if (order == null)
             return null;
         //gets the order items by order id
-        order.Items = _ordersRepository.GetItemsForOrder(orderId);
+        order.Items = order.Items;
         if (order.Items.Count == 0)
             return null;
         
